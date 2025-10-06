@@ -1,0 +1,195 @@
+Version 1
+SubGoalCombiner SGC_AND
+INITSECTION
+NOT DB_ReallyShadowheart_PartySize(0);
+
+NOT DB_ReallyShadowheart_PlayersToStay((CHARACTER)Noone_00000000-0000-0000-0000-000000000000);
+
+NOT DB_ReallyShadowheart_RomanticPartners((CHARACTER)Noone_00000000-0000-0000-0000-000000000000);
+KBSECTION
+//////////////////////////////////////////////////////////////////////////
+//
+// Procedures
+//
+//////////////////////////////////////////////////////////////////////////
+
+PROC
+PROC_ReallyShadowheart_PartySizeValueReset()
+AND
+DB_ReallyShadowheart_PartySize(_Val)
+THEN
+NOT DB_ReallyShadowheart_PartySize(_Val);
+
+PROC
+PROC_ReallyShadowheart_PartySizeValueReset()
+AND
+DB_ReallyShadowheart_PlayersToStay(_Companion)
+THEN
+NOT DB_ReallyShadowheart_PlayersToStay(_Companion);
+
+PROC
+PROC_ReallyShadowheart_PartySizeValueReset()
+AND
+DB_ReallyShadowheart_RomanticPartners(_Companion)
+THEN
+NOT DB_ReallyShadowheart_RomanticPartners(_Companion);
+
+PROC
+PROC_ReallyShadowheart_GetRomanticPartner((CHARACTER)_Tav)
+AND
+GetFlag((FLAG)ORI_State_PartneredWithShadowheart_3808ae35-ad4e-465b-800b-63d32b77211e, _Tav, 1)
+THEN
+DB_ReallyShadowheart_RomanticPartners(S_Player_Shadowheart_3ed74f06-3c60-42dc-83f6-f034cb47c679);
+
+PROC
+PROC_ReallyShadowheart_GetRomanticPartner((CHARACTER)_Tav)
+AND
+GetFlag((FLAG)ORI_State_PartneredWithLaezel_d169a786-6e56-4f0d-a2eb-33c48d8d1160, _Tav, 1)
+THEN
+DB_ReallyShadowheart_RomanticPartners(S_Player_Laezel_58a69333-40bf-8358-1d17-fff240d7fb12);
+
+PROC
+PROC_ReallyShadowheart_GetRomanticPartner((CHARACTER)_Tav)
+AND
+GetFlag((FLAG)ORI_State_PartneredWithKarlach_d9ff60fa-0af9-45d7-99b4-bd7c3f80ed12, _Tav, 1)
+THEN
+DB_ReallyShadowheart_RomanticPartners(S_Player_Karlach_2c76687d-93a2-477b-8b18-8a14b549304c);
+
+PROC
+PROC_ReallyShadowheart_GetRomanticPartner((CHARACTER)_Tav)
+AND
+GetFlag((FLAG)ORI_State_PartneredWithMinthara_39ac48fa-b440-47e6-a436-6dc9b10058d8, _Tav, 1)
+THEN
+DB_ReallyShadowheart_RomanticPartners(S_GOB_DrowCommander_25721313-0c15-4935-8176-9f134385451b);
+
+PROC
+PROC_ReallyShadowheart_GetRomanticPartner((CHARACTER)_Tav)
+AND
+GetFlag((FLAG)ORI_State_PartneredWithAstarion_30819c8d-b39d-42e7-acd1-2a8c2c309994, _Tav, 1)
+THEN
+DB_ReallyShadowheart_RomanticPartners(S_Player_Astarion_c7c13742-bacd-460a-8f65-f864fe41f255);
+
+PROC
+PROC_ReallyShadowheart_GetRomanticPartner((CHARACTER)_Tav)
+AND
+GetFlag((FLAG)ORI_State_PartneredWithGale_e008e20d-d642-42ed-9008-297b6273aa21, _Tav, 1)
+THEN
+DB_ReallyShadowheart_RomanticPartners(S_Player_Gale_ad9af97d-75da-406a-ae13-7071c563f604);
+
+PROC
+PROC_ReallyShadowheart_GetRomanticPartner((CHARACTER)_Tav)
+AND
+GetFlag((FLAG)ORI_State_PartneredWithWyll_5db4c1b6-3c42-43ae-aa85-1844acbf5a1d, _Tav, 1)
+THEN
+DB_ReallyShadowheart_RomanticPartners(S_Player_Wyll_c774d764-4a17-48dc-b470-32ace9ce447d);
+
+PROC
+PROC_ReallyShadowheart_GetRomanticPartner((CHARACTER)_Tav)
+AND
+GetFlag((FLAG)FLAG_ORI_State_PartneredWithHalsin_7b53fe60-bb16-48a9-ae5c-9bce1dfac1a9, _Tav, 1)
+THEN
+DB_ReallyShadowheart_RomanticPartners(S_GLO_Halsin_7628bc0e-52b8-42a7-856a-13a6fd413323);
+
+
+PROC
+PROC_ReallyShadowheart_GetRomanticPartners()
+AND
+DB_Avatars(_Tav)
+THEN
+PROC_ReallyShadowheart_GetRomanticPartner(_Tav);
+
+PROC
+PROC_ReallyShadowheart_PartySizePlayerStays((CHARACTER)_Player)
+AND
+NOT DB_ReallyShadowheart_PlayersToStay(_Player)
+AND
+DB_ReallyShadowheart_PartySize(_Count)
+AND
+IntegerSum(_Count, 1, _NewCount)
+AND
+_NewCount < 5
+THEN
+NOT DB_ReallyShadowheart_PartySize(_Count);
+DB_ReallyShadowheart_PartySize(_NewCount);
+DB_ReallyShadowheart_PlayersToStay(_Player);
+
+PROC
+PROC_ReallyShadowheart_PartySizeKeepAvatars()
+AND
+DB_Players(_Player)
+AND
+DB_Avatars(_Player)
+THEN
+PROC_ReallyShadowheart_PartySizePlayerStays(_Player);
+
+PROC
+PROC_ReallyShadowheart_PartySizeKeepRomanticPartners()
+AND
+DB_Players(_Player)
+AND
+IsTagged(_Player, AVATAR_306b9b05-1057-4770-aa17-01af21acd650, 0)
+AND
+DB_ReallyShadowheart_RomanticPartners(_Player)
+THEN
+PROC_ReallyShadowheart_PartySizePlayerStays(_Player);
+
+PROC
+PROC_ReallyShadowheart_PartySizeKeepOrigins()
+AND
+DB_Players(_Player)
+AND
+DB_Origins(_Player)
+THEN
+PROC_ReallyShadowheart_PartySizePlayerStays(_Player);
+
+PROC
+PROC_ReallyShadowheart_PartySizeSendToCamp()
+AND
+DB_Players(_Player)
+AND
+NOT DB_ReallyShadowheart_PlayersToStay(_Player)
+AND
+QRY_GetBestAvatarForCompanion(_Player)
+AND
+DB_QRYRTN_GetBestAvatarForCompanion(_Player, _Tav)
+THEN
+PROC_GLO_PartyMembers_Remove(_Player, _Tav, 0, 0);
+
+// Make party of (up to) four
+PROC
+PROC_ReallyShadowheart_MakePartyOfFour()
+THEN
+PROC_ReallyShadowheart_PartySizeValueReset();
+DB_ReallyShadowheart_PartySize(0);
+PROC_ReallyShadowheart_GetRomanticPartners();
+PROC_ReallyShadowheart_PartySizeKeepAvatars();
+PROC_ReallyShadowheart_PartySizeKeepRomanticPartners();
+PROC_ReallyShadowheart_PartySizeKeepOrigins();
+PROC_ReallyShadowheart_PartySizeSendToCamp();
+
+
+//////////////////////////////////////////////////////////////////////////
+//
+// Events
+//
+//////////////////////////////////////////////////////////////////////////
+
+IF
+DialogEnded((DIALOGRESOURCE)CAMP_Mizora_d1ad5fc6-6d64-e1b6-3f9d-e702a5c2d164, _)
+AND
+DB_GlobalFlag((FLAG)CAMP_Mizora_State_ReadyForRomance_50326103-dae1-818a-3705-046d864c3386)
+THEN
+PROC_ReallyShadowheart_MakePartyOfFour();
+
+IF
+DialogEnded((DIALOGRESOURCE)CAMP_Mizora_SD_ROM_27220d79-2ae3-0262-209b-3e91e1b42f88, _)
+THEN
+PROC_ReallyShadowheart_MakePartyOfFour();
+
+IF
+DialogEnded((DIALOGRESOURCE)LOW_BhaalTemple_OM_OrinDarkUrge_AOM_0abe133f-0f13-4d72-0f18-e6c390d1148b, _)
+THEN
+PROC_ReallyShadowheart_MakePartyOfFour();
+EXITSECTION
+
+ENDEXITSECTION

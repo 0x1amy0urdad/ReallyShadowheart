@@ -1,0 +1,104 @@
+Version 1
+SubGoalCombiner SGC_AND
+INITSECTION
+DB_ReallyShadowheart_ConversationTriggerFlags((FLAG)Reflection_Event_Gur_Hunter_45879bf0-a54b-420e-a18a-6c0547592bab);
+DB_ReallyShadowheart_ConversationTriggerFlags((FLAG)Reflection_Event_Sazza_e9fa6284-c467-4c2b-aafc-2125137bde02);
+DB_ReallyShadowheart_ConversationTriggerFlags((FLAG)Reflection_Event_Arabella_Death_8e722f82-33b0-4357-b5a4-5cbff2187cb4);
+DB_ReallyShadowheart_ConversationTriggerFlags((FLAG)Reflection_Event_Nettie_620ada9c-6129-4db5-be05-6238b7395b0f);
+DB_ReallyShadowheart_ConversationTriggerFlags((FLAG)Reflection_Event_Bugbear_Love_ef654fd3-2fc3-49d7-afe1-5051b1372861);
+DB_ReallyShadowheart_ConversationTriggerFlags((FLAG)Reflection_Event_Tadpole_ed67655f-a749-454a-a137-f8b17a55ac84);
+DB_ReallyShadowheart_ConversationTriggerFlags((FLAG)Reflection_Event_Goblin_Camp_c3989eff-6fef-4973-8942-f106d49c83c2);
+KBSECTION
+PROC
+PROC_ReallyShadowheart_Init_ConversationTriggerFlags()
+AND
+NOT DB_ReallyShadowheart_ConversationTriggerFlags((FLAG)Reflection_Event_Goblin_Camp_c3989eff-6fef-4973-8942-f106d49c83c2)
+THEN
+DB_ReallyShadowheart_ConversationTriggerFlags((FLAG)Reflection_Event_Gur_Hunter_45879bf0-a54b-420e-a18a-6c0547592bab);
+DB_ReallyShadowheart_ConversationTriggerFlags((FLAG)Reflection_Event_Sazza_e9fa6284-c467-4c2b-aafc-2125137bde02);
+DB_ReallyShadowheart_ConversationTriggerFlags((FLAG)Reflection_Event_Arabella_Death_8e722f82-33b0-4357-b5a4-5cbff2187cb4);
+DB_ReallyShadowheart_ConversationTriggerFlags((FLAG)Reflection_Event_Nettie_620ada9c-6129-4db5-be05-6238b7395b0f);
+DB_ReallyShadowheart_ConversationTriggerFlags((FLAG)Reflection_Event_Bugbear_Love_ef654fd3-2fc3-49d7-afe1-5051b1372861);
+DB_ReallyShadowheart_ConversationTriggerFlags((FLAG)Reflection_Event_Tadpole_ed67655f-a749-454a-a137-f8b17a55ac84);
+DB_ReallyShadowheart_ConversationTriggerFlags((FLAG)Reflection_Event_Goblin_Camp_c3989eff-6fef-4973-8942-f106d49c83c2);
+
+PROC
+PROC_ReallyShadowheart_GameStarted()
+THEN
+PROC_ReallyShadowheart_Init_ConversationTriggerFlags();
+
+IF
+FlagSet(_Flag, _Tav, _)
+AND
+QRY_ReallyShadowheart_HasExtension("ReallyShadowheart_Ext_V2_0_0_0")
+AND
+DB_ReallyShadowheart_ConversationTriggerFlags(_Flag)
+AND
+DB_Avatars((CHARACTER)_Tav)
+AND
+DB_GlobalFlag((FLAG)GLO_Origin_PartOfTheTeam_Shadowheart_7f9ac9e8-1e8d-4bf8-8716-68215f0f066e)
+AND
+GetFlag((FLAG)CAMP_GLO_State_InCamp_161b7223-039d-4ebe-986f-1dcd9a66733f, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0)
+THEN
+PROC_RelationshipDialog((CHARACTER)S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, (DIALOGRESOURCE)ShadowHeart_InParty_95ca3833-09d0-5772-b16a-c7a5e9208fe5, (CHARACTER)S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679);
+
+// Tadpole reaction
+IF
+DialogEnded((DIALOGRESOURCE)GLO_Tadpole_TrueSoulCorpse_8ceb5646-8c9b-f8f9-cfea-7e6a9f94159e, _)
+AND
+QRY_GetBestAvatarForCompanion((CHARACTER)S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679)
+AND
+DB_QRYRTN_GetBestAvatarForCompanion((CHARACTER)S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _Tav)
+AND
+QRY_OnlyOnce("ReallyShadowheart_TadpoleReaction")
+THEN
+SetFlag((FLAG)Reflection_Event_Tadpole_ed67655f-a749-454a-a137-f8b17a55ac84, _Tav, 0, 1);
+SetFlag((FLAG)Reflection_Available_Tadpole_ab420719-5f04-4f47-99b6-484726758c75, _Tav, 0, 1);
+
+// Reaction to the bugbear and ogre killed
+IF
+CombatEnded(_)
+AND
+DB_FOR_BugBearLove_Couple(_Partner)
+AND
+DB_FOR_BugBearLove_Couple(_OtherPartner)
+AND
+_OtherPartner != _Partner
+AND
+DB_Dead((CHARACTER)_Partner)
+AND
+DB_Dead((CHARACTER)_OtherPartner)
+AND
+GetDistanceTo(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _Partner, _Distance)
+AND
+_Distance <= 32.0
+AND
+QRY_GetBestAvatarForCompanion((CHARACTER)S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679)
+AND
+DB_QRYRTN_GetBestAvatarForCompanion((CHARACTER)S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _Tav)
+AND
+QRY_OnlyOnce("ReallyShadowheart_BugbearOrgeReaction")
+THEN
+ObjectTimerLaunch(_Tav, "ReallyShadowheart_BugbearOrgeReactionTimer", 2000);
+
+IF
+ObjectTimerFinished(_Tav, "ReallyShadowheart_BugbearOrgeReactionTimer")
+THEN
+SetFlag((FLAG)Reflection_Event_Bugbear_Love_ef654fd3-2fc3-49d7-afe1-5051b1372861, _Tav, 0, 1);
+SetFlag((FLAG)Reflection_Available_Bugbear_Love_8508e380-ab05-4436-92ac-5d6ff5f04d06, _Tav, 0, 1);
+
+// Reaction to the goblins
+PROC
+PROC_TriggerUnregisterForPlayers(TRIGGERGUID_S_GOB_VoloBallad_FirstHeardArea_7d714a14-2d80-44d4-ba90-479e8510c024)
+AND
+QRY_GetBestAvatarForCompanion((CHARACTER)S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679)
+AND
+DB_QRYRTN_GetBestAvatarForCompanion((CHARACTER)S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _Tav)
+AND
+QRY_OnlyOnce("ReallyShadowheart_GoblinCampReaction")
+THEN
+SetFlag((FLAG)Reflection_Event_Goblin_Camp_c3989eff-6fef-4973-8942-f106d49c83c2, _Tav, 0, 1);
+SetFlag((FLAG)Reflection_Available_Goblin_Camp_8164a020-8caa-4a70-9150-f96dbf794098, _Tav, 0, 1);
+EXITSECTION
+
+ENDEXITSECTION

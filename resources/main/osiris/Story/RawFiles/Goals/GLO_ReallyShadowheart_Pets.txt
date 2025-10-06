@@ -1,0 +1,269 @@
+Version 1
+SubGoalCombiner SGC_AND
+INITSECTION
+NOT DB_ShadowheartPets_PetsNight(0);
+NOT DB_ReallyShadowheart_State(0);
+NOT DB_ReallyShadowheart_StateIsEvolving(0);
+NOT DB_ReallyShadowheart_WalkingToCampCorner(0);
+KBSECTION
+QRY
+QRY_ReallyShadowheart_ShadowheartInCamp()
+AND
+DB_PartOfTheTeam((CHARACTER)S_Player_Shadowheart_3ed74f06-3c60-42dc-83f6-f034cb47c679)
+AND
+GetFlag((FLAG)GLO_Shadowheart_State_Dead_49895e67-443f-46f0-96db-4f49706ac58d, NULL_00000000-0000-0000-0000-000000000000, 0)
+AND
+GetFlag((FLAG)CAMP_GLO_State_InCamp_161b7223-039d-4ebe-986f-1dcd9a66733f, S_Player_Shadowheart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 1)
+THEN
+DB_NOOP(1);
+
+PROC
+PROC_ReallyShadowheart_InCamp()
+AND
+NOT DB_ReallyShadowheart_IrregularBehavior(1)
+AND
+DB_ShadowheartPets_PetsNight(1)
+THEN
+PROC_GlobalClearFlagAndCache((FLAG)NIGHT_OwlbearCubDog_902e10f8-e9d8-4eb6-ac0f-9ad8ba8787ed);
+
+PROC
+PROC_ReallyShadowheart_EvolveState()
+AND
+NOT QRY_ReallyShadowheart_ShadowheartInCamp()
+AND
+DB_ReallyShadowheart_State(_State)
+THEN
+NOT DB_ReallyShadowheart_State(_State);
+
+PROC
+PROC_ReallyShadowheart_EvolveState()
+AND
+NOT QRY_ReallyShadowheart_ShadowheartInCamp()
+AND
+DB_Camp_NightMode(1)
+THEN
+PROC_GlobalSetFlagAndCache(GLO_CAMP_State_NightMode_fb53edc2-9a89-4ad2-af83-20b5fe425cdd);
+
+PROC
+PROC_ReallyShadowheart_EvolveState()
+AND
+NOT QRY_ReallyShadowheart_ShadowheartInCamp()
+AND
+NOT DB_Camp_NightMode(1)
+THEN
+PROC_GlobalClearFlagAndCache(GLO_CAMP_State_NightMode_fb53edc2-9a89-4ad2-af83-20b5fe425cdd);
+
+PROC
+PROC_ReallyShadowheart_EvolveState()
+AND
+NOT QRY_ReallyShadowheart_ShadowheartInCamp()
+AND
+DB_ReallyShadowheart_StateIsEvolving(1)
+THEN
+PROC_ReallyShadowheart_StopEvolvingState();
+
+PROC
+PROC_ReallyShadowheart_EvolveState()
+AND
+QRY_ReallyShadowheart_ShadowheartInCamp()
+AND
+DB_ReallyShadowheart_State(1)
+AND
+GetFlag((FLAG)GLO_CAMP_State_NightMode_fb53edc2-9a89-4ad2-af83-20b5fe425cdd, NULL_00000000-0000-0000-0000-000000000000, 1)
+THEN
+NOT DB_ReallyShadowheart_State(1);
+DB_ReallyShadowheart_State(2);
+PROC_GlobalClearFlagAndCache(GLO_CAMP_State_NightMode_fb53edc2-9a89-4ad2-af83-20b5fe425cdd);
+TimerLaunch("ReallyShadowheart_EvolveState", 100);
+
+PROC
+PROC_ReallyShadowheart_EvolveState()
+AND
+QRY_ReallyShadowheart_ShadowheartInCamp()
+AND
+DB_ReallyShadowheart_State(2)
+THEN
+NOT DB_ReallyShadowheart_State(2);
+DB_ReallyShadowheart_State(5);
+PROC_GlobalSetFlagAndCache(GLO_CAMP_State_NightMode_fb53edc2-9a89-4ad2-af83-20b5fe425cdd);
+TimerLaunch("ReallyShadowheart_EvolveState", 100);
+
+PROC
+PROC_ReallyShadowheart_EvolveState()
+AND
+QRY_ReallyShadowheart_ShadowheartInCamp()
+AND
+DB_ReallyShadowheart_State(1)
+AND
+GetFlag((FLAG)GLO_CAMP_State_NightMode_fb53edc2-9a89-4ad2-af83-20b5fe425cdd, NULL_00000000-0000-0000-0000-000000000000, 0)
+THEN
+NOT DB_ReallyShadowheart_State(1);
+DB_ReallyShadowheart_State(5);
+PROC_GlobalSetFlagAndCache(GLO_CAMP_State_NightMode_fb53edc2-9a89-4ad2-af83-20b5fe425cdd);
+TimerLaunch("ReallyShadowheart_EvolveState", 100);
+
+PROC
+PROC_ReallyShadowheart_EvolveState()
+AND
+QRY_ReallyShadowheart_ShadowheartInCamp()
+AND
+DB_ReallyShadowheart_State(5)
+AND
+DB_Camp_NightMode(1)
+THEN
+PROC_GlobalSetFlagAndCache(GLO_CAMP_State_NightMode_fb53edc2-9a89-4ad2-af83-20b5fe425cdd);
+NOT DB_ReallyShadowheart_State(5);
+PROC_ReallyShadowheart_StopEvolvingState();
+
+PROC
+PROC_ReallyShadowheart_EvolveState()
+AND
+QRY_ReallyShadowheart_ShadowheartInCamp()
+AND
+DB_ReallyShadowheart_State(5)
+AND
+NOT DB_Camp_NightMode(1)
+THEN
+PROC_GlobalClearFlagAndCache(GLO_CAMP_State_NightMode_fb53edc2-9a89-4ad2-af83-20b5fe425cdd);
+NOT DB_ReallyShadowheart_State(5);
+PROC_ReallyShadowheart_StopEvolvingState();
+
+PROC
+PROC_ReallyShadowheart_StopEvolvingState()
+THEN
+TimerLaunch("ReallyShadowheart_StopEvolvingState", 2000);
+
+IF
+TimerFinished("ReallyShadowheart_StopEvolvingState")
+THEN
+NOT DB_ReallyShadowheart_StateIsEvolving(1);
+
+
+PROC
+PROC_ReallyShadowheart_GameStarted()
+AND
+NOT DB_ShadowheartPets_PetsNight(1)
+AND
+GetFlag((FLAG)NIGHT_OwlbearCubDog_902e10f8-e9d8-4eb6-ac0f-9ad8ba8787ed, NULL_00000000-0000-0000-0000-000000000000, 1)
+THEN
+DB_ShadowheartPets_PetsNight(1);
+
+IF
+FlagSet(NIGHT_OwlbearCubDog_902e10f8-e9d8-4eb6-ac0f-9ad8ba8787ed, _, _)
+AND
+NOT DB_ShadowheartPets_PetsNight(1)
+THEN
+DB_ShadowheartPets_PetsNight(1);
+
+PROC
+PROC_ReallyShadowheart_GameStarted()
+AND
+NOT DB_ReallyShadowheart_IrregularBehavior(1)
+AND
+DB_ShadowheartPets_PetsNight(1)
+AND
+GetFlag((FLAG)GLO_CAMP_State_NightMode_fb53edc2-9a89-4ad2-af83-20b5fe425cdd, NULL_00000000-0000-0000-0000-000000000000, 1)
+THEN
+PROC_GlobalClearFlagAndCache((FLAG)NIGHT_OwlbearCubDog_902e10f8-e9d8-4eb6-ac0f-9ad8ba8787ed);
+
+IF
+FlagSet((FLAG)GLO_CAMP_State_NightMode_fb53edc2-9a89-4ad2-af83-20b5fe425cdd, _, _)
+AND
+NOT DB_ReallyShadowheart_StateIsEvolving(1)
+THEN
+PROC_ReallyShadowheart_InCamp();
+
+IF
+FlagSet((FLAG)CAMP_GLO_State_InCamp_161b7223-039d-4ebe-986f-1dcd9a66733f, S_Player_Shadowheart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _)
+THEN
+PROC_ReallyShadowheart_InCamp();
+
+// By default, Owlbear Cub and Scratch are playing when the new day starts
+IF
+LongRestStarted()
+AND
+DB_ShadowheartPets_PetsNight(1)
+THEN
+PROC_GlobalSetFlagAndCache((FLAG)NIGHT_OwlbearCubDog_902e10f8-e9d8-4eb6-ac0f-9ad8ba8787ed);
+
+// not partnered
+IF
+LongRestFinished()
+AND
+NOT DB_ReallyShadowheart_PartneredWithShadowheart(_)
+THEN
+PROC_ReallyShadowheart_InCamp();
+
+// partnered, don't sleep together
+IF
+LongRestFinished()
+AND
+DB_ReallyShadowheart_PartneredWithShadowheart(_Tav)
+AND
+GetFlag((FLAG)Shadowheart_Tav_Sleep_Together_0187f803-6b3c-4249-b5a8-0e968306978b, _Tav, 0)
+THEN
+PROC_ReallyShadowheart_InCamp();
+
+// partnered, sleep together
+IF
+LongRestFinished()
+AND
+DB_ReallyShadowheart_PartneredWithShadowheart(_Tav)
+AND
+GetFlag((FLAG)Shadowheart_Tav_Sleep_Together_0187f803-6b3c-4249-b5a8-0e968306978b, _Tav, 1)
+THEN
+DB_ReallyShadowheart_WalkingToCampCorner(1);
+
+IF
+EntityEvent(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, "CAMP_ReturnToPos_DefaultEvent")
+AND
+DB_ReallyShadowheart_WalkingToCampCorner(1)
+THEN
+NOT DB_ReallyShadowheart_WalkingToCampCorner(0);
+TimerLaunch("ReallyShadowheart_PetThemAll", 5000);
+
+IF
+TimerFinished("ReallyShadowheart_PetThemAll")
+AND
+GetFlag((FLAG)CAMP_GLO_State_InCamp_161b7223-039d-4ebe-986f-1dcd9a66733f, S_Player_Shadowheart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 1)
+THEN
+PROC_ReallyShadowheart_InCamp();
+
+
+IF
+AutomatedDialogEnded((DIALOGRESOURCE)CAMP_Shadowheart_PAD_CallPet_8c951c6b-bb62-09f4-8fab-937300799d70, _)
+AND
+DB_ShadowheartPets_PetsNight(1)
+THEN
+TimerLaunch("ReallyShadowheart_EnablePetsNight", 1000);
+
+IF
+AutomatedDialogEnded((DIALOGRESOURCE)CAMP_Shadowheart_PAD_CallPet_8c951c6b-bb62-09f4-8fab-937300799d70, _)
+AND
+NOT DB_ShadowheartPets_PetsNight(1)
+THEN
+TimerLaunch("ReallyShadowheart_StartNextCycle", 31000);
+
+IF
+TimerFinished("ReallyShadowheart_EnablePetsNight")
+THEN
+PROC_GlobalSetFlagAndCache((FLAG)NIGHT_OwlbearCubDog_902e10f8-e9d8-4eb6-ac0f-9ad8ba8787ed);
+TimerLaunch("ReallyShadowheart_StartNextCycle", 30000);
+
+IF
+TimerFinished("ReallyShadowheart_StartNextCycle")
+AND
+QRY_ReallyShadowheart_ShadowheartInCamp()
+THEN
+PROC_GlobalClearFlagAndCache((FLAG)NIGHT_OwlbearCubDog_902e10f8-e9d8-4eb6-ac0f-9ad8ba8787ed);
+DB_ReallyShadowheart_State(1);
+DB_ReallyShadowheart_StateIsEvolving(1);
+TimerLaunch("ReallyShadowheart_EvolveState", 100);
+
+IF
+TimerFinished("ReallyShadowheart_EvolveState")
+THEN
+PROC_ReallyShadowheart_EvolveState();
+EXITSECTION
+
+ENDEXITSECTION

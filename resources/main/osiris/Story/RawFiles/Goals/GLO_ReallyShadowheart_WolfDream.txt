@@ -1,0 +1,129 @@
+Version 1
+SubGoalCombiner SGC_AND
+INITSECTION
+NOT DB_ReallyShadowheart_FearOfWolves(0);
+KBSECTION
+// Softened: wolf dream is available at approval 20 or higher
+QRY
+QRY_ReallyShadowheart_WolfDreamEnoughApproval((INTEGER)_Approval)
+AND
+QRY_ReallyShadowheart_Softened()
+AND
+_Approval >= 20
+THEN
+DB_ReallyShadowheart_NOOP(1);
+
+// Better: wolf dream is available at approval 30 or higher
+QRY
+QRY_ReallyShadowheart_WolfDreamEnoughApproval((INTEGER)_Approval)
+AND
+NOT QRY_ReallyShadowheart_Softened()
+AND
+_Approval >= 30
+THEN
+DB_ReallyShadowheart_NOOP(1);
+
+
+// This prevents the original PROC_ORI_Shadowheart_TryWolfDreamInvite()
+PROC
+PROC_ReallyShadowheart_GameStarted()
+AND
+QRY_OnlyOnce("ORI_Shadowheart_WolfDreamShared")
+THEN
+DB_NOOP(1);
+
+// Wolf Dream triggers
+IF
+ApprovalRatingChanged((CHARACTER)S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _Player, _Approval)
+AND
+NOT DB_OnlyOnce("ReallyShadowheart_WolfDreamShared")
+AND
+QRY_ReallyShadowheart_WolfDreamEnoughApproval(_Approval)
+THEN
+PROC_ORI_Shadowheart_TryWolfDreamInvite();
+
+IF
+DB_GlobalFlag((FLAG)ORI_Shadowheart_Knows_BecomeJusticiar_c29b8679-3e0b-43f9-8578-2a5d7659180e)
+AND
+NOT DB_OnlyOnce("ReallyShadowheart_WolfDreamShared")
+THEN
+PROC_ORI_Shadowheart_TryWolfDreamInvite();
+
+IF
+DB_GlobalFlag((FLAG)ORI_Shadowheart_Knows_MotherSuperior_2ccd399f-e743-45f6-9fea-12afaa4647f7)
+AND
+NOT DB_OnlyOnce("ReallyShadowheart_WolfDreamShared")
+THEN
+PROC_ORI_Shadowheart_TryWolfDreamInvite();
+
+IF
+FlagCleared((FLAG)ORI_Shadowheart_State_BlockBackground_f3323dfc-c725-4627-a64f-fb8c6e8e4a74, _, _)
+AND
+NOT DB_OnlyOnce("ReallyShadowheart_WolfDreamShared")
+THEN
+PROC_ORI_Shadowheart_TryWolfDreamInvite();
+
+PROC
+PROC_CAMP_LeftCamp((CHARACTER)S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679)
+AND
+NOT DB_OnlyOnce("ReallyShadowheart_WolfDreamShared")
+THEN
+PROC_ORI_Shadowheart_TryWolfDreamInvite();
+
+// A retry of a missed chance to see the wolf dream
+PROC
+PROC_CAMP_LeftCamp((CHARACTER)S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679)
+AND
+DB_OnlyOnce("ReallyShadowheart_WolfDreamShared")
+AND
+IsTagged(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, TAG_SHADOWHEART_ENEMYOFSHARPATH_8eca8027-996c-4c61-bec6-77f853de295b, 0)
+AND
+IsTagged(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, TAG_SHADOWHEART_SHARPATH_9624a3fe-bb9e-47c5-b9ab-417e6da6f84b, 0)
+AND
+NOT DB_GlobalFlag((FLAG)ORI_Shadowheart_Knows_HasSeenWolfDream_f7e48f6a-bc8b-4941-8016-6622956c84f9)
+THEN
+NOT DB_OnlyOnce("ReallyShadowheart_WolfDreamShared");
+PROC_ORI_Shadowheart_TryWolfDreamInvite();
+
+// This overrides the original procedure to raise approval requirements for the Wolf Dream conversation to 30.
+PROC
+PROC_ORI_Shadowheart_TryWolfDreamInvite()
+AND
+DB_PartOfTheTeam((CHARACTER)S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679)
+AND
+NOT DB_Avatars((CHARACTER)S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679)
+AND
+NOT DB_CantTalk(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679)
+AND
+NOT DB_InCamp((CHARACTER)S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679)
+AND
+DB_GlobalFlag((FLAG)ORI_Shadowheart_Knows_BecomeJusticiar_c29b8679-3e0b-43f9-8578-2a5d7659180e)
+AND
+DB_GlobalFlag((FLAG)ORI_Shadowheart_Knows_MotherSuperior_2ccd399f-e743-45f6-9fea-12afaa4647f7)
+AND
+NOT DB_GlobalFlag((FLAG)ORI_Shadowheart_State_WolfDreamOffered_82bcb108-7b2f-4a33-959a-a6e1520d0442)
+AND
+NOT DB_GlobalFlag((FLAG)ORI_Shadowheart_State_BlockBackground_f3323dfc-c725-4627-a64f-fb8c6e8e4a74)
+AND
+NOT DB_GlobalFlag((FLAG)ORI_Shadowheart_Knows_HasSeenWolfDream_f7e48f6a-bc8b-4941-8016-6622956c84f9)
+AND
+DB_Avatars(_Player)
+AND
+GetApprovalRating((CHARACTER)S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _Player, _Approval)
+AND
+QRY_ReallyShadowheart_WolfDreamEnoughApproval(_Approval)
+AND
+QRY_OnlyOnce("ReallyShadowheart_WolfDreamShared")
+THEN
+PROC_RelationshipDialog((CHARACTER)S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, (DIALOGRESOURCE)ShadowHeart_InParty_95ca3833-09d0-5772-b16a-c7a5e9208fe5, ORI_Shadowheart_State_HadWolfDreamInvite_88c4d243-da5d-4cd0-a367-ea99a9852fec,(CHARACTER)S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679,0 , 20);
+
+IF
+StatusApplied(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, "FRIGHTENED_FAILED_SHADOWHEART", _, _)
+AND
+NOT DB_ReallyShadowheart_FearOfWolves(1)
+THEN
+DB_ReallyShadowheart_FearOfWolves(1);
+ApplyStatus((CHARACTER)S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, "FRIGHTENED_SHADOWHEART", 1.0, 1, NULL_00000000-0000-0000-0000-000000000000);
+EXITSECTION
+
+ENDEXITSECTION

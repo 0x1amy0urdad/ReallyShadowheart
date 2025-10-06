@@ -1,0 +1,1600 @@
+Version 1
+SubGoalCombiner SGC_AND
+INITSECTION
+DB_ReallyShadowheart_RandomMorningKisses((FLAG)Shadowheart_Morning_Kiss_634e69d9-7ae4-4b62-8f5b-fe3c5b6690e6);
+DB_ReallyShadowheart_RandomMorningKisses((FLAG)Nothing1_00000000-0000-0000-0000-000000000001);
+DB_ReallyShadowheart_RandomMorningKisses((FLAG)Nothing2_00000000-0000-0000-0000-000000000002);
+DB_ReallyShadowheart_RandomMorningKisses((FLAG)Nothing3_00000000-0000-0000-0000-000000000003);
+
+DB_ReallyShadowheart_RandomMorningValidKisses((FLAG)Shadowheart_Morning_Kiss_634e69d9-7ae4-4b62-8f5b-fe3c5b6690e6);
+
+DB_ReallyShadowheart_RandomKisses((FLAG)Shadowheart_Kiss1_0f81b8e1-8553-45ba-95a6-d4c113798df8);
+DB_ReallyShadowheart_RandomKisses((FLAG)Shadowheart_Kiss2_bc7b6b94-f686-4f85-beb8-b248bc5b98f4);
+DB_ReallyShadowheart_RandomKisses((FLAG)Shadowheart_Kiss3_8c6a2843-23aa-4ec8-852a-849199f96bb1);
+DB_ReallyShadowheart_RandomKisses((FLAG)Shadowheart_Kiss4_a8602f0b-a938-43da-84f5-57e31279d3a7);
+DB_ReallyShadowheart_RandomKisses((FLAG)Shadowheart_Kiss5_22724bd2-4601-41d7-8237-e0c309e36a72);
+DB_ReallyShadowheart_RandomKisses((FLAG)Shadowheart_Kiss6_9fc10afa-147c-4f8e-b5a4-f20bcbaa6360);
+
+DB_ReallyShadowheart_Kisses((FLAG)ORI_ShadowheartKiss_VersionA_f2781286-e51c-443f-b1a3-cea4ba95ccf9);
+DB_ReallyShadowheart_Kisses((FLAG)ORI_ShadowheartKiss_VersionB_815a0406-7c85-4107-b704-439320fb7f0b);
+DB_ReallyShadowheart_Kisses((FLAG)ORI_ShadowheartKiss_VersionC_c07bfea6-3d37-48f3-aefc-6eb1749b117f);
+DB_ReallyShadowheart_Kisses((FLAG)ORI_ShadowheartKiss_VersionD_db362653-5649-4f1d-bc43-32b85fd42c0e);
+DB_ReallyShadowheart_Kisses((FLAG)ORI_ShadowheartKiss_VersionE_ec79178f-2c18-4a71-b147-7b254439e5b2);
+DB_ReallyShadowheart_Kisses((FLAG)ORI_ShadowheartKiss_VersionF_321d447c-5298-4a5c-82de-f884ba4757d4);
+
+NOT DB_ReallyShadowheart_PartneredWithShadowheart((CHARACTER)Noone_00000000-0000-0000-0000-000000000000);
+
+NOT DB_ReallyShadowheart_IrregularBehavior(0);
+
+NOT DB_ReallyShadowheart_AskForKissPending(0);
+
+NOT DB_ReallyShadowheart_NOOP(0);
+
+NOT DB_ReallyShadowheart_ChattyStoolOccupant((CHARACTER)Noone_00000000-0000-0000-0000-000000000000);
+
+NOT DB_ReallyShadowheart_PostCloisterCrisisPending(0);
+
+NOT DB_ReallyShadowheart_GameStarted(0);
+KBSECTION
+//////////////////////////////////////////////////////////////////////////
+//
+// Global setup hook proc
+// Should be used to initialize things instead of SavegameLoaded() event
+//
+//////////////////////////////////////////////////////////////////////////
+
+PROC
+PROC_ReallyShadowheart_GameStarted()
+THEN
+DB_NOOP(1);
+
+IF
+SavegameLoaded()
+THEN
+PROC_ReallyShadowheart_GameStarted();
+
+IF
+LevelLoaded(_)
+AND
+NOT DB_ReallyShadowheart_GameStarted(1)
+THEN
+TimerLaunch("ReallyShadowheart_GameStarted", 10000);
+
+IF
+TimerFinished("ReallyShadowheart_GameStarted")
+AND
+NOT DB_ReallyShadowheart_GameStarted(1)
+THEN
+DB_ReallyShadowheart_GameStarted(1);
+PROC_ReallyShadowheart_GameStarted();
+
+
+//////////////////////////////////////////////////////////////////////////
+//
+// Queries
+//
+//////////////////////////////////////////////////////////////////////////
+
+// Always FALSE
+QRY
+QRY_ReallyShadowheart_Softened()
+AND
+DB_ReallyShadowheart_NOOP(42)
+THEN
+DB_ReallyShadowheart_NOOP(1);
+
+// This query tells all other mods that ReallyShadowheart is installed
+QRY
+QRY_ReallyShadowheart_Installed()
+THEN
+DB_NOOP(1);
+
+// This query checks if Shadowheart is not an avatar
+QRY
+QRY_ReallyShadowheart_Non_Origin_Shadowheart()
+AND
+IsTagged(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, AVATAR_306b9b05-1057-4770-aa17-01af21acd650, 0)
+THEN
+DB_NOOP(1);
+
+// For the given _Tav, this query checks that Tav & Shadowheart are partenered and their relationship didn't sour
+QRY
+QRY_ReallyShadowheart_Tav_And_Shadowheart_Are_Ok((CHARACTER)_Tav)
+AND
+IsTagged(_Tav, AVATAR_306b9b05-1057-4770-aa17-01af21acd650, 1)
+AND
+GetFlag(ORI_State_PartneredWithShadowheart_3808ae35-ad4e-465b-800b-63d32b77211e, _Tav, 1)
+AND
+GetFlag(Shadowheart_Has_Doubts_About_Tav_2774e4ec-e92d-41c1-a4b0-c6ddc84417da, _Tav, 0)
+THEN
+DB_NOOP(1);
+
+QRY
+QRY_ReallyShadowheart_Tav_And_Shadowheart_Are_Ok((CHARACTER)_Tav)
+AND
+IsTagged(_Tav, AVATAR_306b9b05-1057-4770-aa17-01af21acd650, 1)
+AND
+DB_ReallyShadowheart_PartneredWithShadowheart(_Tav)
+AND
+GetFlag(Shadowheart_Has_Doubts_About_Tav_2774e4ec-e92d-41c1-a4b0-c6ddc84417da, _Tav, 0)
+THEN
+DB_NOOP(1);
+
+
+// This query checks that Tav & Shadowheart are partenered and their relationship didn't sour
+QRY
+QRY_ReallyShadowheart_Tav_And_Shadowheart_Are_Ok()
+AND
+DB_Avatars(_Tav)
+AND
+GetFlag(ORI_State_PartneredWithShadowheart_3808ae35-ad4e-465b-800b-63d32b77211e, _Tav, 1)
+AND
+GetFlag(Shadowheart_Has_Doubts_About_Tav_2774e4ec-e92d-41c1-a4b0-c6ddc84417da, _Tav, 0)
+THEN
+DB_NOOP(1);
+
+QRY
+QRY_ReallyShadowheart_Tav_And_Shadowheart_Are_Ok()
+AND
+DB_ReallyShadowheart_PartneredWithShadowheart(_Tav)
+AND
+DB_Avatars(_Tav)
+AND
+GetFlag(Shadowheart_Has_Doubts_About_Tav_2774e4ec-e92d-41c1-a4b0-c6ddc84417da, _Tav, 0)
+THEN
+DB_NOOP(1);
+
+
+// Checks if there's an exclamation mark over Shadowheart
+QRY
+QRY_ReallyShadowheart_DialogPending()
+AND
+IsTagged(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, HAS_EXCLAMATION_DIALOG_e45ea222-a86f-4e00-a1ca-98d8b258b1ce, 1)
+THEN
+DB_NOOP(1);
+
+
+// This query checks if a kiss is pending
+QRY
+QRY_ReallyShadowheart_KissPending()
+AND
+DB_ReallyShadowheart_RandomMorningValidKisses(_Flag)
+AND
+GetFlag(_Flag, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 1)
+THEN
+DB_NOOP(1);
+
+QRY
+QRY_ReallyShadowheart_KissPending()
+AND
+DB_ReallyShadowheart_RandomKisses(_Flag)
+AND
+GetFlag(_Flag, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 1)
+THEN
+DB_NOOP(1);
+
+// These two query check whether Tav and Shadowheart are both in camp, or both in the world
+QRY
+QRY_Tav_And_Shadowheart_Nearby((CHARACTER)_Tav)
+AND
+GetFlag((FLAG)CAMP_GLO_State_InCamp_161b7223-039d-4ebe-986f-1dcd9a66733f, (CHARACTER)_Tav, 1)
+AND
+GetFlag((FLAG)CAMP_GLO_State_InCamp_161b7223-039d-4ebe-986f-1dcd9a66733f, (CHARACTER)S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 1)
+THEN
+DB_NOOP(1);
+
+QRY
+QRY_Tav_And_Shadowheart_Nearby((CHARACTER)_Tav)
+AND
+GetFlag((FLAG)CAMP_GLO_State_InCamp_161b7223-039d-4ebe-986f-1dcd9a66733f, (CHARACTER)_Tav, 0)
+AND
+GetFlag((FLAG)CAMP_GLO_State_InCamp_161b7223-039d-4ebe-986f-1dcd9a66733f, (CHARACTER)S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0)
+THEN
+DB_NOOP(1);
+
+QRY
+QRY_ReallyShadowheart_IsActiveCompanion((CHARACTER)_Companion)
+AND
+IsTagged(_Companion, AVATAR_306b9b05-1057-4770-aa17-01af21acd650, 0)
+AND
+IsPartyMember(_Companion, 1, 1)
+AND
+IsDead(_Companion, 0)
+AND
+HasAppliedStatus(_Companion, "INCAPACITATED", 0)
+THEN
+DB_NOOP(1);
+
+
+//////////////////////////////////////////////////////////////////////////
+//
+// Procedures
+//
+//////////////////////////////////////////////////////////////////////////
+
+// Send all companions to camp
+PROC
+PROC_ReallyShadowheart_SendAllToCamp()
+AND
+DB_Players(_Companion)
+AND
+QRY_ReallyShadowheart_IsActiveCompanion(_Companion)
+THEN
+PROC_GLO_PartyMembers_Remove(_Companion, 1);
+
+
+// Drops approval rating to the given value. If rating is already lower, has no effect.
+PROC
+PROC_ReallyShadowheart_DropApprovalTo((CHARACTER)_RatingOwner, (CHARACTER)_Player, (INTEGER)_Rating)
+AND
+GetApprovalRating(_RatingOwner, _Player, _CurrentRating)
+AND
+_CurrentRating > _Rating
+AND
+IntegerSubtract(_Rating, _CurrentRating, _ChangeRating)
+AND
+ChangeApprovalRating(_RatingOwner, _Player, 0, _ChangeRating, _)
+THEN
+DB_NOOP(1);
+
+
+// Shows an exclamation mark over Shadowheart
+PROC
+PROC_ReallyShadowheart_ShowExclamation((STRING)_Tag)
+THEN
+PROC_ExclamationMark_Show(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _Tag);
+
+
+// Hides an exclamation mark over Shadowheart
+PROC
+PROC_ReallyShadowheart_HideExclamation((STRING)_Tag)
+THEN
+PROC_ExclamationMark_Hide(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _Tag);
+
+PROC
+PROC_ReallyShadowheart_InitDBRandomMorningKisses()
+AND
+NOT DB_ReallyShadowheart_RandomMorningKisses(_)
+THEN
+DB_ReallyShadowheart_RandomMorningKisses((FLAG)Shadowheart_Morning_Kiss_634e69d9-7ae4-4b62-8f5b-fe3c5b6690e6);
+DB_ReallyShadowheart_RandomMorningKisses((FLAG)Nothing1_00000000-0000-0000-0000-000000000001);
+DB_ReallyShadowheart_RandomMorningKisses((FLAG)Nothing2_00000000-0000-0000-0000-000000000002);
+DB_ReallyShadowheart_RandomMorningKisses((FLAG)Nothing3_00000000-0000-0000-0000-000000000003);
+
+PROC
+PROC_ReallyShadowheart_InitDBRandomMorningValidKisses()
+AND
+NOT DB_ReallyShadowheart_RandomMorningValidKisses(_)
+THEN
+DB_ReallyShadowheart_RandomMorningValidKisses((FLAG)Shadowheart_Morning_Kiss_634e69d9-7ae4-4b62-8f5b-fe3c5b6690e6);
+
+PROC
+PROC_ReallyShadowheart_InitDBRandomKisses()
+AND
+NOT DB_ReallyShadowheart_RandomKisses(_)
+THEN
+DB_ReallyShadowheart_RandomKisses((FLAG)Shadowheart_Kiss1_0f81b8e1-8553-45ba-95a6-d4c113798df8);
+DB_ReallyShadowheart_RandomKisses((FLAG)Shadowheart_Kiss2_bc7b6b94-f686-4f85-beb8-b248bc5b98f4);
+DB_ReallyShadowheart_RandomKisses((FLAG)Shadowheart_Kiss3_8c6a2843-23aa-4ec8-852a-849199f96bb1);
+DB_ReallyShadowheart_RandomKisses((FLAG)Shadowheart_Kiss4_a8602f0b-a938-43da-84f5-57e31279d3a7);
+DB_ReallyShadowheart_RandomKisses((FLAG)Shadowheart_Kiss5_22724bd2-4601-41d7-8237-e0c309e36a72);
+DB_ReallyShadowheart_RandomKisses((FLAG)Shadowheart_Kiss6_9fc10afa-147c-4f8e-b5a4-f20bcbaa6360);
+
+PROC
+PROC_ReallyShadowheart_InitDBKisses()
+AND
+NOT DB_ReallyShadowheart_Kisses(_)
+THEN
+DB_ReallyShadowheart_Kisses((FLAG)ORI_ShadowheartKiss_VersionA_f2781286-e51c-443f-b1a3-cea4ba95ccf9);
+DB_ReallyShadowheart_Kisses((FLAG)ORI_ShadowheartKiss_VersionB_815a0406-7c85-4107-b704-439320fb7f0b);
+DB_ReallyShadowheart_Kisses((FLAG)ORI_ShadowheartKiss_VersionC_c07bfea6-3d37-48f3-aefc-6eb1749b117f);
+DB_ReallyShadowheart_Kisses((FLAG)ORI_ShadowheartKiss_VersionD_db362653-5649-4f1d-bc43-32b85fd42c0e);
+DB_ReallyShadowheart_Kisses((FLAG)ORI_ShadowheartKiss_VersionE_ec79178f-2c18-4a71-b147-7b254439e5b2);
+DB_ReallyShadowheart_Kisses((FLAG)ORI_ShadowheartKiss_VersionF_321d447c-5298-4a5c-82de-f884ba4757d4);
+
+
+// Bootstrap procedure: schedule a kiss when a new game session starts
+PROC
+PROC_ReallyShadowheart_Bootstrap()
+AND
+GetFlag((FLAG)Shadowheart_Turned_Away_From_Shar_87c6c40a-87b5-4ffd-8d37-a5679258e7b0, NULL_00000000-0000-0000-0000-000000000000, 1)
+AND
+GetFlag(VISITEDREGION_INT_Main_A_a2e1a618-d211-484e-9389-6b37308b8da1, NULL_00000000-0000-0000-0000-000000000000, 1)
+AND
+GetFlag(GLO_CAMP_State_NightMode_fb53edc2-9a89-4ad2-af83-20b5fe425cdd, NULL_00000000-0000-0000-0000-000000000000, 0)
+AND
+QRY_ReallyShadowheart_Tav_And_Shadowheart_Are_Ok()
+AND
+QRY_ReallyShadowheart_Non_Origin_Shadowheart()
+THEN
+PROC_ReallyShadowheart_ScheduleKissEvent();
+
+
+// Starts the kiss timer
+PROC
+PROC_ReallyShadowheart_KissTimerLaunch((INTEGER)_MaxRandomDelay, (INTEGER)_MinTimeout)
+AND
+Random((INTEGER)_MaxRandomDelay, _Delay)
+AND
+IntegerSum((INTEGER)_MinTimeout, _Delay, _Timeout)
+THEN
+TimerCancel("ReallyShadowheart_Kiss_Timer");
+TimerLaunch("ReallyShadowheart_Kiss_Timer", _Timeout);
+
+
+// A set of procedures to schedule the next kiss event
+PROC
+PROC_ReallyShadowheart_ScheduleKissEvent()
+AND
+GetFlag(Shadowheart_Kissed_Tav_Ever_8ac70345-8c6e-4525-90ba-b143eeea39fb, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 1)
+AND
+GetFlag(Shadowheart_Kissed_Tav_Once_a77caba6-5a89-441e-bab5-2ac3aff2ac86, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 1)
+AND
+GetFlag(Shadowheart_Kissed_Tav_Twice_fdd41a4f-b4d1-4ce7-a7ab-0a916dc88f4c, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 1)
+AND
+GetFlag(Shadowheart_Kissed_Tav_Thrice_a30feef0-52d1-46dc-82b7-c7760e61b2f5, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 1)
+THEN
+//PROC_ReallyShadowheart_KissTimerLaunch(60000, 60000);
+PROC_ReallyShadowheart_KissTimerLaunch(360000, 7200000);
+
+
+PROC
+PROC_ReallyShadowheart_ScheduleKissEvent()
+AND
+GetFlag(Shadowheart_Kissed_Tav_Ever_8ac70345-8c6e-4525-90ba-b143eeea39fb, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 1)
+AND
+GetFlag(Shadowheart_Kissed_Tav_Once_a77caba6-5a89-441e-bab5-2ac3aff2ac86, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 1)
+AND
+GetFlag(Shadowheart_Kissed_Tav_Twice_fdd41a4f-b4d1-4ce7-a7ab-0a916dc88f4c, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 1)
+AND
+GetFlag(Shadowheart_Kissed_Tav_Thrice_a30feef0-52d1-46dc-82b7-c7760e61b2f5, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0)
+THEN
+//PROC_ReallyShadowheart_KissTimerLaunch(60000, 60000);
+PROC_ReallyShadowheart_KissTimerLaunch(3600000, 5400000);
+SetFlag(Shadowheart_Kissed_Tav_Thrice_a30feef0-52d1-46dc-82b7-c7760e61b2f5, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+
+
+PROC
+PROC_ReallyShadowheart_ScheduleKissEvent()
+AND
+GetFlag(Shadowheart_Kissed_Tav_Ever_8ac70345-8c6e-4525-90ba-b143eeea39fb, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 1)
+AND
+GetFlag(Shadowheart_Kissed_Tav_Once_a77caba6-5a89-441e-bab5-2ac3aff2ac86, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 1)
+AND
+GetFlag(Shadowheart_Kissed_Tav_Twice_fdd41a4f-b4d1-4ce7-a7ab-0a916dc88f4c, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0)
+AND
+GetFlag(Shadowheart_Kissed_Tav_Thrice_a30feef0-52d1-46dc-82b7-c7760e61b2f5, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0)
+THEN
+//PROC_ReallyShadowheart_KissTimerLaunch(60000, 60000);
+PROC_ReallyShadowheart_KissTimerLaunch(1800000, 3600000);
+SetFlag(Shadowheart_Kissed_Tav_Twice_fdd41a4f-b4d1-4ce7-a7ab-0a916dc88f4c, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+
+
+PROC
+PROC_ReallyShadowheart_ScheduleKissEvent()
+AND
+GetFlag(Shadowheart_Kissed_Tav_Ever_8ac70345-8c6e-4525-90ba-b143eeea39fb, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 1)
+AND
+GetFlag(Shadowheart_Kissed_Tav_Once_a77caba6-5a89-441e-bab5-2ac3aff2ac86, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0)
+AND
+GetFlag(Shadowheart_Kissed_Tav_Twice_fdd41a4f-b4d1-4ce7-a7ab-0a916dc88f4c, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0)
+AND
+GetFlag(Shadowheart_Kissed_Tav_Thrice_a30feef0-52d1-46dc-82b7-c7760e61b2f5, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0)
+THEN
+//PROC_ReallyShadowheart_KissTimerLaunch(60000, 60000);
+PROC_ReallyShadowheart_KissTimerLaunch(1800000, 900000);
+SetFlag(Shadowheart_Kissed_Tav_Once_a77caba6-5a89-441e-bab5-2ac3aff2ac86, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+
+
+PROC
+PROC_ReallyShadowheart_ScheduleKissEvent()
+AND
+GetFlag(Shadowheart_Kissed_Tav_Ever_8ac70345-8c6e-4525-90ba-b143eeea39fb, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0)
+AND
+GetFlag(Shadowheart_Kissed_Tav_Once_a77caba6-5a89-441e-bab5-2ac3aff2ac86, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0)
+AND
+GetFlag(Shadowheart_Kissed_Tav_Twice_fdd41a4f-b4d1-4ce7-a7ab-0a916dc88f4c, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0)
+AND
+GetFlag(Shadowheart_Kissed_Tav_Thrice_a30feef0-52d1-46dc-82b7-c7760e61b2f5, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0)
+THEN
+//PROC_ReallyShadowheart_KissTimerLaunch(60000, 60000);
+PROC_ReallyShadowheart_KissTimerLaunch(300000, 300000);
+SetFlag(Shadowheart_Kissed_Tav_Ever_8ac70345-8c6e-4525-90ba-b143eeea39fb, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+
+
+PROC
+PROC_ReallyShadowheart_ResetKissFlags()
+AND
+DB_ReallyShadowheart_RandomMorningValidKisses(_Flag)
+THEN
+ClearFlag(_Flag, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+
+
+PROC
+PROC_ReallyShadowheart_ResetKissFlags()
+AND
+DB_ReallyShadowheart_RandomKisses(_Flag)
+THEN
+ClearFlag(_Flag, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+
+
+// Starts the morning kiss
+PROC
+PROC_ReallyShadowheart_MorningKiss((FLAG)_Kiss)
+AND
+QRY_ReallyShadowheart_Tav_And_Shadowheart_Are_Ok()
+AND
+QRY_ReallyShadowheart_Non_Origin_Shadowheart()
+AND
+NOT QRY_ReallyShadowheart_DialogPending()
+THEN
+SetFlag(_Kiss, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+TimerCancel("ReallyShadowheart_Kiss_Timer");
+PROC_ReallyShadowheart_ShowExclamation("Shadowheart_Kiss");
+
+
+PROC
+PROC_ReallyShadowheart_MorningKiss()
+AND
+QRY_ReallyShadowheart_Tav_And_Shadowheart_Are_Ok()
+AND
+QRY_ReallyShadowheart_Non_Origin_Shadowheart()
+AND
+NOT QRY_ReallyShadowheart_DialogPending()
+AND
+QRY_GetRandom("DB_ReallyShadowheart_RandomMorningValidKisses", 1, "DB_ReallyShadowheart_RandomMorningKiss")
+AND
+DB_ReallyShadowheart_RandomMorningKiss((FLAG)_Kiss)
+AND
+DB_ReallyShadowheart_RandomMorningKisses((FLAG)_Kiss)
+THEN
+NOT DB_ReallyShadowheart_RandomMorningKiss(_Kiss);
+SetFlag(_Kiss, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+TimerCancel("ReallyShadowheart_Kiss_Timer");
+PROC_ReallyShadowheart_ShowExclamation("Shadowheart_Kiss");
+
+
+// Order is important! This one should go first.
+// Shadowheart will talk about something, and then ask for a kiss
+PROC
+PROC_ReallyShadowheart_AskForKiss()
+AND
+QRY_ReallyShadowheart_DialogPending()
+AND
+NOT QRY_ReallyShadowheart_KissPending()
+THEN
+DB_ReallyShadowheart_AskForKissPending(1);
+
+
+// Shadowheart will ask for a kiss
+PROC
+PROC_ReallyShadowheart_AskForKiss()
+AND
+NOT QRY_ReallyShadowheart_DialogPending()
+AND
+QRY_GetRandom("DB_ReallyShadowheart_RandomKisses", 1, "DB_ReallyShadowheart_RandomKiss")
+AND
+DB_ReallyShadowheart_RandomKiss((FLAG)_Kiss)
+AND
+DB_ReallyShadowheart_RandomKisses((FLAG)_Kiss)
+THEN
+NOT DB_ReallyShadowheart_RandomKiss(_Kiss);
+SetFlag(_Kiss, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+PROC_ReallyShadowheart_ShowExclamation("Shadowheart_Kiss");
+
+
+// Fix an issue: Parent Points global flag not set if Nightsong Points flag is set
+PROC
+PROC_ReallyShadowheart_FixParentPointsBug()
+AND
+DB_GlobalCounter("ORI_Shadowheart_ParentPoints", _Value)
+AND
+_Value == 2
+AND
+NOT DB_GlobalFlag((FLAG)ORI_Shadowheart_State_ParentPoints_HasEnoughPoints_1bbdd0b8-c2de-4b2f-8ce8-6740812deb59)
+THEN
+PROC_GlobalSetFlagAndCache((FLAG)ORI_Shadowheart_State_ParentPoints_HasEnoughPoints_1bbdd0b8-c2de-4b2f-8ce8-6740812deb59);
+
+
+// PROC hook
+PROC
+PROC_CounterIncreased("ORI_Shadowheart_ParentPoints", _Value)
+THEN
+PROC_ReallyShadowheart_FixParentPointsBug();
+
+
+// Fix: Skinny Dipping no longer requires Tav to ask about swimming and night orchids
+PROC
+PROC_ReallyShadowheart_FixSkinnyDippingKnowsPersonalInfo()
+AND
+DB_CampNight_Requirement((FLAG)NIGHT_Shadowheart_Skinnydipping_9f583304-0a1a-498c-acf9-3c8dcc30ee3d, (FLAG)ORI_Shadowheart_State_EnemyOfSharPath_055bbe0f-05f5-444b-a7e2-0f66edd2178c, (FLAG)ORI_Shadowheart_Knows_PersonalInfo_abbc836e-07f0-4951-bb7b-beac52d91b2a)
+THEN
+NOT DB_CampNight_Requirement((FLAG)NIGHT_Shadowheart_Skinnydipping_9f583304-0a1a-498c-acf9-3c8dcc30ee3d, (FLAG)ORI_Shadowheart_State_EnemyOfSharPath_055bbe0f-05f5-444b-a7e2-0f66edd2178c, (FLAG)ORI_Shadowheart_Knows_PersonalInfo_abbc836e-07f0-4951-bb7b-beac52d91b2a);
+
+
+PROC
+PROC_ReallyShadowheart_FixSkinnyDippingKnowsPersonalInfo()
+AND
+NOT DB_CampNight_Requirement((FLAG)NIGHT_Shadowheart_Skinnydipping_9f583304-0a1a-498c-acf9-3c8dcc30ee3d, (FLAG)ORI_Shadowheart_State_EnemyOfSharPath_055bbe0f-05f5-444b-a7e2-0f66edd2178c)
+THEN
+DB_CampNight_Requirement((FLAG)NIGHT_Shadowheart_Skinnydipping_9f583304-0a1a-498c-acf9-3c8dcc30ee3d, (FLAG)ORI_Shadowheart_State_EnemyOfSharPath_055bbe0f-05f5-444b-a7e2-0f66edd2178c);
+
+
+
+//////////////////////////////////////////////////////////////////////////
+//
+// Debug prodcedures
+//
+//////////////////////////////////////////////////////////////////////////
+
+// Debug ask for a kiss
+PROC
+PROC_ReallyShadowheart_DebugAskForKiss()
+THEN
+TimerCancel("ReallyShadowheart_Kiss_Timer");
+TimerLaunch("ReallyShadowheart_Kiss_Timer", 1000);
+
+
+// Debug ask for a morning kiss
+PROC
+PROC_ReallyShadowheart_DebugAskForMorningKiss()
+THEN
+PROC_ReallyShadowheart_MorningKiss();
+
+
+//////////////////////////////////////////////////////////////////////////
+//
+// Initialization prodcedures
+//
+//////////////////////////////////////////////////////////////////////////
+
+PROC
+PROC_ReallyShadowheart_Initialize()
+THEN
+PROC_ReallyShadowheart_InitDBRandomMorningKisses();
+PROC_ReallyShadowheart_InitDBRandomMorningValidKisses();
+PROC_ReallyShadowheart_InitDBRandomKisses();
+PROC_ReallyShadowheart_InitDBKisses();
+PROC_ReallyShadowheart_FixParentPointsBug();
+PROC_ReallyShadowheart_FixSkinnyDippingKnowsPersonalInfo();
+
+PROC
+PROC_ReallyShadowheart_Initialize()
+AND
+DB_Avatars(_Tav)
+AND
+GetFlag((FLAG)ORI_State_WasPartneredWithShadowheart_542e6cf4-bfd1-471d-b4b5-693d630376cb, _Tav, 1)
+AND
+DB_ReallyShadowheart_PartneredWithShadowheart(_Tav)
+THEN
+NOT DB_ReallyShadowheart_PartneredWithShadowheart(_Tav);
+
+PROC
+PROC_ReallyShadowheart_Initialize()
+AND
+DB_Avatars(_Tav)
+AND
+GetFlag((FLAG)ORI_State_PartneredWithShadowheart_3808ae35-ad4e-465b-800b-63d32b77211e, _Tav, 1)
+AND
+GetFlag((FLAG)ORI_State_WasPartneredWithShadowheart_542e6cf4-bfd1-471d-b4b5-693d630376cb, _Tav, 0)
+AND
+NOT DB_ReallyShadowheart_PartneredWithShadowheart(_Tav)
+THEN
+DB_ReallyShadowheart_PartneredWithShadowheart(_Tav);
+
+
+// Starts irregular behavior in camp
+PROC
+PROC_ReallyShadowheart_StartIrregularBehavior()
+AND
+NOT DB_ReallyShadowheart_IrregularBehavior(1)
+THEN
+DB_ReallyShadowheart_IrregularBehavior(1);
+PROC_GlobalSetFlagAndCache(ORI_Shadowheart_State_IrregularBehaviour_a1e4a324-4c58-48fb-b08e-d538fec45af8);
+PlayLoopingAnimation(
+	S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679,
+	CUST_Dejected_01_Start_55dac046-b8d2-4681-906d-f263c263071c,
+	CUST_Dejected_01_Loop_487b6cb3-1ca3-4041-acba-bcac93cfcbe5,
+	CUST_Dejected_01_End_c49344c6-72ce-460a-b55c-94708983e6be,
+	CUST_Dejected_01_Loop_487b6cb3-1ca3-4041-acba-bcac93cfcbe5,
+	CUST_Dejected_01_Loop_487b6cb3-1ca3-4041-acba-bcac93cfcbe5,
+	CUST_Dejected_01_Loop_487b6cb3-1ca3-4041-acba-bcac93cfcbe5,
+	CUST_Dejected_01_Loop_487b6cb3-1ca3-4041-acba-bcac93cfcbe5
+);
+
+
+// Ends irregular behavior in camp
+PROC
+PROC_ReallyShadowheart_StopIrregularBehavior()
+AND
+DB_ReallyShadowheart_IrregularBehavior(1)
+THEN
+NOT DB_ReallyShadowheart_IrregularBehavior(1);
+PROC_GlobalClearFlagAndCache(ORI_Shadowheart_State_IrregularBehaviour_a1e4a324-4c58-48fb-b08e-d538fec45af8);
+PlayAnimation(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, CUST_Dejected_01_End_c49344c6-72ce-460a-b55c-94708983e6be);
+
+
+//////////////////////////////////////////////////////////////////////////
+//
+// Objects in inventory set flags
+//
+//////////////////////////////////////////////////////////////////////////
+
+// Force re-evaluation of all objects-in-inventory flags at session start
+PROC
+PROC_ReallyShadowheart_GameStarted()
+AND
+DB_Avatars(_Tav)
+THEN
+PROC_ReallyShadowheart_InventoryChanged(_Tav);
+
+// Noblestalk
+PROC
+PROC_ReallyShadowheart_InventoryChanged((CHARACTER)_Tav)
+AND
+TemplateIsInInventory(Noblestalk_48c679c1-b713-4d2f-9bba-1c43ed654404, _Tav, _Count)
+AND
+_Count > 0
+THEN
+SetFlag(UND_MushroomHunter_State_HasMushroom_7b86b816-a97c-4500-9398-ef4c7f344e0b, _Tav, 0, 1);
+
+PROC
+PROC_ReallyShadowheart_InventoryChanged((CHARACTER)_Tav)
+AND
+TemplateIsInInventory(Noblestalk_48c679c1-b713-4d2f-9bba-1c43ed654404, _Tav, 0)
+THEN
+ClearFlag(UND_MushroomHunter_State_HasMushroom_7b86b816-a97c-4500-9398-ef4c7f344e0b, _Tav, 0, 1);
+
+// Unclaimed book 1
+PROC
+PROC_ReallyShadowheart_InventoryChanged((CHARACTER)_Tav)
+AND
+TemplateIsInInventory(BOOK_GEN_Planes_CityofJudgment_e8183f9e-217a-49a9-96ae-b61329e78a5f, _Tav, _Count)
+AND
+_Count > 0
+THEN
+SetFlag(Tav_Has_Unclaimed_Book_For_Shadowheart_cd740fb0-f237-4d4f-be72-713446dce67d, _Tav, 0, 1);
+
+// Books were removed
+PROC
+PROC_ReallyShadowheart_InventoryChanged((CHARACTER)_Tav)
+AND
+TemplateIsInInventory(BOOK_GEN_Planes_CityofJudgment_e8183f9e-217a-49a9-96ae-b61329e78a5f, _Tav, 0)
+THEN
+ClearFlag(Tav_Has_Unclaimed_Book_For_Shadowheart_cd740fb0-f237-4d4f-be72-713446dce67d, _Tav, 0, 1);
+
+// DJ plea book
+PROC
+PROC_ReallyShadowheart_InventoryChanged((CHARACTER)_Tav)
+AND
+IsInInventoryOf(S_TWN_RepentantDarkJusticiarDiary_558b6634-5bb7-4176-bd24-62ad4ef6aa41, _Tav, 1)
+THEN
+SetFlag(Tav_Has_DJ_Book_For_Shadowheart_4e6c3976-e792-4805-9a20-750a50654734, _Tav, 0, 1);
+
+// DJ plea book was removed
+PROC
+PROC_ReallyShadowheart_InventoryChanged((CHARACTER)_Tav)
+AND
+IsInInventoryOf(S_TWN_RepentantDarkJusticiarDiary_558b6634-5bb7-4176-bd24-62ad4ef6aa41, _Tav, 0)
+THEN
+ClearFlag(Tav_Has_DJ_Book_For_Shadowheart_4e6c3976-e792-4805-9a20-750a50654734, _Tav, 0, 1);
+
+// Selunite prayer book
+PROC
+PROC_ReallyShadowheart_InventoryChanged((CHARACTER)_Tav)
+AND
+TemplateIsInInventory(BOOK_UNI_TWN_SelunePrayerBook_71ad78ed-c03b-4304-8d40-efc10adba0fb, _Tav, _Count)
+AND
+_Count > 0
+THEN
+SetFlag(Tav_Has_Selune_Book_For_Shadowheart_54d663c5-17a9-46df-b959-2818ae4208ca, _Tav, 0, 1);
+
+// Selunite prayer books were removed 71ad78ed-c03b-4304-8d40-efc10adba0fb
+PROC
+PROC_ReallyShadowheart_InventoryChanged((CHARACTER)_Tav)
+AND
+TemplateIsInInventory(BOOK_UNI_TWN_SelunePrayerBook_71ad78ed-c03b-4304-8d40-efc10adba0fb, _Tav, 0)
+THEN
+ClearFlag(Tav_Has_Selune_Book_For_Shadowheart_54d663c5-17a9-46df-b959-2818ae4208ca, _Tav, 0, 1);
+
+
+//////////////////////////////////////////////////////////////////////////
+//
+// Procedural event handlers
+//
+//////////////////////////////////////////////////////////////////////////
+
+
+// Nigth time in camp:
+// 1) prevent small romace dialogs
+// 2) clear some flags
+PROC
+PROC_ReallyShadowheart_NightInCamp()
+THEN
+TimerCancel("ReallyShadowheart_Kiss_Timer");
+PROC_ReallyShadowheart_HideExclamation("Shadowheart_Kiss");
+PROC_ReallyShadowheart_ResetKissFlags();
+ClearFlag((FLAG)Shadowheart_More_Sandcastles_Replied_8942cfa4-550f-482b-8b27-56625dee1c15, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+
+
+// Night in camp: initiate a hard conversation about their relationship
+// Context: Tav did something really bad
+PROC
+PROC_ReallyShadowheart_NightInCamp_CRD()
+AND
+NOT QRY_ReallyShadowheart_DialogPending()
+AND
+DB_Avatars(_Tav)
+AND
+DB_ReallyShadowheart_PartneredWithShadowheart(_Tav)
+AND
+GetFlag((FLAG)Shadowheart_Has_Doubts_About_Tav_2774e4ec-e92d-41c1-a4b0-c6ddc84417da, _Tav, 1)
+AND
+GetFlag((FLAG)Shadowheart_Rejects_Proposal_c8f7b189-ea19-4a74-b581-305abdc9eb19, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0)
+THEN
+PROC_ReallyShadowheart_ShowExclamation("Shadowheart_Doubts");
+
+
+// After the long rest: reset flags
+// Long rest handler
+PROC
+PROC_ReallyShadowheart_LongRestFinished()
+THEN
+ClearFlag((FLAG)Shadowheart_After_Parents_Crisis_6f8e2b2b-5ffa-4e83-adf7-d80a8e36a8d8, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+ClearFlag((FLAG)Shadowheart_Hesitated_To_Ask_d8d602d9-d2ab-4a8e-8ffb-c465fd52ce18, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+ClearFlag((FLAG)Tav_Already_Prayed_With_Her_Today_a2a96abb-1b40-42fe-9f8b-6685eb173c63, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+ClearFlag((FLAG)Shadowheart_Kiss_Event_c19efced-0896-451a-ab8c-671b4df21d30, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+ClearFlag((FLAG)Shadowheart_Kissed_Tav_Once_a77caba6-5a89-441e-bab5-2ac3aff2ac86, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+ClearFlag((FLAG)Shadowheart_Kissed_Tav_Twice_fdd41a4f-b4d1-4ce7-a7ab-0a916dc88f4c, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+ClearFlag((FLAG)Shadowheart_Kissed_Tav_Thrice_a30feef0-52d1-46dc-82b7-c7760e61b2f5, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+ClearFlag((FLAG)DJ_Shadowheart_Kissed_Tav_a7fe7750-7d7c-480f-b3c4-de0bd569e609, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+ClearFlag((FLAG)Tav_Said_Love_You_ea47a913-77a8-4a7e-bdfb-a13880f25107, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+
+
+// This ensures that there will be at least 1 long rest before Tav & Shadowheart do more sandcastles
+PROC
+PROC_ReallyShadowheart_LongRestFinished()
+AND
+GetFlag((FLAG)Shadowheart_More_Sandcastles_2f2779cf-4a7b-44ef-8458-d29b48578740, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 1)
+THEN
+SetFlag(Shadowheart_LongRest_Before_More_Sandcastles_fec1c849-c9b6-47ab-9dd4-84acff4cd01a, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+
+
+// This procedure is called just before proceeding to the end game
+PROC
+PROC_ReallyShadowheart_ProceedingToEndGame()
+THEN
+SetFlag((FLAG)Shadowheart_Stop_PDA_Trigger_67edac2b-7bdf-4ace-a7fe-94854825e2df, (CHARACTER)S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+
+
+// This prevents the creepy guy from being an ally if he was kicked out of the party
+PROC
+PROC_ReallyShadowheart_ProceedingToEndGame()
+AND
+NOT DB_PartOfTheTeam((CHARACTER)S_GLO_Halsin_7628bc0e-52b8-42a7-856a-13a6fd413323)
+AND
+GetFlag((FLAG)GLO_LiftingTheCurse_State_BreathHasBeenRestored_2113b54e-a140-4aa0-97ac-219fa7b7d038, NULL_00000000-0000-0000-0000-000000000000, 1)
+THEN
+PROC_GlobalClearFlagAndCache(GLO_LiftingTheCurse_State_BreathHasBeenRestored_2113b54e-a140-4aa0-97ac-219fa7b7d038);
+
+
+// Check Shadowheart's approval before going to the morphic pool. If it's below 80, she won't marry Tav.
+// This is an add-on for the existing procedure.
+PROC
+PROC_ReallyShadowheart_ProceedingToEndGame()
+AND
+DB_ReallyShadowheart_PartneredWithShadowheart(_Tav)
+AND
+GetApprovalRating((CHARACTER)S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _Tav, _Approval)
+AND
+_Approval < 80
+THEN
+SetFlag((FLAG)Shadowheart_Rejects_Proposal_c8f7b189-ea19-4a74-b581-305abdc9eb19, (CHARACTER)S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+
+
+//////////////////////////////////////////////////////////////////////////
+//
+// Procedural hooks
+//
+//////////////////////////////////////////////////////////////////////////
+
+
+// Stop PDAs when party proceeds to the morphic pool.
+// This is an add-on for the existing procedure.
+PROC
+PROC_END_EmperorPreludeCave_ResetBoatWithoutStonesFlags()
+THEN
+PROC_ReallyShadowheart_ProceedingToEndGame();
+
+
+//////////////////////////////////////////////////////////////////////////
+//
+// Event handlers
+//
+//////////////////////////////////////////////////////////////////////////
+
+// Initialize stuff and apply bugfixes when a new game session is started
+PROC
+PROC_ReallyShadowheart_GameStarted()
+THEN
+PROC_ReallyShadowheart_Initialize();
+TimerLaunch("ReallyShadowheart_CampGreeting_Prep", 500);
+
+
+// Schedule a kiss on save game loaded
+PROC
+PROC_ReallyShadowheart_GameStarted()
+THEN
+TimerLaunch("ReallyShadowheart_Bootstrap", 1200);
+
+IF
+TimerFinished("ReallyShadowheart_Bootstrap")
+THEN
+PROC_ReallyShadowheart_Bootstrap();
+
+
+// Clear stale kiss event flag on game load (there was a bug that left this flag set)
+PROC
+PROC_ReallyShadowheart_GameStarted()
+THEN
+ClearFlag((FLAG)Shadowheart_Kiss_Event_c19efced-0896-451a-ab8c-671b4df21d30, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+
+
+// If Shadowheart breaks up with Tav, they don't sleep together 
+IF
+FlagSet(ORI_State_WasPartneredWithShadowheart_542e6cf4-bfd1-471d-b4b5-693d630376cb, _Player, _)
+THEN
+NOT DB_ReallyShadowheart_PartneredWithShadowheart((CHARACTER)_Player);
+ClearFlag((FLAG)Shadowheart_Tav_Sleep_Together_0187f803-6b3c-4249-b5a8-0e968306978b, _Player, 0, 1);
+TimerCancel("ReallyShadowheart_Kiss_Timer");
+PROC_ReallyShadowheart_ResetKissFlags();
+
+
+// Mirror tracker for Tav and Shadowheart exclusive relationship
+IF
+FlagSet((FLAG)ORI_State_PartneredWithShadowheart_3808ae35-ad4e-465b-800b-63d32b77211e, _Player, _)
+AND
+NOT DB_ReallyShadowheart_PartneredWithShadowheart((CHARACTER)_Player)
+THEN
+DB_ReallyShadowheart_PartneredWithShadowheart(_Player);
+
+
+// Night time in camp
+// Watch out for the interactions with pets
+// The flag is flipped occasionally, and this may reset the morning kiss [!]
+IF
+FlagSet((FLAG)GLO_CAMP_State_NightMode_fb53edc2-9a89-4ad2-af83-20b5fe425cdd, _, _)
+AND
+NOT DB_ReallyShadowheart_StateIsEvolving(1)
+THEN
+PROC_ReallyShadowheart_NightInCamp();
+TimerLaunch("ReallyShadowheart_NightInCamp_CRD", 1000);
+
+
+// Delay custom CRDs to avoid breaking the game flow
+IF
+TimerFinished("ReallyShadowheart_NightInCamp_CRD")
+THEN
+PROC_ReallyShadowheart_NightInCamp_CRD();
+
+
+// Long rest handler
+IF
+LongRestFinished()
+THEN
+PROC_ReallyShadowheart_LongRestFinished();
+
+
+// If Tav cheated on Shadowheart, she had a sleepless night thinking about that.
+// This should precede scheduling of random/morning kisses.
+PROC
+PROC_ReallyShadowheart_LongRestFinished()
+AND
+GetFlag(GLO_Origin_PartOfTheTeam_Shadowheart_7f9ac9e8-1e8d-4bf8-8716-68215f0f066e, NULL_00000000-0000-0000-0000-000000000000, 1)
+AND
+DB_ReallyShadowheart_PartneredWithShadowheart(_Tav)
+AND
+GetFlag((FLAG)Cheated_On_Shadowheart_94181834-3277-492b-b223-11309c7bd90c, _Tav, 1)
+THEN
+SetFlag((FLAG)Shadowheart_Has_Doubts_About_Tav_2774e4ec-e92d-41c1-a4b0-c6ddc84417da, _Tav, 0, 1);
+
+
+// Clear any pending ask-for-kiss'es
+PROC
+PROC_ReallyShadowheart_LongRestFinished()
+AND
+DB_ReallyShadowheart_AskForKissPending(_State)
+THEN
+NOT DB_ReallyShadowheart_AskForKissPending(_State);
+
+
+// When Shadowheart finishes a long rest, schedule the next kiss event.
+PROC
+PROC_ReallyShadowheart_LongRestFinished()
+AND
+DB_ReallyShadowheart_PartneredWithShadowheart(_Tav)
+AND
+GetFlag(GLO_Origin_PartOfTheTeam_Shadowheart_7f9ac9e8-1e8d-4bf8-8716-68215f0f066e, NULL_00000000-0000-0000-0000-000000000000, 1)
+AND
+GetFlag(Shadowheart_Stop_PDA_Trigger_67edac2b-7bdf-4ace-a7fe-94854825e2df, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0)
+AND
+GetFlag((FLAG)Shadowheart_Post_DJ_Romance_bda7f5e9-6ea6-49ba-848a-d2f6aebdeb3e, _Tav, 0)
+AND
+GetFlag(Shadowheart_Turned_Away_From_Shar_87c6c40a-87b5-4ffd-8d37-a5679258e7b0, NULL_00000000-0000-0000-0000-000000000000, 1)
+AND
+GetFlag(VISITEDREGION_INT_Main_A_a2e1a618-d211-484e-9389-6b37308b8da1, NULL_00000000-0000-0000-0000-000000000000, 1)
+AND
+QRY_ReallyShadowheart_Tav_And_Shadowheart_Are_Ok()
+AND
+QRY_ReallyShadowheart_Non_Origin_Shadowheart()
+THEN
+PROC_ReallyShadowheart_ScheduleKissEvent();
+
+
+// After a long rest, in the morning, trigger a "kiss" relationship dialog
+PROC
+PROC_ReallyShadowheart_LongRestFinished()
+AND
+GetFlag(GLO_Origin_PartOfTheTeam_Shadowheart_7f9ac9e8-1e8d-4bf8-8716-68215f0f066e, NULL_00000000-0000-0000-0000-000000000000, 1)
+AND
+DB_ReallyShadowheart_PartneredWithShadowheart(_Tav)
+AND
+GetFlag(Shadowheart_Stop_PDA_Trigger_67edac2b-7bdf-4ace-a7fe-94854825e2df, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0)
+AND
+GetFlag(Shadowheart_Post_DJ_Romance_bda7f5e9-6ea6-49ba-848a-d2f6aebdeb3e, _Tav, 0)
+AND
+GetFlag(Shadowheart_Turned_Away_From_Shar_87c6c40a-87b5-4ffd-8d37-a5679258e7b0, NULL_00000000-0000-0000-0000-000000000000, 1)
+AND
+GetFlag(VISITEDREGION_BGO_Main_A_40f06537-814f-4796-b012-5ffaa648a8d9, NULL_00000000-0000-0000-0000-000000000000, 1)
+AND
+QRY_GetRandom("DB_ReallyShadowheart_RandomMorningKisses", 1, "DB_ReallyShadowheart_RandomMorningKiss")
+AND
+DB_ReallyShadowheart_RandomMorningKiss((FLAG)_Kiss)
+AND
+DB_ReallyShadowheart_RandomMorningValidKisses((FLAG)_Kiss)
+AND
+DB_ReallyShadowheart_RandomMorningKisses((FLAG)_Kiss)
+THEN
+NOT DB_ReallyShadowheart_RandomMorningKiss(_Kiss);
+PROC_ReallyShadowheart_MorningKiss(_Kiss);
+
+
+// Start a kiss timer right after "now and always" on DJ path
+IF
+FlagCleared(Shadowheart_Post_DJ_Romance_bda7f5e9-6ea6-49ba-848a-d2f6aebdeb3e, _Tav, _)
+AND
+DB_ReallyShadowheart_PartneredWithShadowheart((CHARACTER)_Tav)
+AND
+GetFlag(Shadowheart_Stop_PDA_Trigger_67edac2b-7bdf-4ace-a7fe-94854825e2df, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0)
+AND
+GetFlag((FLAG)Shadowheart_Post_DJ_Romance_bda7f5e9-6ea6-49ba-848a-d2f6aebdeb3e, _Tav, 0)
+AND
+GetFlag(Shadowheart_Turned_Away_From_Shar_87c6c40a-87b5-4ffd-8d37-a5679258e7b0, NULL_00000000-0000-0000-0000-000000000000, 1)
+AND
+GetFlag(VISITEDREGION_INT_Main_A_a2e1a618-d211-484e-9389-6b37308b8da1, NULL_00000000-0000-0000-0000-000000000000, 1)
+AND
+QRY_ReallyShadowheart_Tav_And_Shadowheart_Are_Ok()
+AND
+QRY_ReallyShadowheart_Non_Origin_Shadowheart()
+THEN
+PROC_ReallyShadowheart_ScheduleKissEvent();
+
+
+// When this flag is set, stop small romance conversations
+IF
+FlagSet(Shadowheart_Stop_PDA_Trigger_67edac2b-7bdf-4ace-a7fe-94854825e2df, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _)
+THEN
+TimerCancel("ReallyShadowheart_Kiss_Timer");
+PROC_ReallyShadowheart_HideExclamation("Shadowheart_Kiss");
+PROC_ReallyShadowheart_ResetKissFlags();
+
+
+// Trigger a small romance conversation between Shadowheart and Tav/Durge
+IF
+TimerFinished("ReallyShadowheart_Kiss_Timer")
+AND
+GetFlag(Shadowheart_Stop_PDA_Trigger_67edac2b-7bdf-4ace-a7fe-94854825e2df, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0)
+AND
+QRY_ReallyShadowheart_Tav_And_Shadowheart_Are_Ok()
+AND
+QRY_ReallyShadowheart_Non_Origin_Shadowheart()
+AND
+NOT QRY_ReallyShadowheart_KissPending()
+THEN
+PROC_ReallyShadowheart_AskForKiss();
+
+
+// Shadowheart has something to discuss; tag is cleared when dialog starts
+// when dialog ends, trigger the ask for kiss
+IF
+TagCleared(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, HAS_EXCLAMATION_DIALOG_e45ea222-a86f-4e00-a1ca-98d8b258b1ce)
+AND
+DB_ReallyShadowheart_AskForKissPending(1)
+THEN
+NOT DB_ReallyShadowheart_AskForKissPending(1);
+DB_ReallyShadowheart_AskForKissPending(2);
+
+IF
+DialogEnded(_Resource, _)
+AND
+DialogIsAutomated(_Resource, 0)
+AND
+DB_ReallyShadowheart_AskForKissPending(2)
+THEN
+NOT DB_ReallyShadowheart_AskForKissPending(2);
+PROC_ReallyShadowheart_KissTimerLaunch(2000, 2000);
+
+
+// Hide the exclamation mark if Tav speaks to Shadowheart
+IF
+DialogStarted(ShadowHeart_InParty_95ca3833-09d0-5772-b16a-c7a5e9208fe5, _)
+THEN
+PROC_ReallyShadowheart_HideExclamation("Shadowheart_Kiss");
+PROC_ReallyShadowheart_HideExclamation("Shadowheart_Breakup");
+PROC_ReallyShadowheart_HideExclamation("Shadowheart_Doubts");
+
+// Clean-up after the morning kiss
+IF
+UserCharacterLongRested((CHARACTER)S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _)
+AND
+DB_ReallyShadowheart_RandomMorningKiss(_Kiss)
+THEN
+NOT DB_ReallyShadowheart_RandomMorningKiss(_Kiss);
+
+
+// If Tav kisses Shadowheart, schedule the next kiss
+IF
+FlagSet(Shadowheart_Kiss_Event_c19efced-0896-451a-ab8c-671b4df21d30, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _)
+AND
+GetFlag(Shadowheart_Turned_Away_From_Shar_87c6c40a-87b5-4ffd-8d37-a5679258e7b0, NULL_00000000-0000-0000-0000-000000000000, 1)
+AND
+GetFlag(VISITEDREGION_INT_Main_A_a2e1a618-d211-484e-9389-6b37308b8da1, NULL_00000000-0000-0000-0000-000000000000, 1)
+AND
+QRY_ReallyShadowheart_Tav_And_Shadowheart_Are_Ok()
+AND
+QRY_ReallyShadowheart_Non_Origin_Shadowheart()
+THEN
+ClearFlag(Shadowheart_Kiss_Event_c19efced-0896-451a-ab8c-671b4df21d30, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+PROC_ReallyShadowheart_ScheduleKissEvent();
+
+
+// Clear Tav_Noticed_Shadowheart_Hesitated_To_Ask when dialog ends
+IF
+DialogEnded(ShadowHeart_InParty_95ca3833-09d0-5772-b16a-c7a5e9208fe5, _)
+THEN
+ClearFlag(Tav_Noticed_Shadowheart_Hesitated_To_Ask_7b7c0c83-d397-42c5-b0bd-847b1f28cce1, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+
+
+// Agreeing to sleep with the druid equates to cheating
+IF
+FlagSet(CAMP_Halsin_CRD_Romance_CheckWithExistingPartner_b523a2ba-8abf-4116-a5c1-636c77920ca3, _Player, _)
+AND
+DB_ReallyShadowheart_PartneredWithShadowheart((CHARACTER)_Player)
+THEN
+SetFlag(Cheated_On_Shadowheart_94181834-3277-492b-b223-11309c7bd90c, _Player, 0, 1);
+SetFlag(Shadowheart_Lost_Faith_In_Tav_bff18cc2-e633-40c9-baa4-34868cb8b0f9, _Player, 0, 1);
+
+
+// Story flag that indicates Shadowheart was hurt by the shadow curse
+IF
+StatusApplied(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, "SCL_SHADOW_CURSE", _, _)
+THEN
+SetFlag(Shadowheart_Shadow_Cursed_a2a44d74-eb8d-4d22-bc14-ddf9d482aed9, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+
+
+// The following triggers "Inventory changed" events
+IF
+TemplateAddedTo(_, _, _InventoryHolder, _)
+AND
+DB_Avatars((CHARACTER)_InventoryHolder)
+THEN
+TimerCancel("AvatarInventoryChange");
+TimerLaunch("AvatarInventoryChange", 500);
+
+IF
+TemplateRemovedFrom(_, _, _InventoryHolder)
+AND
+DB_Avatars((CHARACTER)_InventoryHolder)
+THEN
+TimerCancel("AvatarInventoryChange");
+TimerLaunch("AvatarInventoryChange", 500);
+
+IF
+TimerFinished("AvatarInventoryChange")
+AND
+DB_Avatars(_Tav)
+THEN
+PROC_ReallyShadowheart_InventoryChanged(_Tav);
+
+
+// Fix an issue: trigger the relationship dialog in the night orchid hideout
+IF
+VoiceBarkEnded((VOICEBARKRESOURCE)LOW_SharGrotto_VB_FoundHideOut_62043e30-4a81-62e2-c9db-ea950ce747de, _)
+THEN
+PROC_RelationshipDialog((CHARACTER)S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, (DIALOGRESOURCE)ShadowHeart_InParty_95ca3833-09d0-5772-b16a-c7a5e9208fe5, (CHARACTER)S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679);
+
+
+// 50% chance of the alternative sleep cutscene
+IF
+LongRestStarted()
+AND
+DB_Avatars(_Tav)
+THEN
+ClearFlag(Alternative_Night_Sleep_Scene_e45c72b0-3f0a-45e0-adae-956b271eefd0, _Tav, 0, 1);
+
+IF
+LongRestStarted()
+AND
+DB_Avatars(_Tav)
+AND
+Random(10, _Rnd)
+AND
+_Rnd > 4
+THEN
+SetFlag(Alternative_Night_Sleep_Scene_e45c72b0-3f0a-45e0-adae-956b271eefd0, _Tav, 0, 1);
+
+// Arnell and Emmeline Hallowleaf are long resting in camp
+IF
+LongRestStarted()
+AND
+GetFlag((FLAG)NIGHT_Shadowheart_DaughterTears_f9b1fa94-deef-4927-ad7d-3e1b0c393c13, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 1)
+THEN
+PROC_GlobalSetFlagAndCache(Parents_Long_Rested_0960e0d7-c080-4c22-aa26-8bbe551a7044);
+
+
+// Durge knocks out the creep
+IF
+FlagSet((FLAG)FuckingCreep_Knocked_Out_721f7a51-c724-4a5b-86db-58940d525601, _Tav, _)
+THEN
+PROC_ReallyShadowheart_DropApprovalTo((CHARACTER)S_Player_FuckingCreep_7628bc0e-52b8-42a7-856a-13a6fd413323, (CHARACTER)_Tav, -45);
+ApplyStatus(S_Player_FuckingCreep_7628bc0e-52b8-42a7-856a-13a6fd413323, "KNOCKED_OUT", -1.0, 1);
+ApplyStatus(S_Player_FuckingCreep_7628bc0e-52b8-42a7-856a-13a6fd413323, "INCAPACITATED", -1.0, 1);
+DetachFromPartyGroup(S_Player_FuckingCreep_7628bc0e-52b8-42a7-856a-13a6fd413323);
+
+
+// Tav kicks halsin's ass, this triggers a conversation with Shadowheart
+IF
+DialogEnded(_Resource, _)
+AND
+DialogIsAutomated(_Resource, 0)
+AND
+DB_ReallyShadowheart_PartneredWithShadowheart(_Tav)
+AND
+GetFlag((FLAG)Halsins_Ass_Kicked_c52fbf93-d839-4660-92f7-205c7d7004fa, _Tav, 1)
+AND
+QRY_Tav_And_Shadowheart_Nearby(_Tav)
+AND
+QRY_StartDialog_Fixed((DIALOGRESOURCE)ShadowHeart_InParty_95ca3833-09d0-5772-b16a-c7a5e9208fe5, (CHARACTER)S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _Tav)
+THEN
+DB_NOOP(1);
+
+
+// 30% chance that Shadowheart will use "Every day is an adventure" greeting.
+// Set the global flag.
+IF
+DialogEnded((DIALOGRESOURCE)ReallyShadowheart_Shadowheart_InParty_95ca3833-09d0-5772-b16a-c7a5e9208fe5, _)
+AND
+DB_ReallyShadowheart_PartneredWithShadowheart(_Tav)
+AND
+IsTagged(_Tav, (TAG)FEMALE_3806477c-65a7-4100-9f92-be4c12c4fa4f, 1)
+AND
+Random(10, _RandomNum)
+AND
+_RandomNum < 4
+THEN
+PROC_GlobalSetFlagAndCache((FLAG)Shadowheart_FemTav_Greeting1_47eff024-f577-495a-a698-c9e13a7e228b);
+
+
+// Kisses
+// Before choosing a kiss, clean up all the flags
+IF
+FlagSet((FLAG)ORI_ShadowheartKiss_StartRandom_7495e78c-9e70-4ea9-95eb-17fde7f94b7c, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _)
+AND
+DB_ReallyShadowheart_Kisses(_KissFlag)
+THEN
+ClearFlag(_KissFlag, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+
+// Choose a kiss
+IF
+FlagSet((FLAG)ORI_ShadowheartKiss_StartRandom_7495e78c-9e70-4ea9-95eb-17fde7f94b7c, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _)
+AND
+QRY_GetRandom("DB_ReallyShadowheart_Kisses", 1, "DB_ReallyShadowheart_Kiss")
+AND
+DB_ReallyShadowheart_Kiss((FLAG)_KissFlag)
+AND
+DB_ReallyShadowheart_Kisses((FLAG)_KissFlag)
+THEN
+NOT DB_ReallyShadowheart_Kiss(_KissFlag);
+SetFlag(_KissFlag, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+ClearFlag(ORI_ShadowheartKiss_StartRandom_7495e78c-9e70-4ea9-95eb-17fde7f94b7c, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+
+
+// Loot Viconia's stuff
+IF
+FlagSet(Loot_Viconias_Stuff_550ff254-7218-4e11-9699-17d837da43f8, _Player, _)
+THEN
+MoveAllLootableItemsTo(S_LOW_Viconia_b1ea974d-96fb-47ca-b6d9-9c85fcb69313, _Player, 1, 1, 1, 0);
+
+//////////////////////////////////////////////////////////////////////////
+//
+// Approval rating events
+//
+//////////////////////////////////////////////////////////////////////////
+
+
+// Set approval rating of this player to 35
+IF
+FlagSet(Shadowheart_Approval_Set_To_35_a562c158-cb0c-40a9-9f34-44f76bfdfbf6, (CHARACTER)_Player, _)
+AND
+IsTagged(_Player, AVATAR_306b9b05-1057-4770-aa17-01af21acd650, 1)
+THEN
+PROC_ReallyShadowheart_DropApprovalTo(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _Player, 35);
+
+
+// Set approval rating of this player to 0
+IF
+FlagSet(Shadowheart_Approval_Set_To_Zero_add81fd0-0641-45d3-8020-29098ccc22d7, (CHARACTER)_Player, _)
+AND
+IsTagged(_Player, AVATAR_306b9b05-1057-4770-aa17-01af21acd650, 1)
+THEN
+PROC_ReallyShadowheart_DropApprovalTo(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _Player, 0);
+
+
+// Set approval rating of this player to -19
+IF
+FlagSet(Shadowheart_Approval_Set_To_Neutral_42a1da52-ccf5-46a0-954d-8f1c53dd20b6, (CHARACTER)_Player, _)
+AND
+IsTagged(_Player, AVATAR_306b9b05-1057-4770-aa17-01af21acd650, 1)
+THEN
+PROC_ReallyShadowheart_DropApprovalTo(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _Player, -19);
+
+
+// Set approval rating of this player to -25
+IF
+FlagSet(Shadowheart_Approval_Set_To_Low_2701e07a-73a2-4b96-9951-9080555f3f8f, (CHARACTER)_Player, _)
+AND
+IsTagged(_Player, AVATAR_306b9b05-1057-4770-aa17-01af21acd650, 1)
+THEN
+PROC_ReallyShadowheart_DropApprovalTo(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _Player, -25);
+
+
+// Set approval rating of this player to -40
+IF
+FlagSet(Shadowheart_Approval_Set_To_Very_Low_c80bad74-7669-4989-a912-106fd2ed4cd9, (CHARACTER)_Player, _)
+AND
+IsTagged(_Player, AVATAR_306b9b05-1057-4770-aa17-01af21acd650, 1)
+THEN
+PROC_ReallyShadowheart_DropApprovalTo(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _Player, -40);
+
+
+//////////////////////////////////////////////////////////////////////////
+//
+// Camp events
+//
+//////////////////////////////////////////////////////////////////////////
+
+// Show exclamation mark when Shadowheart is breaking up with Tav
+IF
+FlagSet((FLAG)Shadowheart_Breakup_Notification_Start_d20cc281-6ed6-4e9b-bad5-28d403a2b0af, _, _)
+THEN
+PROC_ReallyShadowheart_ShowExclamation("Shadowheart_Breakup");
+ClearFlag((FLAG)Shadowheart_Breakup_Notification_Start_d20cc281-6ed6-4e9b-bad5-28d403a2b0af, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+
+
+// Tav and Shadowheart are going to make more sandcastles
+IF
+FlagSet((FLAG)Shadowheart_More_Sandcastles_Tonight_46190b70-0be5-4f11-834c-59b278211de2, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _)
+THEN
+DB_CampNight_RomanceNight(NIGHT_Shadowheart_Skinnydipping_9f583304-0a1a-498c-acf9-3c8dcc30ee3d, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, CAMP_Shadowheart_SkinnyDipping_SD_ROM_700d677f-1bfd-1c83-8530-0db12875c33b, ORI_Shadowheart_Event_SkinnyDippingRomanceScene_3437a073-b92a-4999-b6b9-e7745865a0c2);
+DB_Camp_QueuedNight(NIGHT_Shadowheart_Skinnydipping_9f583304-0a1a-498c-acf9-3c8dcc30ee3d);
+ClearFlag(Shadowheart_More_Sandcastles_Tonight_46190b70-0be5-4f11-834c-59b278211de2, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+
+
+//
+// After the Parents Fate cutscene
+//
+
+
+// Shadowheart is upset in camp after the events at the cloister
+IF
+FlagSet(CAMP_GLO_State_InCamp_161b7223-039d-4ebe-986f-1dcd9a66733f, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _)
+AND
+GetFlag((FLAG)Shadowheart_After_Parents_Crisis_6f8e2b2b-5ffa-4e83-adf7-d80a8e36a8d8, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 1)
+AND
+GetFlag((FLAG)Shadowheart_Cried_After_Parents_4777f4c8-d5ee-4d4e-83cc-243b3c837fa8, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0)
+THEN
+PROC_ReallyShadowheart_StartIrregularBehavior();
+
+IF
+FlagSet(CAMP_GLO_State_InCamp_161b7223-039d-4ebe-986f-1dcd9a66733f, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _)
+AND
+GetFlag((FLAG)Shadowheart_After_Parents_Crisis_6f8e2b2b-5ffa-4e83-adf7-d80a8e36a8d8, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0)
+AND
+GetFlag((FLAG)Shadowheart_Cried_After_Parents_4777f4c8-d5ee-4d4e-83cc-243b3c837fa8, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0)
+AND
+DB_ReallyShadowheart_PostCloisterCrisisPending(1)
+THEN
+TimerCancel("Shadowheart_After_Parents_Crisis");
+TimerLaunch("Shadowheart_After_Parents_Crisis", 1000);
+
+IF
+TimerFinished("Shadowheart_After_Parents_Crisis")
+THEN
+SetFlag(Shadowheart_After_Parents_Crisis_6f8e2b2b-5ffa-4e83-adf7-d80a8e36a8d8, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+PROC_GlobalSetFlagAndCache(ORI_Shadowheart_State_IrregularBehaviour_a1e4a324-4c58-48fb-b08e-d538fec45af8);
+PROC_GLO_PartyMembers_Remove(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 1);
+PROC_CAMP_ReturnToCampPos(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679);
+PROC_ReallyShadowheart_StartIrregularBehavior();
+
+
+// Make a mark after the Parents Fate cutscene
+IF
+DialogEnded((DIALOGRESOURCE)LOW_SharGrotto_ParentsFate_OM_Shadowheart_AOM_OOM_93197c73-73c0-4482-e023-252cdf461dc1, _)
+AND
+NOT DB_Avatars(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679)
+AND
+GetFlag((FLAG)ORI_Shadowheart_State_Shar_KilledParents_3a3b0ecf-a1ed-4733-8548-0348befc6bac, NULL_00000000-0000-0000-0000-000000000000, 0)
+THEN
+DB_ReallyShadowheart_PostCloisterCrisisPending(1);
+
+IF
+DialogEnded((DIALOGRESOURCE)LOW_SharGrotto_ParentsFate_OM_Shadowheart_COM_aa3b3a6b-b584-90f1-6a20-7a3ed4f037c2, _)
+AND
+NOT DB_Avatars(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679)
+AND
+GetFlag((FLAG)ORI_Shadowheart_State_Shar_KilledParents_3a3b0ecf-a1ed-4733-8548-0348befc6bac, NULL_00000000-0000-0000-0000-000000000000, 0)
+THEN
+DB_ReallyShadowheart_PostCloisterCrisisPending(1);
+
+IF
+FlagSet((FLAG)Shadowheart_After_Parents_Crisis_6f8e2b2b-5ffa-4e83-adf7-d80a8e36a8d8, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _)
+AND
+DB_ReallyShadowheart_PostCloisterCrisisPending(1)
+THEN
+NOT DB_ReallyShadowheart_PostCloisterCrisisPending(1);
+
+IF
+EntityEvent(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, "CAMP_ReturnToPos_DefaultEvent")
+AND
+NOT DB_Avatars(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679)
+AND
+GetFlag((FLAG)ORI_Shadowheart_State_Shar_KilledParents_3a3b0ecf-a1ed-4733-8548-0348befc6bac, NULL_00000000-0000-0000-0000-000000000000, 0)
+AND
+GetFlag((FLAG)Shadowheart_After_Parents_Crisis_6f8e2b2b-5ffa-4e83-adf7-d80a8e36a8d8, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 1)
+AND
+GetFlag((FLAG)Shadowheart_Cried_After_Parents_4777f4c8-d5ee-4d4e-83cc-243b3c837fa8, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0)
+THEN
+PROC_ReallyShadowheart_StartIrregularBehavior();
+
+
+// After the daughter's tears cutscene, Shadowheart got her head together.
+IF
+FlagSet(Shadowheart_Cried_After_Parents_4777f4c8-d5ee-4d4e-83cc-243b3c837fa8, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _)
+AND
+DB_ReallyShadowheart_PartneredWithShadowheart(_)
+AND
+GetFlag(ORI_Shadowheart_State_Shar_SavedParents_8a0fad17-1615-4a0d-a045-21661d9a2aa0, NULL_00000000-0000-0000-0000-000000000000, 0)
+THEN
+NOT DB_ReallyShadowheart_PostCloisterCrisisPending(1);
+PROC_ReallyShadowheart_StopIrregularBehavior();
+PROC_ReallyShadowheart_MorningKiss();
+
+
+// Tav is not partnered, simply stop the irregular behavior
+IF
+FlagSet(Shadowheart_Cried_After_Parents_4777f4c8-d5ee-4d4e-83cc-243b3c837fa8, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _)
+AND
+NOT DB_ReallyShadowheart_PartneredWithShadowheart(_)
+THEN
+NOT DB_ReallyShadowheart_PostCloisterCrisisPending(1);
+PROC_ReallyShadowheart_StopIrregularBehavior();
+
+
+// This makes the chatty stool work all the time (except irregular behavior in camp)
+IF
+ReposeAdded(_Player, _Stool)
+AND
+GetFlag((FLAG)ORI_Shadowheart_State_IrregularBehaviour_a1e4a324-4c58-48fb-b08e-d538fec45af8, NULL_00000000-0000-0000-0000-000000000000, 0)
+AND
+GetTemplate(_Stool, FUR_GEN_Stool_Wood_Poor_A_2544b579-1b07-4240-9d9e-7cf6e9a6f550)
+AND
+IsTagged(_Stool, (TAG)SHADOWHEART_STOOL_f1d35c14-6f7c-4a25-9d8f-69a895b173ae, 1)
+AND
+_Player != S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679
+AND
+NOT DB_Avatars((CHARACTER)S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679)
+AND
+DB_Avatars((CHARACTER)_Player)
+AND
+QRY_SpeakerIsAvailableAndInDialogRange(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _Player)
+AND
+DB_OnlyOnce("ORI_Shadowheart_CampGreeted")
+THEN
+TimerLaunch("ReallyShadowheart_CampGreeting", 4000);
+LookAtEntity(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _Player, 15.0);
+DB_ReallyShadowheart_ChattyStoolOccupant(_Player);
+
+IF
+TimerFinished("ReallyShadowheart_CampGreeting")
+AND
+DB_ReallyShadowheart_ChattyStoolOccupant(_Player)
+THEN
+NOT DB_ReallyShadowheart_ChattyStoolOccupant(_Player);
+PROC_TryStartAD((DIALOGRESOURCE)CAMP_Shadowheart_PAD_Greeting_390b2aaf-b1bf-ad89-ac51-38f1a6d60b5c, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _Player);
+
+PROC
+PROC_LongRest()
+THEN
+TimerLaunch("ReallyShadowheart_CampGreeting_Prep", 500);
+
+IF
+TimerFinished("ReallyShadowheart_CampGreeting_Prep")
+AND
+NOT DB_OnlyOnce("ORI_Shadowheart_CampGreeted")
+THEN
+DB_OnlyOnce("ORI_Shadowheart_CampGreeted");
+
+
+// A fix for the Lae'zel vs Shadowheart fight
+PROC
+PROC_ReallyShadowheart_LaezelShadowheartFightBugFix()
+AND
+GetFlag((FLAG)ORI_Shadowheart_State_WolfDreamPoint_NautiloidSaved_71127b5b-ad4c-46ff-b870-82e91fb3d067, NULL_00000000-0000-0000-0000-000000000000, 1)
+AND
+GetFlag((FLAG)ORI_Shadowheart_Event_LaezelFirst_d68af374-5808-5b37-210c-21f9e1c8c201, NULL_00000000-0000-0000-0000-000000000000, 0)
+THEN
+PROC_GlobalSetFlagAndCache(ORI_Shadowheart_Event_LaezelFirst_d68af374-5808-5b37-210c-21f9e1c8c201);
+
+IF
+FlagSet((FLAG)ORI_Shadowheart_State_WolfDreamPoint_NautiloidSaved_71127b5b-ad4c-46ff-b870-82e91fb3d067, NULL_00000000-0000-0000-0000-000000000000, _)
+THEN
+PROC_GlobalSetFlagAndCache(ORI_Shadowheart_Event_LaezelFirst_d68af374-5808-5b37-210c-21f9e1c8c201);
+
+PROC
+PROC_ReallyShadowheart_GameStarted()
+THEN
+PROC_ReallyShadowheart_LaezelShadowheartFightBugFix();
+
+// If Laezel's approval rating is higher, Shadowheart sneaks up on her, otherwise Laezel does
+PROC
+PROC_ReallyShadowheart_LaezelShadowheartFightSetFlag((INTEGER)_ShadowheartRating, (INTEGER)_LaezelRating)
+AND
+_ShadowheartRating >= _LaezelRating
+THEN
+PROC_GlobalSetFlagAndCache(ORI_Shadowheart_Event_LaezelFirst_d68af374-5808-5b37-210c-21f9e1c8c201);
+
+PROC
+PROC_ReallyShadowheart_LaezelShadowheartFightSetFlag((INTEGER)_ShadowheartRating, (INTEGER)_LaezelRating)
+AND
+_ShadowheartRating < _LaezelRating
+THEN
+PROC_GlobalClearFlagAndCache(ORI_Shadowheart_Event_LaezelFirst_d68af374-5808-5b37-210c-21f9e1c8c201);
+
+IF
+FlagSet((FLAG)Shadowheart_Laezel_Fight_Start_be5caf88-b0d7-4b9b-9dd9-4aea45d2179f, _Tav, _)
+AND
+GetApprovalRating(S_Player_Shadowheart_3ed74f06-3c60-42dc-83f6-f034cb47c679, (CHARACTER)_Tav, _ShadowheartRating)
+AND
+GetApprovalRating(S_Player_Laezel_58a69333-40bf-8358-1d17-fff240d7fb12, (CHARACTER)_Tav, _LaezelRating)
+THEN
+PROC_ReallyShadowheart_LaezelShadowheartFightSetFlag(_ShadowheartRating, _LaezelRating);
+
+
+// This makes the creep to try and avenge the grove
+// In vanilla, this happens only if Tav betrayed goblins while partying with them
+PROC
+PROC_ReallyShadowheart_GameStarted()
+AND
+DB_GLO_Halsin_ReadyForDen(1)
+AND
+DB_GlobalFlag(DEN_AttackOnDen_State_RaiderVictory_abe1bce8-c234-4afe-a490-76210d98a078)
+THEN
+PROC_ReallyShadowheart_CreepyRevenge();
+
+IF
+DB_GLO_Halsin_ReadyForDen(1)
+AND
+DB_GlobalFlag(DEN_AttackOnDen_State_RaiderVictory_abe1bce8-c234-4afe-a490-76210d98a078)
+THEN
+PROC_ReallyShadowheart_CreepyRevenge();
+
+PROC
+PROC_ReallyShadowheart_LongRestFinished()
+AND
+DB_GLO_Halsin_ReadyForDen(1)
+AND
+DB_GlobalFlag(DEN_AttackOnDen_State_RaiderVictory_abe1bce8-c234-4afe-a490-76210d98a078)
+THEN
+PROC_ReallyShadowheart_CreepyRevenge();
+
+PROC
+PROC_ReallyShadowheart_CreepyRevenge()
+AND
+DB_GLO_Halsin_ReadyForDen(1)
+THEN
+NOT DB_GLO_Halsin_ReadyForDen(1);
+PROC_GlobalSetFlagAndCache(GLO_Halsin_State_RevengeAtCamp_c5350174-c6da-45c7-b2c2-e9957002e44d);
+DB_CAMP_BlockCampFaction((CHARACTER)S_GLO_Halsin_7628bc0e-52b8-42a7-856a-13a6fd413323);
+
+
+// This code sets the flag "Shadowheart thanked for freeing her" if the mod was installed after Tav recruited Shadoheart (if they saved her).
+PROC
+PROC_ReallyShadowheart_GameStarted()
+AND
+DB_Avatars(_Avatar)
+AND
+DB_PartOfTheTeam((CHARACTER)S_Player_Shadowheart_3ed74f06-3c60-42dc-83f6-f034cb47c679)
+AND
+GetFlag((FLAG)TUT_TransformChamber_State_FreedShadowheart_c3980ab3-9370-4c2d-9c76-38aff5fe575a, _Avatar, 1)
+AND
+GetFlag((FLAG)Shadowheart_Did_Not_Thank_Tav_For_Freeing_Her_5864a0de-5cd2-4d34-8415-cd7e318c73c4, (CHARACTER)S_Player_Shadowheart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0)
+AND
+GetFlag((FLAG)Shadowheart_Thanked_For_Freeing_Her_ba049ff8-b0f1-4411-90b9-21f1cc9572c6, (CHARACTER)S_Player_Shadowheart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0)
+THEN
+SetFlag((FLAG)Shadowheart_Thanked_For_Freeing_Her_ba049ff8-b0f1-4411-90b9-21f1cc9572c6, (CHARACTER)S_Player_Shadowheart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+
+// This fixes a bug when Shadowheart forgot to thank Tav
+PROC
+PROC_ReallyShadowheart_GameStarted()
+AND
+DB_Avatars(_Avatar)
+AND
+DB_PartOfTheTeam((CHARACTER)S_Player_Shadowheart_3ed74f06-3c60-42dc-83f6-f034cb47c679)
+AND
+GetFlag((FLAG)TUT_TransformChamber_State_FreedShadowheart_c3980ab3-9370-4c2d-9c76-38aff5fe575a, _Avatar, 1)
+AND
+GetFlag((FLAG)Shadowheart_Did_Not_Thank_Tav_For_Freeing_Her_5864a0de-5cd2-4d34-8415-cd7e318c73c4, (CHARACTER)S_Player_Shadowheart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 1)
+AND
+GetFlag((FLAG)Shadowheart_Thanked_For_Freeing_Her_ba049ff8-b0f1-4411-90b9-21f1cc9572c6, (CHARACTER)S_Player_Shadowheart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 1)
+THEN
+ClearFlag((FLAG)Shadowheart_Thanked_For_Freeing_Her_ba049ff8-b0f1-4411-90b9-21f1cc9572c6, (CHARACTER)S_Player_Shadowheart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 1);
+
+// Shadowheart will get the 'TG_WYR_Gortash_WarnedImpostor' topical greeting even on Dark Urge playthrough
+IF
+FlagSet((FLAG)WYR_KillDirectorGortash_Knows_CampCompromised_62f279b8-9f36-4f4a-92d3-edc16cb4d760, _, _)
+AND
+DB_PartOfTheTeam((CHARACTER)S_Player_Shadowheart_3ed74f06-3c60-42dc-83f6-f034cb47c679)
+AND
+IsTagged((CHARACTER)S_Player_Shadowheart_3ed74f06-3c60-42dc-83f6-f034cb47c679, AVATAR_306b9b05-1057-4770-aa17-01af21acd650, 0)
+AND
+NOT DB_Avatars((CHARACTER)S_Player_Shadowheart_3ed74f06-3c60-42dc-83f6-f034cb47c679)
+THEN
+SetFlag((FLAG)TG_WYR_Gortash_WarnedImpostor_fdb6ca98-8bb0-4196-bf6d-945526e56114, (CHARACTER)S_Player_Shadowheart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+
+
+// Fix for Viconia confrontation. This dialog includes a lot of extra NPCs, and sometimes some of them may not be ready.
+// This will cause soft locking Viconia in the "NoShadowheart" version of this dialog
+QRY
+QRY_OM_CheckAllNPCsAvailable((DIALOGRESOURCE)_OriginDialog, (GUIDSTRING)_MainNPC, (DIALOGRESOURCE)LOW_SharGrotto_ConfrontViconia_NoShadowheart_78e68cb8-fc4e-fa55-c4a9-5f7224b86fe4)
+AND
+QRY_OriginMoments_SpeakerIsAvailable(_OriginDialog, _MainNPC, LOW_SharGrotto_ConfrontViconia_NoShadowheart_78e68cb8-fc4e-fa55-c4a9-5f7224b86fe4)
+THEN
+DB_NOOP(1);
+
+
+// ReallyShadowheart Lite (softener) integration
+PROC
+PROC_ReallyShadowheart_GameStarted()
+THEN
+TimerLaunch("ReallyShadowheart_Softener", 2000);
+
+IF
+TimerFinished("ReallyShadowheart_Softener")
+AND
+QRY_ReallyShadowheart_Softened()
+THEN
+PROC_GlobalSetFlagAndCache(Really_Shadowheart_Softened_Version_6435fd62-be1d-4bed-9f00-70c8468c02d4);
+
+IF
+TimerFinished("ReallyShadowheart_Softener")
+AND
+NOT QRY_ReallyShadowheart_Softened()
+THEN
+PROC_GlobalClearFlagAndCache(Really_Shadowheart_Softened_Version_6435fd62-be1d-4bed-9f00-70c8468c02d4);
+
+
+
+
+EXITSECTION
+
+ENDEXITSECTION

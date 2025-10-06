@@ -1,0 +1,8 @@
+new entry "GLO_REALLY_SHADOWHEART_NOTE_BOUNDEDTO"
+type "StatusData"
+data "StatusType" "BOOST"
+data "DisplayName" "hb2343ea8g2f0eg4553ga46dg243947a77b09;2"
+data "Description" "h714a3ffegcf05g4baagb188g29f1e509b3e6;1"
+data "Icon" "statIcons_Bound"
+data "Boosts" "Attribute(InventoryBound)"
+data "StatusPropertyFlags" "IgnoreResting;DisableOverhead;DisableCombatlog"

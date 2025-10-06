@@ -1,0 +1,47 @@
+Version 1
+SubGoalCombiner SGC_AND
+INITSECTION
+
+KBSECTION
+QRY
+QRY_ReallyShadowheart_HasExtension((STRING)_Extension)
+AND
+DB_ReallyShadowheart_NOOP(42)
+THEN
+DB_ReallyShadowheart_NOOP(1);
+
+PROC
+PROC_ReallyShadowheart_DiscoverExtension()
+AND
+QRY_ReallyShadowheart_HasExtension("ReallyShadowheart_Ext_GutHunter_V1")
+THEN
+PROC_GlobalSetFlagAndCache(ReallyShadowheart_Ext_GutHunter_V1_2319a650-7273-43a6-86a4-a4d9823f8cbd);
+
+PROC
+PROC_ReallyShadowheart_DiscoverExtension()
+AND
+NOT QRY_ReallyShadowheart_HasExtension("ReallyShadowheart_Ext_GutHunter_V1")
+THEN
+PROC_GlobalClearFlagAndCache(ReallyShadowheart_Ext_GutHunter_V1_2319a650-7273-43a6-86a4-a4d9823f8cbd);
+
+PROC
+PROC_ReallyShadowheart_DiscoverExtension()
+AND
+QRY_ReallyShadowheart_HasExtension("ReallyShadowheart_Ext_V2_0_0_0")
+THEN
+PROC_GlobalSetFlagAndCache(ReallyShadowheart_Ext_V2_0_0_0_d526de63-740b-4b22-a7a9-aea7dad2e6e5);
+
+PROC
+PROC_ReallyShadowheart_DiscoverExtension()
+AND
+NOT QRY_ReallyShadowheart_HasExtension("ReallyShadowheart_Ext_V2_0_0_0")
+THEN
+PROC_GlobalClearFlagAndCache(ReallyShadowheart_Ext_V2_0_0_0_d526de63-740b-4b22-a7a9-aea7dad2e6e5);
+
+PROC
+PROC_ReallyShadowheart_GameStarted()
+THEN
+PROC_ReallyShadowheart_DiscoverExtension();
+EXITSECTION
+
+ENDEXITSECTION

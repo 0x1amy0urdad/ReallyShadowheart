@@ -1,0 +1,17 @@
+Version 1
+SubGoalCombiner SGC_AND
+INITSECTION
+
+KBSECTION
+QRY
+QRY_ReallyShadowheart_HasExtension("ReallyShadowheart_Ext_GutHunter_V1")
+THEN
+DB_NOOP(1);
+
+QRY
+QRY_ReallyShadowheart_HasExtension("ReallyShadowheart_Ext_V2_0_0_0")
+THEN
+DB_NOOP(1);
+EXITSECTION
+
+ENDEXITSECTION

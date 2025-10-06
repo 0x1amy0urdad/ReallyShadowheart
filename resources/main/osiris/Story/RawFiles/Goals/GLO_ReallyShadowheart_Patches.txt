@@ -1,0 +1,96 @@
+Version 1
+SubGoalCombiner SGC_AND
+INITSECTION
+NOT DB_ReallyShadowheart_InstalledPatches("");
+KBSECTION
+PROC
+PROC_ReallyShadowheart_FixKissExclamation()
+THEN
+SetFlag((FLAG)Shadowheart_Stop_PDA_Trigger_67edac2b-7bdf-4ace-a7fe-94854825e2df, (CHARACTER)S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+TimerCancel("ReallyShadowheart_Kiss_Timer");
+PROC_ReallyShadowheart_ResetKissFlags();
+PROC_ReallyShadowheart_HideExclamation("Shadowheart_Kiss");
+
+
+PROC
+PROC_ReallyShadowheart_FixKissExclamation()
+AND
+DB_LoopEffect(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _Handle, "Shadowheart_Kiss", _Region, EFFECTRESOURCEGUID_VFX_UI_ExclamationMark_01_a3018cf0-3a25-06ee-206a-3dd079332d80, _BoneName, _Scale)
+THEN
+StopLoopEffect(_Handle);
+NOT DB_LoopEffect(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _Handle, "Shadowheart_Kiss", _Region, EFFECTRESOURCEGUID_VFX_UI_ExclamationMark_01_a3018cf0-3a25-06ee-206a-3dd079332d80, _BoneName, _Scale);
+
+
+PROC
+PROC_ReallyShadowheart_Maintenance()
+AND
+NOT DB_ReallyShadowheart_InstalledPatches("RS_V_2_0_1_1")
+AND
+GetHostCharacter(_Player)
+AND
+GetRegion(_Player, _Region)
+AND
+_Region != "EPI_Main_A"
+THEN
+DB_ReallyShadowheart_InstalledPatches("RS_V_2_0_1_1");
+ObjectSetTitleHidden(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 1);
+
+
+PROC
+PROC_ReallyShadowheart_Maintenance()
+AND
+NOT DB_ReallyShadowheart_InstalledPatches("RS_V_2_0_1_1_EPI")
+AND
+GetHostCharacter(_Player)
+AND
+GetRegion(_Player, _Region)
+AND
+_Region == "EPI_Main_A"
+THEN
+DB_ReallyShadowheart_InstalledPatches("RS_V_2_0_1_1_EPI");
+ObjectSetTitleHidden(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0);
+PROC_ReallyShadowheart_FixKissExclamation();
+
+
+PROC
+PROC_ReallyShadowheart_Maintenance()
+AND
+NOT DB_ReallyShadowheart_InstalledPatches("RS_V_2_0_1_1_END")
+AND
+GetHostCharacter(_Player)
+AND
+GetRegion(_Player, _Region)
+AND
+_Region == "END_Main"
+THEN
+DB_ReallyShadowheart_InstalledPatches("RS_V_2_0_1_1_END");
+ObjectSetTitleHidden(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 1);
+PROC_ReallyShadowheart_FixKissExclamation();
+
+
+// This unbounds the note from the inventory (there was a version that bound the note to the player)
+PROC
+PROC_ReallyShadowheart_Maintenance()
+AND
+DB_Avatars(_Tav)
+AND
+DB_ReallyShadowheart_SentNotes((CHARACTER)_Tav, _Note)
+AND
+HasAppliedStatus(_Note, "GLO_REALLY_SHADOWHEART_NOTE_BOUNDEDTO", 1)
+THEN
+RemoveStatus(_Note, "GLO_REALLY_SHADOWHEART_NOTE_BOUNDEDTO", NULL_00000000-0000-0000-0000-000000000000);
+
+
+IF
+LevelLoaded(_)
+THEN
+TimerLaunch("ReallyShadowheart_Maintenance", 1500);
+
+
+IF
+TimerFinished("ReallyShadowheart_Maintenance")
+THEN
+PROC_ReallyShadowheart_Maintenance();
+EXITSECTION
+
+ENDEXITSECTION

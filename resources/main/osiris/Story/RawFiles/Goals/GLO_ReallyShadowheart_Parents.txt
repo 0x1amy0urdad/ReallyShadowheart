@@ -1,0 +1,325 @@
+Version 1
+SubGoalCombiner SGC_AND
+INITSECTION
+NOT DB_ReallyShadowheart_ParentsClothesChange(0);
+
+NOT DB_ReallyShadowheart_ParentsClothes((CHARACTER)NULL_00000000-0000-0000-0000-000000000000, (ITEMROOT)NULL_00000000-0000-0000-0000-000000000000);
+
+NOT DB_ReallyShadowheart_CampChests("", (TRIGGER)NULL_00000000-0000-0000-0000-000000000000);
+
+NOT DB_ReallyShadowheart_SetupParentsSharPrisonClothes(0);
+
+NOT DB_ReallyShadowheart_SetupParentsInCamp(0);
+KBSECTION
+PROC
+PROC_ReallyShadowheart_UpdateParentsInCamp()
+AND
+DB_ORI_OriginCampData((CHARACTER)S_LOW_ShadowheartFather_c12d561f-beae-4ef6-917e-0bec2f829449, "SLUMS", (TRIGGER)S_CAMP_SLUMS_Shadowmom_a07a0368-dd93-471f-81b9-2e29e9b9089f)
+THEN
+NOT DB_ORI_OriginCampData((CHARACTER)S_LOW_ShadowheartFather_c12d561f-beae-4ef6-917e-0bec2f829449, "SLUMS", (TRIGGER)S_CAMP_SLUMS_Shadowmom_a07a0368-dd93-471f-81b9-2e29e9b9089f);
+DB_ORI_OriginCampData((CHARACTER)S_LOW_ShadowheartFather_c12d561f-beae-4ef6-917e-0bec2f829449, "SLUMS", (TRIGGER)S_CAMP_FARM_ReallyShadowheartDad_b5892250-a964-4fe2-8966-9fbc8ea5a45f);
+
+PROC
+PROC_ReallyShadowheart_UpdateParentsInCamp()
+AND
+DB_ORI_OriginCampData((CHARACTER)S_LOW_ShadowheartMother_d085272a-f1d0-4ff8-a498-80728030f83e, "SLUMS", (TRIGGER)S_CAMP_SLUMS_Shadowdad_22d7fad3-af80-4ea2-8e3e-c49afe13ec6f)
+THEN
+NOT DB_ORI_OriginCampData((CHARACTER)S_LOW_ShadowheartMother_d085272a-f1d0-4ff8-a498-80728030f83e, "SLUMS", (TRIGGER)S_CAMP_SLUMS_Shadowdad_22d7fad3-af80-4ea2-8e3e-c49afe13ec6f);
+DB_ORI_OriginCampData((CHARACTER)S_LOW_ShadowheartMother_d085272a-f1d0-4ff8-a498-80728030f83e, "SLUMS", (TRIGGER)S_CAMP_FARM_ReallyShadowheartMom_b5abe3b2-a606-4377-b92e-9dca272353fc);
+
+PROC
+PROC_ReallyShadowheart_UpdateParentsInCamp()
+AND
+DB_ORI_OriginCampData((CHARACTER)S_LOW_ShadowheartFather_c12d561f-beae-4ef6-917e-0bec2f829449, "ELFSONG", (TRIGGER)S_CAMP_ELFSONG_ShadowheartDad_b57b461d-f259-4d16-b849-8819b0616166)
+THEN
+NOT DB_ORI_OriginCampData((CHARACTER)S_LOW_ShadowheartFather_c12d561f-beae-4ef6-917e-0bec2f829449, "ELFSONG", (TRIGGER)S_CAMP_ELFSONG_ShadowheartDad_b57b461d-f259-4d16-b849-8819b0616166);
+DB_ORI_OriginCampData((CHARACTER)S_LOW_ShadowheartFather_c12d561f-beae-4ef6-917e-0bec2f829449, "ELFSONG", (TRIGGER)S_CAMP_ELFSONG_ReallyShadowheartDad_32c982ea-6879-4fdb-b485-1b5020f28e5f);
+
+PROC
+PROC_ReallyShadowheart_UpdateParentsInCamp()
+AND
+DB_ORI_OriginCampData((CHARACTER)S_LOW_ShadowheartMother_d085272a-f1d0-4ff8-a498-80728030f83e, "ELFSONG", (TRIGGER)S_CAMP_ELFSONG_ShadowheartMom_b37aa9ab-ba16-4e12-a016-65b1d49a416e)
+THEN
+NOT DB_ORI_OriginCampData((CHARACTER)S_LOW_ShadowheartMother_d085272a-f1d0-4ff8-a498-80728030f83e, "ELFSONG", (TRIGGER)S_CAMP_ELFSONG_ShadowheartMom_b37aa9ab-ba16-4e12-a016-65b1d49a416e);
+DB_ORI_OriginCampData((CHARACTER)S_LOW_ShadowheartMother_d085272a-f1d0-4ff8-a498-80728030f83e, "ELFSONG", (TRIGGER)S_CAMP_ELFSONG_ReallyShadowheartMom_f826b7e7-51ac-41b6-bd1f-69fe2c43320d);
+
+
+PROC
+PROC_ReallyShadowheart_InitializeParentsDB()
+AND
+NOT DB_ReallyShadowheart_ParentsClothes((CHARACTER)S_LOW_ShadowheartFather_c12d561f-beae-4ef6-917e-0bec2f829449, (ITEMROOT)ARM_Camp_Citizen_C_Blue_58f9af08-f4ac-412d-ba38-f8b1d7db9e5f)
+THEN
+DB_ReallyShadowheart_ParentsClothes((CHARACTER)S_LOW_ShadowheartFather_c12d561f-beae-4ef6-917e-0bec2f829449, (ITEMROOT)ARM_Camp_Citizen_C_Blue_58f9af08-f4ac-412d-ba38-f8b1d7db9e5f);
+DB_ReallyShadowheart_ParentsClothes((CHARACTER)S_LOW_ShadowheartFather_c12d561f-beae-4ef6-917e-0bec2f829449, (ITEMROOT)ARM_Camp_Shoes_B_d8bc3625-f1d8-4ad3-8cfd-23b6b496cf36);
+DB_ReallyShadowheart_ParentsClothes((CHARACTER)S_LOW_ShadowheartMother_d085272a-f1d0-4ff8-a498-80728030f83e, (ITEMROOT)ARM_Camp_Citizen_C_d9caff77-293c-4e8d-a721-3e17908490f8);
+DB_ReallyShadowheart_ParentsClothes((CHARACTER)S_LOW_ShadowheartMother_d085272a-f1d0-4ff8-a498-80728030f83e, (ITEMROOT)ARM_Camp_Shoes_Sandals_A_Blue_2290f957-2e17-4ceb-870f-bd53f81f866c);
+
+
+PROC
+PROC_ReallyShadowheart_InitializeParentsDB()
+AND
+NOT DB_ReallyShadowheart_CampChests("FARM", (TRIGGER)S_CAMP_FARM_Chest1_52d1f399-11ec-40ab-9aea-420dbee7f880)
+THEN
+DB_ReallyShadowheart_CampChests("FARM", (TRIGGER)S_CAMP_FARM_Chest1_52d1f399-11ec-40ab-9aea-420dbee7f880);
+DB_ReallyShadowheart_CampChests("SLUMS", (TRIGGER)S_Camp_SLUMS_CampChest1_6ddf3b88-f434-4fbf-ade7-816bfdba455b);
+DB_ReallyShadowheart_CampChests("ELFSONG", (TRIGGER)S_Camp_ELFSONG_CampChest1_d264bee3-d94f-4ea3-9054-30a353381a32);
+
+
+// Initialize parents' Shar prison clothes
+PROC
+PROC_ReallyShadowheart_SetupParentsSharPrisonClothes()
+AND
+NOT DB_ReallyShadowheart_SetupParentsSharPrisonClothes(1)
+THEN
+SetArmourSet((CHARACTER)S_LOW_ShadowheartFather_c12d561f-beae-4ef6-917e-0bec2f829449, ARMOURSET.Vanity);
+SetArmourSet((CHARACTER)S_LOW_ShadowheartMother_d085272a-f1d0-4ff8-a498-80728030f83e, ARMOURSET.Vanity);
+//PROC_ReallyShadowheart_StoreArmourSet(S_LOW_ShadowheartFather_c12d561f-beae-4ef6-917e-0bec2f829449);
+//PROC_ReallyShadowheart_StoreArmourSet(S_LOW_ShadowheartMother_d085272a-f1d0-4ff8-a498-80728030f83e);
+TemplateAddTo((ITEMROOT)EPI_Camp_Prison_ffe2cacb-8073-4e6d-bf81-057da0c5030c, S_LOW_ShadowheartFather_c12d561f-beae-4ef6-917e-0bec2f829449, 1, 0);
+TemplateAddTo((ITEMROOT)EPI_Camp_Prison_ffe2cacb-8073-4e6d-bf81-057da0c5030c, S_LOW_ShadowheartMother_d085272a-f1d0-4ff8-a498-80728030f83e, 1, 0);
+DB_ReallyShadowheart_SetupParentsSharPrisonClothes(1);
+
+
+QRY
+QRY_ReallyShadowheart_ParentsAreSaved()
+AND
+GetFlag((FLAG)ORI_Shadowheart_State_RejectShar_SavedParents_486d69d4-a7c2-4cb5-8fcb-8f2cb738ada9, NULL_00000000-0000-0000-0000-000000000000, 1)
+THEN
+DB_NOOP(1);
+
+
+QRY
+QRY_ReallyShadowheart_ParentsAreSaved()
+AND
+GetFlag((FLAG)ORI_Shadowheart_State_Shar_SavedParents_8a0fad17-1615-4a0d-a045-21661d9a2aa0, NULL_00000000-0000-0000-0000-000000000000, 1)
+THEN
+DB_NOOP(1);
+
+
+PROC
+PROC_ReallyShadowheart_StartParentsClothesChange()
+AND
+GetFlag((FLAG)Parents_Change_Clothes_2ebf489a-9d98-49c8-9db1-c337ba853c90, NULL_00000000-0000-0000-0000-000000000000, 1)
+AND
+GetFlag((FLAG)Parents_New_Clothes_27f1a908-8088-4b49-ad51-9178d3e88e33, NULL_00000000-0000-0000-0000-000000000000, 0)
+THEN
+DB_ReallyShadowheart_ParentsClothesChange(0);
+SetHasDialog((CHARACTER)S_LOW_ShadowheartMother_d085272a-f1d0-4ff8-a498-80728030f83e, 0);
+SetHasDialog((CHARACTER)S_LOW_ShadowheartFather_c12d561f-beae-4ef6-917e-0bec2f829449, 0);
+TimerLaunch("ShadowheartMotherGoesToCampChest", 1000);
+TimerLaunch("ShadowheartFatherGoesToCampChest", 2000);
+TimerLaunch("ShadowheartParentsClothingChangeCheck", 60000);
+
+
+PROC
+PROC_ReallyShadowheart_ChangeParentsClothes((CHARACTER)_Parent)
+AND
+DB_ReallyShadowheart_ParentsClothes(_Parent, _Item)
+THEN
+TemplateAddTo(_Item, _Parent, 1, 0);
+
+
+PROC
+PROC_ReallyShadowheart_ParentEquipsClothing((CHARACTER)_Parent, (ITEM)_Item)
+AND
+DB_ReallyShadowheart_ParentsClothesChange(_Count)
+AND
+_Count < 4
+AND
+IntegerSum(_Count, 1, _NewCount)
+THEN
+NOT DB_ReallyShadowheart_ParentsClothesChange(_Count);
+DB_ReallyShadowheart_ParentsClothesChange(_NewCount);
+Equip(_Parent, (ITEM)_Item, 0, 0, 0);
+
+
+PROC
+PROC_ReallyShadowheart_ParentsClothingChangeCheck()
+AND
+DB_ReallyShadowheart_ParentsClothesChange(_Count)
+AND
+_Count != 4
+THEN
+NOT DB_ReallyShadowheart_ParentsClothesChange(_Count);
+PROC_GlobalClearFlagAndCache((FLAG)Parents_Change_Clothes_2ebf489a-9d98-49c8-9db1-c337ba853c90);
+PROC_GlobalClearFlagAndCache((FLAG)Parents_New_Clothes_27f1a908-8088-4b49-ad51-9178d3e88e33);
+SetHasDialog((CHARACTER)S_LOW_ShadowheartMother_d085272a-f1d0-4ff8-a498-80728030f83e, 1);
+SetHasDialog((CHARACTER)S_LOW_ShadowheartFather_c12d561f-beae-4ef6-917e-0bec2f829449, 1);
+
+
+// Always use vanity armour set for Shadowheart parents
+// This is a hook into the existing PROC
+PROC
+PROC_Camp_EveryoneWakeupEndHook()
+AND
+QRY_ReallyShadowheart_ParentsAreSaved()
+THEN
+SetArmourSet((CHARACTER)S_LOW_ShadowheartFather_c12d561f-beae-4ef6-917e-0bec2f829449, ARMOURSET.Vanity);
+SetArmourSet((CHARACTER)S_LOW_ShadowheartMother_d085272a-f1d0-4ff8-a498-80728030f83e, ARMOURSET.Vanity);
+
+
+IF
+TeleportedToCamp(_Character)
+AND
+IsControlled(_Character, 1)
+AND
+QRY_ReallyShadowheart_ParentsAreSaved()
+THEN
+SetArmourSet((CHARACTER)S_LOW_ShadowheartFather_c12d561f-beae-4ef6-917e-0bec2f829449, ARMOURSET.Vanity);
+SetArmourSet((CHARACTER)S_LOW_ShadowheartMother_d085272a-f1d0-4ff8-a498-80728030f83e, ARMOURSET.Vanity);
+
+
+// This will set up parents in camp and make them follow the party
+IF
+EntityEvent(_, "LOW_SharGrotto_ParentLeft")
+AND
+NOT DB_ReallyShadowheart_SetupParentsInCamp(1)
+THEN
+PROC_ORI_SetupCamp((CHARACTER)S_LOW_ShadowheartFather_c12d561f-beae-4ef6-917e-0bec2f829449, 1);
+PROC_ORI_SetupCamp((CHARACTER)S_LOW_ShadowheartMother_d085272a-f1d0-4ff8-a498-80728030f83e, 1);
+DB_ReallyShadowheart_SetupParentsInCamp(1);
+
+
+IF
+TemplateAddedTo(_Template, _Item, _Parent, _)
+AND
+DB_ReallyShadowheart_ParentsClothes((CHARACTER)_Parent, (ITEMROOT)_Template)
+THEN
+PROC_ReallyShadowheart_ParentEquipsClothing(_Parent, (ITEM)_Item);
+
+
+IF
+TemplateAddedTo((ITEMROOT)EPI_Camp_Prison_ffe2cacb-8073-4e6d-bf81-057da0c5030c, _Item, (CHARACTER)S_LOW_ShadowheartFather_c12d561f-beae-4ef6-917e-0bec2f829449, _)
+THEN
+Equip(S_LOW_ShadowheartFather_c12d561f-beae-4ef6-917e-0bec2f829449, (ITEM)_Item, 0, 0, 0);
+
+
+IF
+TemplateAddedTo((ITEMROOT)EPI_Camp_Prison_ffe2cacb-8073-4e6d-bf81-057da0c5030c, _Item, (CHARACTER)S_LOW_ShadowheartMother_d085272a-f1d0-4ff8-a498-80728030f83e, _)
+THEN
+Equip(S_LOW_ShadowheartMother_d085272a-f1d0-4ff8-a498-80728030f83e, (ITEM)_Item, 0, 0, 0);
+
+
+IF
+DB_ReallyShadowheart_ParentsClothesChange(4)
+THEN
+PROC_GlobalClearFlagAndCache((FLAG)Parents_Change_Clothes_2ebf489a-9d98-49c8-9db1-c337ba853c90);
+PROC_GlobalSetFlagAndCache((FLAG)Parents_New_Clothes_27f1a908-8088-4b49-ad51-9178d3e88e33);
+
+
+// Tav or Shadowheart told Arnell and Emmeline to change clothes
+IF
+DialogEnded((DIALOGRESOURCE)CAMP_ShadowheartFather_215fdd40-89b6-fbd7-9a5b-a18d031cd0d4, _)
+THEN
+PROC_ReallyShadowheart_StartParentsClothesChange();
+
+
+// Tav or Shadowheart told Arnell and Emmeline to change clothes
+IF
+DialogEnded((DIALOGRESOURCE)CAMP_ShadowheartFather_215fdd40-89b6-fbd7-9a5b-a18d031cd0d4, _)
+THEN
+PROC_ReallyShadowheart_StartParentsClothesChange();
+
+IF
+DialogEnded((DIALOGRESOURCE)CAMP_ShadowheartMother_88c80e2e-a203-0627-6c2a-12695a769c7e, _)
+THEN
+PROC_ReallyShadowheart_StartParentsClothesChange();
+
+
+IF
+TimerFinished("ShadowheartMotherGoesToCampChest")
+AND
+DB_ActiveCamp(_Camp)
+AND
+DB_ReallyShadowheart_CampChests(_Camp, _CampChest)
+THEN
+CharacterMoveTo((CHARACTER)S_LOW_ShadowheartMother_d085272a-f1d0-4ff8-a498-80728030f83e, _CampChest, "Walk", "ShadowheartMother_ClothesChange", 0);
+
+
+IF
+TimerFinished("ShadowheartFatherGoesToCampChest")
+AND
+DB_ActiveCamp(_Camp)
+AND
+DB_ReallyShadowheart_CampChests(_Camp, _CampChest)
+THEN
+CharacterMoveTo((CHARACTER)S_LOW_ShadowheartFather_c12d561f-beae-4ef6-917e-0bec2f829449, _CampChest, "Walk", "ShadowheartFather_ClothesChange", 0);
+
+
+IF
+TimerFinished("ShadowheartParentsClothingChangeCheck")
+THEN
+PROC_ReallyShadowheart_ParentsClothingChangeCheck();
+
+
+IF
+EntityEvent((CHARACTER)S_LOW_ShadowheartFather_c12d561f-beae-4ef6-917e-0bec2f829449, "ShadowheartFather_ClothesChange")
+THEN
+PROC_ReallyShadowheart_ChangeParentsClothes(S_LOW_ShadowheartFather_c12d561f-beae-4ef6-917e-0bec2f829449);
+SetHasDialog((CHARACTER)S_LOW_ShadowheartFather_c12d561f-beae-4ef6-917e-0bec2f829449, 1);
+
+
+IF
+EntityEvent((CHARACTER)S_LOW_ShadowheartMother_d085272a-f1d0-4ff8-a498-80728030f83e, "ShadowheartMother_ClothesChange")
+THEN
+PROC_ReallyShadowheart_ChangeParentsClothes(S_LOW_ShadowheartMother_d085272a-f1d0-4ff8-a498-80728030f83e);
+SetHasDialog((CHARACTER)S_LOW_ShadowheartMother_d085272a-f1d0-4ff8-a498-80728030f83e, 1);
+
+
+PROC
+PROC_ReallyShadowheart_GameStarted()
+THEN
+PROC_ReallyShadowheart_UpdateParentsInCamp();
+PROC_ReallyShadowheart_InitializeParentsDB();
+
+
+// Initialization events
+IF
+LevelLoaded("CTY_Main_A")
+THEN
+PROC_ReallyShadowheart_UpdateParentsInCamp();
+PROC_ReallyShadowheart_SetupParentsSharPrisonClothes();
+
+IF
+LevelLoaded("BGO_Main_A")
+THEN
+PROC_ReallyShadowheart_UpdateParentsInCamp();
+PROC_ReallyShadowheart_SetupParentsSharPrisonClothes();
+
+IF
+LevelLoaded("CTY_Main_A")
+AND
+NOT DB_ReallyShadowheart_SetupParentsInCamp(1)
+AND
+QRY_ReallyShadowheart_ParentsAreSaved()
+THEN
+TimerLaunch("ReallyShadowheart_SetupParentsInCamp", 500);
+
+IF
+LevelLoaded("BGO_Main_A")
+AND
+NOT DB_ReallyShadowheart_SetupParentsInCamp(1)
+AND
+QRY_ReallyShadowheart_ParentsAreSaved()
+THEN
+TimerLaunch("ReallyShadowheart_SetupParentsInCamp", 500);
+
+IF
+TimerFinished("ReallyShadowheart_SetupParentsInCamp")
+AND
+NOT DB_ReallyShadowheart_SetupParentsInCamp(1)
+THEN
+PROC_ORI_SetupCamp((CHARACTER)S_LOW_ShadowheartFather_c12d561f-beae-4ef6-917e-0bec2f829449, 1);
+PROC_ORI_SetupCamp((CHARACTER)S_LOW_ShadowheartMother_d085272a-f1d0-4ff8-a498-80728030f83e, 1);
+DB_ReallyShadowheart_SetupParentsInCamp(1);
+
+IF
+DialogStarted((DIALOGRESOURCE)CAMP_Shadowheart_DaughterTears_SD_c0f0d040-7590-fbd6-26fd-760874706059, _)
+THEN
+MusicPlayGeneral("Explo_Theme_WMPA_Myst");
+
+
+
+EXITSECTION
+
+ENDEXITSECTION

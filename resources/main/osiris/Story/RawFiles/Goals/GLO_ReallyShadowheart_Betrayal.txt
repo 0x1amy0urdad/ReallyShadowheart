@@ -1,0 +1,350 @@
+Version 1
+SubGoalCombiner SGC_AND
+INITSECTION
+NOT DB_ReallyShadowheart_Betrayer((CHARACTER)Noone_00000000-0000-0000-0000-000000000000);
+NOT DB_ReallyShadowheart_ViconiaSpeaker((CHARACTER)Noone_00000000-0000-0000-0000-000000000000);
+
+NOT DB_ReallyShadowheart_FightingAvengers((CHARACTER)Noone_00000000-0000-0000-0000-000000000000);
+
+NOT DB_ReallyShadowheart_DeadAvengers((CHARACTER)Noone_00000000-0000-0000-0000-000000000000);
+
+NOT DB_ReallyShadowheart_FightingBetrayers((CHARACTER)Noone_00000000-0000-0000-0000-000000000000);
+
+NOT DB_ReallyShadowheart_OriginalFactions((CHARACTER)Noone_00000000-0000-0000-0000-000000000000, (FACTION)Noone_00000000-0000-0000-0000-000000000000);
+
+DB_ReallyShadowheart_Avengers((CHARACTER)S_Player_Wyll_c774d764-4a17-48dc-b470-32ace9ce447d);
+DB_ReallyShadowheart_Avengers((CHARACTER)S_Player_Minsc_0de603c5-42e2-4811-9dad-f652de080eba);
+DB_ReallyShadowheart_Avengers((CHARACTER)S_Player_Jaheira_91b6b200-7d00-4d62-8dc9-99e8339dfa1a);
+DB_ReallyShadowheart_Avengers((CHARACTER)S_Player_Karlach_2c76687d-93a2-477b-8b18-8a14b549304c);
+DB_ReallyShadowheart_Avengers((CHARACTER)S_GLO_Nightsong_6c55edb0-901b-4ba4-b9e8-3475a8392d9b);
+DB_ReallyShadowheart_Avengers((CHARACTER)S_GLO_Isobel_263bfbfc-6160-46f4-a9e1-1089cdb5c211);
+DB_ReallyShadowheart_Avengers((CHARACTER)S_GLO_Ravengard_f6620372-ebd0-4511-a39d-8c2d4ad03f03);
+KBSECTION
+//////////////////////////////////////////////////////////////////////////
+//
+// Queries
+//
+//////////////////////////////////////////////////////////////////////////
+
+// Would this companion join the fight?
+QRY
+QRY_ReallyShadowheart_CanJoinFight((CHARACTER)_Companion, (CHARACTER)_Tav)
+AND
+IsAlly(_Companion, _Tav, 1)
+AND
+IsDead(_Companion, 0)
+AND
+HasAppliedStatus(_Companion, "INCAPACITATED", 0)
+THEN
+DB_NOOP(1);
+
+
+// Dame Aylin
+QRY
+QRY_ReallyShadowheart_CanJoinFight((CHARACTER)S_GLO_Nightsong_6c55edb0-901b-4ba4-b9e8-3475a8392d9b, (CHARACTER)_Tav)
+AND
+GetFlag((FLAG)CAMP_GLO_State_InCamp_161b7223-039d-4ebe-986f-1dcd9a66733f, S_GLO_Nightsong_6c55edb0-901b-4ba4-b9e8-3475a8392d9b, 1)
+AND
+IsDead(S_GLO_Nightsong_6c55edb0-901b-4ba4-b9e8-3475a8392d9b, 0)
+AND
+HasAppliedStatus(S_GLO_Nightsong_6c55edb0-901b-4ba4-b9e8-3475a8392d9b, "INCAPACITATED", 0)
+THEN
+DB_NOOP(1);
+
+
+// Isobel
+QRY
+QRY_ReallyShadowheart_CanJoinFight((CHARACTER)S_GLO_Isobel_263bfbfc-6160-46f4-a9e1-1089cdb5c211, (CHARACTER)_Tav)
+AND
+GetFlag((FLAG)CAMP_GLO_State_InCamp_161b7223-039d-4ebe-986f-1dcd9a66733f, S_GLO_Isobel_263bfbfc-6160-46f4-a9e1-1089cdb5c211, 1)
+AND
+IsDead(S_GLO_Isobel_263bfbfc-6160-46f4-a9e1-1089cdb5c211, 0)
+AND
+HasAppliedStatus(S_GLO_Isobel_263bfbfc-6160-46f4-a9e1-1089cdb5c211, "INCAPACITATED", 0)
+THEN
+DB_NOOP(1);
+
+
+// Ulder Ravengard
+QRY
+QRY_ReallyShadowheart_CanJoinFight((CHARACTER)S_GLO_Ravengard_f6620372-ebd0-4511-a39d-8c2d4ad03f03, (CHARACTER)_Tav)
+AND
+GetFlag((FLAG)CAMP_GLO_State_InCamp_161b7223-039d-4ebe-986f-1dcd9a66733f, S_GLO_Ravengard_f6620372-ebd0-4511-a39d-8c2d4ad03f03, 1)
+AND
+IsDead(S_GLO_Ravengard_f6620372-ebd0-4511-a39d-8c2d4ad03f03, 0)
+AND
+HasAppliedStatus(S_GLO_Ravengard_f6620372-ebd0-4511-a39d-8c2d4ad03f03, "INCAPACITATED", 0)
+THEN
+DB_NOOP(1);
+
+
+// This will block the default game over logic such that a custom game over is triggered when all betrayers are dead
+QRY
+QRY_GameOver_BlockGameOver()
+AND
+DB_ReallyShadowheart_Betrayer(_Betrayer)
+AND
+DB_ReallyShadowheart_FightingAvengers(_)
+THEN
+DB_NOOP(1);
+
+//////////////////////////////////////////////////////////////////////////
+//
+// Initialization procedures
+//
+//////////////////////////////////////////////////////////////////////////
+
+
+PROC
+PROC_ReallyShadowheart_InitDBAvengers()
+AND
+NOT DB_ReallyShadowheart_Avengers((CHARACTER)S_GLO_Isobel_263bfbfc-6160-46f4-a9e1-1089cdb5c211)
+THEN
+DB_ReallyShadowheart_Avengers((CHARACTER)S_Player_Wyll_c774d764-4a17-48dc-b470-32ace9ce447d);
+DB_ReallyShadowheart_Avengers((CHARACTER)S_Player_Minsc_0de603c5-42e2-4811-9dad-f652de080eba);
+DB_ReallyShadowheart_Avengers((CHARACTER)S_Player_Jaheira_91b6b200-7d00-4d62-8dc9-99e8339dfa1a);
+DB_ReallyShadowheart_Avengers((CHARACTER)S_Player_Karlach_2c76687d-93a2-477b-8b18-8a14b549304c);
+DB_ReallyShadowheart_Avengers((CHARACTER)S_GLO_Nightsong_6c55edb0-901b-4ba4-b9e8-3475a8392d9b);
+DB_ReallyShadowheart_Avengers((CHARACTER)S_GLO_Isobel_263bfbfc-6160-46f4-a9e1-1089cdb5c211);
+
+PROC
+PROC_ReallyShadowheart_InitDBAvengers()
+AND
+NOT DB_ReallyShadowheart_Avengers((CHARACTER)S_GLO_Ravengard_f6620372-ebd0-4511-a39d-8c2d4ad03f03)
+THEN
+DB_ReallyShadowheart_Avengers(S_GLO_Ravengard_f6620372-ebd0-4511-a39d-8c2d4ad03f03);
+
+//////////////////////////////////////////////////////////////////////////
+//
+// Procedures
+//
+//////////////////////////////////////////////////////////////////////////
+
+// Companion leaves the party
+PROC
+PROC_ReallyShadowheart_CompanionLeavesParty((CHARACTER)_Companion)
+AND
+QRY_GetBestAvatarForCompanion(_Companion)
+AND
+DB_QRYRTN_GetBestAvatarForCompanion(_Companion, _Avatar)
+THEN
+DB_CompanionLeaving(_Companion, _Avatar);
+PROC_Origins_CompanionLeavePermanently(_Companion, "CompanionLowRelation");
+PROC_ClearOriginLeavingDialogs(_Companion);
+PROC_DisappearOutOfSight(_Companion, "Walk", 1, "GLO_CompanionLeaves_LowRelation");
+
+
+// Companion starts the fight
+PROC
+PROC_ReallyShadowheart_AvengersTurnHostile((CHARACTER)_Companion)
+AND
+DB_ReallyShadowheart_Betrayer(_Betrayer)
+AND
+DB_ReallyShadowheart_Avengers(_Avenger)
+AND
+QRY_ReallyShadowheart_CanJoinFight(_Avenger, _Betrayer)
+THEN
+DB_ReallyShadowheart_FightingAvengers(_Avenger);
+CharacterMoveTo(_Avenger, _Companion, "Run", "", 1);
+SetFaction(_Avenger, (FACTION)PVP_1_3d43e9cb-9b68-cd0e-2035-d231338c3e5b);
+
+
+// Betrayers turn hostile
+PROC
+PROC_ReallyShadowheart_BetrayersTurnHostile()
+AND
+DB_Avatars(_Betrayer)
+AND
+NOT DB_ReallyShadowheart_OriginalFactions(_Betrayer, _)
+AND
+GetFaction(_Betrayer, _Faction)
+THEN
+DB_ReallyShadowheart_FightingBetrayers(_Betrayer);
+DB_ReallyShadowheart_OriginalFactions(_Betrayer, _Faction);
+SetFaction(_Betrayer, (FACTION)PVP_2_f828776d-c033-4e30-4de4-cfd2e196a903);
+
+PROC
+PROC_ReallyShadowheart_BetrayersTurnHostile()
+AND
+DB_ReallyShadowheart_Betrayer(_Betrayer)
+AND
+QRY_ReallyShadowheart_CanJoinFight(S_GOB_DrowCommander_25721313-0c15-4935-8176-9f134385451b, _Betrayer)
+AND
+NOT DB_ReallyShadowheart_OriginalFactions(S_GOB_DrowCommander_25721313-0c15-4935-8176-9f134385451b, _)
+AND
+GetFaction(S_GOB_DrowCommander_25721313-0c15-4935-8176-9f134385451b, _Faction)
+THEN
+DB_ReallyShadowheart_FightingBetrayers(S_GOB_DrowCommander_25721313-0c15-4935-8176-9f134385451b);
+DB_ReallyShadowheart_OriginalFactions(S_GOB_DrowCommander_25721313-0c15-4935-8176-9f134385451b, _Faction);
+SetFaction(S_GOB_DrowCommander_25721313-0c15-4935-8176-9f134385451b, (FACTION)PVP_2_f828776d-c033-4e30-4de4-cfd2e196a903);
+CharacterMoveTo(S_GOB_DrowCommander_25721313-0c15-4935-8176-9f134385451b, _Betrayer, "Run", "", 1);
+
+
+// When all avengers are dead, stop the fight and restore factions.
+PROC
+PROC_ReallyShadowheart_AvengerDied()
+AND
+NOT DB_ReallyShadowheart_FightingAvengers(_)
+AND
+DB_ReallyShadowheart_OriginalFactions(_Betrayer, _Faction)
+THEN
+SetFaction(_Betrayer, _Faction);
+NOT DB_ReallyShadowheart_OriginalFactions(_Betrayer, _Faction);
+
+
+
+// When all betrayers are dead, game over.
+PROC
+PROC_ReallyShadowheart_BetrayerDied()
+AND
+NOT DB_ReallyShadowheart_FightingBetrayers(_)
+THEN
+ShowGameOverMenu("GameOver_Betrayal");
+
+
+//////////////////////////////////////////////////////////////////////////
+//
+// Events
+//
+//////////////////////////////////////////////////////////////////////////
+
+
+// Initialization
+PROC
+PROC_ReallyShadowheart_GameStarted()
+THEN
+PROC_ReallyShadowheart_InitDBAvengers();
+
+IF
+FlagSet(LOW_SharGrotto_Event_SurrenderShadowheart_bfc7f3b7-4e58-44e1-bb58-131ee77fc0ad, _, _InstanceID)
+AND
+DialogGetInvolvedPlayer(_InstanceID, 2, _Tav)
+THEN
+DB_ReallyShadowheart_Betrayer((CHARACTER)_Tav);
+
+
+// If Tav betrays Shadowheart, all companions leave to camp
+IF
+DialogEnded((DIALOGRESOURCE)LOW_SharGrotto_ConfrontViconia_OM_Shadowheart_COM_6ebbe983-6aa1-1f25-6fcb-ec0aed2252bd, _)
+AND
+DB_ReallyShadowheart_Betrayer(_Betrayer)
+AND
+DB_Players(_Player)
+AND
+NOT DB_Avatars(_Player)
+THEN
+PROC_GLO_PartyMembers_Remove(_Player, (CHARACTER)_Betrayer, 0, 0);
+
+
+// Clean up DB_ReallyShadowheart_ViconiaSpeaker
+IF
+DialogEnded((DIALOGRESOURCE)LOW_SharGrotto_ConfrontViconia_OM_Shadowheart_COM_6ebbe983-6aa1-1f25-6fcb-ec0aed2252bd, _)
+AND
+DB_ReallyShadowheart_ViconiaSpeaker(_Tav)
+THEN
+NOT DB_ReallyShadowheart_ViconiaSpeaker(_Tav);
+
+
+// All companions know what Tav did.
+//IF
+//FlagSet(Betrayer_1b4b377c-10c2-45eb-a475-6b4944995fbf, _Betrayer, _)
+IF
+DB_ReallyShadowheart_Betrayer(_Betrayer)
+AND
+DB_Origins(_Character)
+AND
+IsAlly(_Character, (CHARACTER)_Betrayer, 1)
+AND
+NOT DB_Avatars(_Character)
+THEN
+SetFlag(ORI_Shadowheart_ShadowheartBetrayed_f78e829a-55cb-4dbf-859e-2f125471fbdc, _Character, 0, 1);
+
+
+// For Minthara, set this additional flag
+//IF
+//FlagSet(Betrayer_1b4b377c-10c2-45eb-a475-6b4944995fbf, _Betrayer, _)
+IF
+DB_ReallyShadowheart_Betrayer(_Betrayer)
+AND
+IsAlly(S_GOB_DrowCommander_25721313-0c15-4935-8176-9f134385451b, (CHARACTER)_Betrayer, 1)
+THEN
+SetFlag(GLO_Minthara_InParty_HasTopicalGreeting_8069e1a8-51b5-afc0-de8c-f5af844f034d, S_GOB_DrowCommander_25721313-0c15-4935-8176-9f134385451b, 0, 1);
+
+
+// If Companion_Permanently_Leaves_Party flag is set on a companion, they leave the party
+IF
+DialogEnded(_, _)
+AND
+DB_ReallyShadowheart_Betrayer(_Betrayer)
+AND
+DB_Origins(_Companion)
+AND
+NOT DB_Avatars(_Companion)
+AND
+IsAlly(_Companion, _Betrayer, 1)
+AND
+GetFlag((FLAG)Companion_Permanently_Leaves_Party_76339e33-bb45-4f1b-9d43-58773590175c, _Companion, 1)
+THEN
+ClearFlag(Companion_Permanently_Leaves_Party_76339e33-bb45-4f1b-9d43-58773590175c, _Companion, 0, 1);
+PROC_ReallyShadowheart_CompanionLeavesParty(_Companion);
+
+
+// Betrayer Tav spoke to a good aligned companion, a fight ensues
+// Avengers vs Betrayers
+IF
+DialogEnded(_, _)
+AND
+DB_ReallyShadowheart_Avengers(_Avenger)
+AND
+GetFlag((FLAG)Companion_Turns_Hostile_b437177d-ac5d-4c44-a927-9a54b7f72bd2, _Avenger, 1)
+THEN
+ClearFlag(Companion_Turns_Hostile_b437177d-ac5d-4c44-a927-9a54b7f72bd2, _Avenger, 0, 1);
+PROC_ReallyShadowheart_SendAllToCamp();
+PROC_ReallyShadowheart_AvengersTurnHostile(_Avenger);
+PROC_ReallyShadowheart_BetrayersTurnHostile();
+
+
+// An avenger is down
+IF
+DB_Dead(_Character)
+AND
+DB_ReallyShadowheart_FightingAvengers(_Character)
+THEN
+DB_ReallyShadowheart_DeadAvengers(_Character);
+NOT DB_ReallyShadowheart_FightingAvengers(_Character);
+PROC_ReallyShadowheart_AvengerDied();
+
+
+// A betrayer is down
+IF
+DB_Dead(_Character)
+AND
+DB_ReallyShadowheart_FightingBetrayers(_Character)
+THEN
+NOT DB_ReallyShadowheart_FightingBetrayers(_Character);
+PROC_ReallyShadowheart_BetrayerDied();
+
+
+// If one of the hostile companions is resurrected, restart the fight
+IF
+Resurrected(_Character)
+AND
+DB_ReallyShadowheart_DeadAvengers(_Character)
+THEN
+TimerLaunch("RestartFighting", 1000);
+
+IF
+TimerFinished("RestartFighting")
+AND
+DB_ReallyShadowheart_DeadAvengers(_Avenger)
+AND
+IsDead(_Avenger, 0)
+THEN
+NOT DB_ReallyShadowheart_DeadAvengers(_Avenger);
+DB_ReallyShadowheart_FightingAvengers(_Avenger);
+PROC_ReallyShadowheart_BetrayersTurnHostile();
+
+
+EXITSECTION
+
+ENDEXITSECTION

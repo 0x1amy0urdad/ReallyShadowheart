@@ -1,0 +1,317 @@
+Version 1
+SubGoalCombiner SGC_AND
+INITSECTION
+NOT DB_ReallyShadowheart_DialogReplacers((DIALOGRESOURCE)NULL_00000000-0000-0000-0000-000000000000, (DIALOGRESOURCE)NULL_00000000-0000-0000-0000-000000000000);
+NOT DB_ReallyShadowheart_InterceptedDialogs(
+	0,
+	(DIALOGRESOURCE)NULL_00000000-0000-0000-0000-000000000000,
+	(DIALOGRESOURCE)NULL_00000000-0000-0000-0000-000000000000,
+	(GUIDSTRING)NULL_00000000-0000-0000-0000-000000000000,
+	(GUIDSTRING)NULL_00000000-0000-0000-0000-000000000000);
+NOT DB_ReallyShadowheart_InterceptedDialogs(
+	0,
+	(DIALOGRESOURCE)NULL_00000000-0000-0000-0000-000000000000,
+	(DIALOGRESOURCE)NULL_00000000-0000-0000-0000-000000000000,
+	(GUIDSTRING)NULL_00000000-0000-0000-0000-000000000000,
+	(GUIDSTRING)NULL_00000000-0000-0000-0000-000000000000,
+	(GUIDSTRING)NULL_00000000-0000-0000-0000-000000000000);
+NOT DB_ReallyShadowheart_InterceptedDialogs(
+	0,
+	(DIALOGRESOURCE)NULL_00000000-0000-0000-0000-000000000000,
+	(DIALOGRESOURCE)NULL_00000000-0000-0000-0000-000000000000,
+	(GUIDSTRING)NULL_00000000-0000-0000-0000-000000000000,
+	(GUIDSTRING)NULL_00000000-0000-0000-0000-000000000000,
+	(GUIDSTRING)NULL_00000000-0000-0000-0000-000000000000,
+	(GUIDSTRING)NULL_00000000-0000-0000-0000-000000000000);
+NOT DB_ReallyShadowheart_InterceptedDialogs(
+	0,
+	(DIALOGRESOURCE)NULL_00000000-0000-0000-0000-000000000000,
+	(DIALOGRESOURCE)NULL_00000000-0000-0000-0000-000000000000,
+	(GUIDSTRING)NULL_00000000-0000-0000-0000-000000000000,
+	(GUIDSTRING)NULL_00000000-0000-0000-0000-000000000000,
+	(GUIDSTRING)NULL_00000000-0000-0000-0000-000000000000,
+	(GUIDSTRING)NULL_00000000-0000-0000-0000-000000000000,
+	(GUIDSTRING)NULL_00000000-0000-0000-0000-000000000000);
+NOT DB_ReallyShadowheart_InterceptedDialogs(
+	0,
+	(DIALOGRESOURCE)NULL_00000000-0000-0000-0000-000000000000,
+	(DIALOGRESOURCE)NULL_00000000-0000-0000-0000-000000000000,
+	(GUIDSTRING)NULL_00000000-0000-0000-0000-000000000000,
+	(GUIDSTRING)NULL_00000000-0000-0000-0000-000000000000,
+	(GUIDSTRING)NULL_00000000-0000-0000-0000-000000000000,
+	(GUIDSTRING)NULL_00000000-0000-0000-0000-000000000000,
+	(GUIDSTRING)NULL_00000000-0000-0000-0000-000000000000,
+	(GUIDSTRING)NULL_00000000-0000-0000-0000-000000000000);
+
+NOT DB_ReallyShadowheart_Speakers(0, 0, (GUIDSTRING)NULL_00000000-0000-0000-0000-000000000000);
+
+KBSECTION
+// Always block everyone from joining Tav/Shadowheart chatter
+QRY
+QRY_Inclusion_BlockCompanionInclusion((GUIDSTRING)_Speaker, (DIALOGRESOURCE)ReallyShadowheart_Shadowheart_InParty_95ca3833-09d0-5772-b16a-c7a5e9208fe5)
+THEN
+DB_NOOP(1);
+
+QRY
+QRY_Inclusion_BlockCompanionInclusion((GUIDSTRING)_Speaker, (DIALOGRESOURCE)ReallyShadowheart_Shadowheart_InParty_7bfa521a-93c7-4c5e-bab8-3f2fc3d2c3e0)
+THEN
+DB_NOOP(1);
+
+// Always false
+QRY
+QRY_ReallyShadowheart_EnableDialogInterception()
+AND
+DB_ReallyShadowheart_NOOP(42)
+THEN
+DB_ReallyShadowheart_NOOP(1);
+
+
+PROC
+PROC_ReallyShadowheart_InitializeDialogReplacers()
+AND
+QRY_ReallyShadowheart_EnableDialogInterception()
+THEN
+//DB_ReallyShadowheart_DialogReplacers((DIALOGRESOURCE)NULL_00000000-0000-0000-0000-000000000000, (DIALOGRESOURCE)NULL_00000000-0000-0000-0000-000000000000);
+DB_ReallyShadowheart_DialogReplacers((DIALOGRESOURCE)Shadowheart_InParty_95ca3833-09d0-5772-b16a-c7a5e9208fe5, (DIALOGRESOURCE)Shadowheart_InParty_7bfa521a-93c7-4c5e-bab8-3f2fc3d2c3e0);
+DB_ReallyShadowheart_DialogReplacers((DIALOGRESOURCE)CAMP_Shadowheart_Nightfall_SD_ROM_0a86b0b6-4ebc-d1f1-d537-715983e22c26, (DIALOGRESOURCE)CAMP_Shadowheart_Nightfall_SD_ROM_6088ea97-8096-491c-99a4-a6655bc55f39);
+DB_ReallyShadowheart_DialogReplacers((DIALOGRESOURCE)CAMP_GoblinHuntCelebration_SD_ROM_NightWithShadowheart_924fb8e6-8622-bc02-43c8-77c80ddc1d3e, (DIALOGRESOURCE)CAMP_GoblinHuntCelebration_SD_ROM_NightWithShadowheart_befc9016-bce6-44d2-8d98-7fcd574d8052);
+DB_ReallyShadowheart_DialogReplacers((DIALOGRESOURCE)CAMP_Shadowheart_SkinnyDipping_SD_ROM_700d677f-1bfd-1c83-8530-0db12875c33b, (DIALOGRESOURCE)CAMP_Shadowheart_SkinnyDipping_SD_ROM_282d4a7a-344b-458e-81a2-4caa1261795b);
+DB_ReallyShadowheart_DialogReplacers((DIALOGRESOURCE)END_GameFinale_RomanceFates_Shadowheart_b9ebb9af-ad65-4e64-6015-105e831d49c0, (DIALOGRESOURCE)END_GameFinale_RomanceFates_Shadowheart_cc9cf429-3540-4d54-ad96-44b5ff1981b8);
+DB_ReallyShadowheart_DialogReplacers((DIALOGRESOURCE)CAMP_Shadowheart_CRD_SkinnyDippingRomance_dfb63080-93da-035a-0435-56eee35a63c0, (DIALOGRESOURCE)CAMP_Shadowheart_CRD_SkinnyDippingRomance_d52f1b7e-9f35-4a5e-8a4f-4663c79e52ff);
+DB_ReallyShadowheart_DialogReplacers((DIALOGRESOURCE)CAMP_Shadowheart_DaughterTears_SD_c0f0d040-7590-fbd6-26fd-760874706059, (DIALOGRESOURCE)CAMP_Shadowheart_DaughterTears_SD_dcef3803-c878-4a88-a9fd-60136235c4d0);
+DB_NOOP(1);
+
+
+// Hooked PROC
+PROC
+PROC_StartDialog_ChangeClothing((DIALOGRESOURCE)_Dialog, (INTEGER)_DialogInstance)
+AND
+QRY_ReallyShadowheart_EnableDialogInterception()
+AND
+DB_ReallyShadowheart_DialogReplacers(_Dialog, _)
+AND
+DB_DialogRequestCache_SpeakerList_Speakers(_Dialog, _DialogInstance, _Speaker, _SpeakerIndex)
+THEN
+DB_ReallyShadowheart_Speakers(_DialogInstance, _SpeakerIndex, _Speaker);
+
+
+PROC
+PROC_ReallyShadowheart_InterceptDialog((DIALOGRESOURCE)_Dialog, (INTEGER)_InterceptedInstanceID)
+AND
+DB_ReallyShadowheart_DialogReplacers(_Dialog, _Replacer)
+AND
+DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 1, _Speaker1)
+AND
+DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 2, _Speaker2)
+AND
+DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 3, _Speaker3)
+AND
+DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 4, _Speaker4)
+AND
+DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 5, _Speaker5)
+AND
+DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 6, _Speaker6)
+THEN
+DB_ReallyShadowheart_InterceptedDialogs(_InterceptedInstanceID, _Dialog, _Replacer, _Speaker1, _Speaker2, _Speaker3, _Speaker4, _Speaker5, _Speaker6);
+DialogRequestStopForDialog(_Dialog, _Speaker1);
+
+PROC
+PROC_ReallyShadowheart_InterceptDialog((DIALOGRESOURCE)_Dialog, (INTEGER)_InterceptedInstanceID)
+AND
+DB_ReallyShadowheart_DialogReplacers(_Dialog, _Replacer)
+AND
+DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 1, _Speaker1)
+AND
+DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 2, _Speaker2)
+AND
+DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 3, _Speaker3)
+AND
+DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 4, _Speaker4)
+AND
+DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 5, _Speaker5)
+THEN
+DB_ReallyShadowheart_InterceptedDialogs(_InterceptedInstanceID, _Dialog, _Replacer, _Speaker1, _Speaker2, _Speaker3, _Speaker4, _Speaker5);
+DialogRequestStopForDialog(_Dialog, _Speaker1);
+
+PROC
+PROC_ReallyShadowheart_InterceptDialog((DIALOGRESOURCE)_Dialog, (INTEGER)_InterceptedInstanceID)
+AND
+DB_ReallyShadowheart_DialogReplacers(_Dialog, _Replacer)
+AND
+DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 1, _Speaker1)
+AND
+DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 2, _Speaker2)
+AND
+DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 3, _Speaker3)
+AND
+DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 4, _Speaker4)
+THEN
+DB_ReallyShadowheart_InterceptedDialogs(_InterceptedInstanceID, _Dialog, _Replacer, _Speaker1, _Speaker2, _Speaker3, _Speaker4);
+DialogRequestStopForDialog(_Dialog, _Speaker1);
+
+PROC
+PROC_ReallyShadowheart_InterceptDialog((DIALOGRESOURCE)_Dialog, (INTEGER)_InterceptedInstanceID)
+AND
+DB_ReallyShadowheart_DialogReplacers(_Dialog, _Replacer)
+AND
+DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 1, _Speaker1)
+AND
+DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 2, _Speaker2)
+AND
+DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 3, _Speaker3)
+THEN
+DB_ReallyShadowheart_InterceptedDialogs(_InterceptedInstanceID, _Dialog, _Replacer, _Speaker1, _Speaker2, _Speaker3);
+DialogRequestStopForDialog(_Dialog, _Speaker1);
+
+PROC
+PROC_ReallyShadowheart_InterceptDialog((DIALOGRESOURCE)_Dialog, (INTEGER)_InterceptedInstanceID)
+AND
+DB_ReallyShadowheart_DialogReplacers(_Dialog, _Replacer)
+AND
+DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 1, _Speaker1)
+AND
+DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 2, _Speaker2)
+THEN
+DB_ReallyShadowheart_InterceptedDialogs(_InterceptedInstanceID, _Dialog, _Replacer, _Speaker1, _Speaker2);
+DialogRequestStopForDialog(_Dialog, _Speaker1);
+
+QRY
+QRY_ReallyShadowheart_ReplaceDialog((DIALOGRESOURCE)_InterceptedDialog, (INTEGER)_InterceptedInstanceID)
+AND
+DB_ReallyShadowheart_InterceptedDialogs(_InterceptedInstanceID, _InterceptedDialog, _Replacer, _Speaker1, _Speaker2, _Speaker3, _Speaker4, _Speaker5, _Speaker6)
+AND
+QRY_StartDialog_Fixed((DIALOGRESOURCE)_Replacer, _Speaker1, _Speaker2, _Speaker3, _Speaker4, _Speaker5, _Speaker6)
+THEN
+NOT DB_ReallyShadowheart_InterceptedDialogs(_InterceptedInstanceID, _InterceptedDialog, _Replacer, _Speaker1, _Speaker2, _Speaker3, _Speaker4, _Speaker5, _Speaker6);
+//NOT DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 1, _Speaker1);
+//NOT DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 2, _Speaker2);
+//NOT DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 3, _Speaker3);
+//NOT DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 4, _Speaker4);
+//NOT DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 5, _Speaker5);
+//NOT DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 6, _Speaker6);
+
+QRY
+QRY_ReallyShadowheart_ReplaceDialog((DIALOGRESOURCE)_InterceptedDialog, (INTEGER)_InterceptedInstanceID)
+AND
+DB_ReallyShadowheart_InterceptedDialogs(_InterceptedInstanceID, _InterceptedDialog, _Replacer, _Speaker1, _Speaker2, _Speaker3, _Speaker4, _Speaker5)
+AND
+QRY_StartDialog_Fixed((DIALOGRESOURCE)_Replacer, _Speaker1, _Speaker2, _Speaker3, _Speaker4, _Speaker5)
+THEN
+NOT DB_ReallyShadowheart_InterceptedDialogs(_InterceptedInstanceID, _InterceptedDialog, _Replacer, _Speaker1, _Speaker2, _Speaker3, _Speaker4, _Speaker5);
+//NOT DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 1, _Speaker1);
+//NOT DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 2, _Speaker2);
+//NOT DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 3, _Speaker3);
+//NOT DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 4, _Speaker4);
+//NOT DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 5, _Speaker5);
+
+QRY
+QRY_ReallyShadowheart_ReplaceDialog((DIALOGRESOURCE)_InterceptedDialog, (INTEGER)_InterceptedInstanceID)
+AND
+DB_ReallyShadowheart_InterceptedDialogs(_InterceptedInstanceID, _InterceptedDialog, _Replacer, _Speaker1, _Speaker2, _Speaker3, _Speaker4)
+AND
+QRY_StartDialog_Fixed((DIALOGRESOURCE)_Replacer, _Speaker1, _Speaker2, _Speaker3, _Speaker4)
+THEN
+NOT DB_ReallyShadowheart_InterceptedDialogs(_InterceptedInstanceID, _InterceptedDialog, _Replacer, _Speaker1, _Speaker2, _Speaker3, _Speaker4);
+//NOT DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 1, _Speaker1);
+//NOT DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 2, _Speaker2);
+//NOT DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 3, _Speaker3);
+//NOT DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 4, _Speaker4);
+
+QRY
+QRY_ReallyShadowheart_ReplaceDialog((DIALOGRESOURCE)_InterceptedDialog, (INTEGER)_InterceptedInstanceID)
+AND
+DB_ReallyShadowheart_InterceptedDialogs(_InterceptedInstanceID, _InterceptedDialog, _Replacer, _Speaker1, _Speaker2, _Speaker3)
+AND
+QRY_StartDialog_Fixed((DIALOGRESOURCE)_Replacer, _Speaker1, _Speaker2, _Speaker3)
+THEN
+NOT DB_ReallyShadowheart_InterceptedDialogs(_InterceptedInstanceID, _InterceptedDialog, _Replacer, _Speaker1, _Speaker2, _Speaker3);
+//NOT DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 1, _Speaker1);
+//NOT DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 2, _Speaker2);
+//NOT DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 3, _Speaker3);
+
+QRY
+QRY_ReallyShadowheart_ReplaceDialog((DIALOGRESOURCE)_InterceptedDialog, (INTEGER)_InterceptedInstanceID)
+AND
+DB_ReallyShadowheart_InterceptedDialogs(_InterceptedInstanceID, _InterceptedDialog, _Replacer, _Speaker1, _Speaker2)
+AND
+QRY_StartDialog_Fixed((DIALOGRESOURCE)_Replacer, _Speaker1, _Speaker2)
+THEN
+NOT DB_ReallyShadowheart_InterceptedDialogs(_InterceptedInstanceID, _InterceptedDialog, _Replacer, _Speaker1, _Speaker2);
+//NOT DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 1, _Speaker1);
+//NOT DB_ReallyShadowheart_Speakers(_InterceptedInstanceID, 2, _Speaker2);
+
+PROC
+PROC_ReallyShadowheart_GameStarted()
+THEN
+PROC_ReallyShadowheart_InitializeDialogReplacers();
+
+PROC
+PROC_ReallyShadowheart_GameStarted()
+AND
+QRY_ReallyShadowheart_EnableDialogInterception()
+THEN
+DB_Achievements_UnlockAfterDialogGlobalFlag(
+	"BG3_Quest48",
+	(FLAG)ORI_Shadowheart_State_NightsongPoint_GaveNightOrchid_cd01256d-93df-4d80-8d94-1233fe16ddf6,
+	(DIALOGRESOURCE)ShadowHeart_InParty_7bfa521a-93c7-4c5e-bab8-3f2fc3d2c3e0);
+DB_Achievements_UnlockAfterDialogGlobalFlag(
+	"BG3_Quest48",
+	(FLAG)ORI_Shadowheart_State_NightsongPoint_GaveNightOrchid_cd01256d-93df-4d80-8d94-1233fe16ddf6,
+	(DIALOGRESOURCE)ShadowHeart_InParty2_Nested_ShadowCurseChapter_f636b706-aa7b-43f6-9dee-09c5d236f8ba);
+
+
+IF
+DialogStarted(_Dialog, _InstanceID)
+AND
+QRY_ReallyShadowheart_EnableDialogInterception()
+THEN
+PROC_ReallyShadowheart_InterceptDialog(_Dialog, _InstanceID);
+
+IF
+DialogEnded(_Dialog, _InstanceID)
+AND
+QRY_ReallyShadowheart_EnableDialogInterception()
+AND
+QRY_ReallyShadowheart_ReplaceDialog(_Dialog, _InstanceID)
+THEN
+DB_ReallyShadowheart_NOOP(1);
+
+
+// Origin moment in the cloister
+PROC
+PROC_LOW_SharGrotto_ViconiaConfrontation_DefineExtraSpeakers((STRING)_Group)
+AND
+QRY_ReallyShadowheart_EnableDialogInterception()
+AND
+DB_LOW_SharGrotto_ConfrontationParticipants(_Group, _NPC)
+THEN
+DB_OriginMoment_ExtraNPCs((DIALOGRESOURCE)LOW_SharGrotto_ConfrontViconia_OM_Shadowheart_COM_356a5943-0a7c-4204-8175-6f68e82bb964, _NPC);
+
+IF
+DialogEnded(_, _)
+AND
+QRY_ReallyShadowheart_EnableDialogInterception()
+AND
+DB_GlobalFlag((FLAG)ORI_Shadowheart_Knows_HasSeenWolfDream_f7e48f6a-bc8b-4941-8016-6622956c84f9)
+AND
+DB_GlobalFlag((FLAG)ORI_Shadowheart_State_NightsongPoint_AbuseEmancipation_d4590c8c-8746-4344-9f4c-a5d366bd2bb8)
+AND
+QRY_OnlyOnce("ORI_Shadowheart_WolfDreamEntry")
+THEN
+QuestUpdate((CHARACTER)S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, "ORI_COM_ShadowHeart", "WolfDreamSharedAbuse");
+
+IF
+DialogEnded(_, _)
+AND
+QRY_ReallyShadowheart_EnableDialogInterception()
+AND
+DB_GlobalFlag((FLAG)ORI_Shadowheart_Knows_HasSeenWolfDream_f7e48f6a-bc8b-4941-8016-6622956c84f9)
+AND
+NOT DB_GlobalFlag((FLAG)ORI_Shadowheart_State_NightsongPoint_AbuseEmancipation_d4590c8c-8746-4344-9f4c-a5d366bd2bb8)
+AND
+QRY_OnlyOnce("ORI_Shadowheart_WolfDreamEntry")
+THEN
+QuestUpdate((CHARACTER)S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, "ORI_COM_ShadowHeart", "WolfDreamShared");
+EXITSECTION
+
+ENDEXITSECTION

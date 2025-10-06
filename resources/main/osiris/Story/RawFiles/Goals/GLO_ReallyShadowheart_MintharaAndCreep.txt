@@ -1,0 +1,136 @@
+Version 1
+SubGoalCombiner SGC_AND
+INITSECTION
+NOT DB_ReallyShadowheart_HalsinMintharaConfrontationStarted(0);
+
+NOT DB_ReallyShadowheart_OrinTakesTheDruid(0);
+KBSECTION
+PROC
+PROC_ReallyShadowheart_CheckWhosLeaving()
+AND
+GetFlag((FLAG)Companion_Leaves_Party_363c71f4-8b46-c0c0-4bbb-0e5a85e4652d,(CHARACTER)S_GOB_DrowCommander_25721313-0c15-4935-8176-9f134385451b, 1)
+THEN
+PROC_ReallyShadowheart_CompanionLeavesParty((CHARACTER)S_GOB_DrowCommander_25721313-0c15-4935-8176-9f134385451b);
+
+
+PROC
+PROC_ReallyShadowheart_CheckWhosLeaving()
+AND
+GetFlag((FLAG)Companion_Leaves_Party_363c71f4-8b46-c0c0-4bbb-0e5a85e4652d,(CHARACTER)S_GLO_Halsin_7628bc0e-52b8-42a7-856a-13a6fd413323, 1)
+THEN
+PROC_ReallyShadowheart_CompanionLeavesParty((CHARACTER)S_GLO_Halsin_7628bc0e-52b8-42a7-856a-13a6fd413323);
+
+
+// If Tav is partnered, the creep starts the quarrel
+PROC
+PROC_ReallyShadowheart_TimerLaunch_HalsinMintharaConfrontationStart((CHARACTER)_Tav)
+AND
+GetFlag((FLAG)ORI_State_Partnered_6c1a31e8-1d3d-42a5-af4f-72ef7a798f74, _Tav, 1)
+THEN
+TimerLaunch("ReallyShadowheart_HalsinMintharaConfrontationStart", 500);
+
+
+// If Tav is not partnered, the creep hits on them and won't speak up
+PROC
+PROC_ReallyShadowheart_TimerLaunch_HalsinMintharaConfrontationStart((CHARACTER)_Tav)
+AND
+GetFlag((FLAG)ORI_State_Partnered_6c1a31e8-1d3d-42a5-af4f-72ef7a798f74, _Tav, 0)
+THEN
+DB_ReallyShadowheart_HalsinMintharaConfrontationStarted(1);
+
+
+IF
+DialogEnded((DIALOGRESOURCE)INT_GithyankiAmbush_ArriveIntermezzo_4ee4a046-14f5-db6e-0cf1-23e9b6af8bfa, _)
+AND
+QRY_GetBestAvatarForCompanion((CHARACTER)S_GLO_Halsin_7628bc0e-52b8-42a7-856a-13a6fd413323)
+AND
+DB_QRYRTN_GetBestAvatarForCompanion((CHARACTER)S_GLO_Halsin_7628bc0e-52b8-42a7-856a-13a6fd413323, _Tav)
+THEN
+PROC_ReallyShadowheart_TimerLaunch_HalsinMintharaConfrontationStart(_Tav);
+
+
+IF
+TimerFinished("ReallyShadowheart_HalsinMintharaConfrontationStart")
+AND
+DB_PartOfTheTeam((CHARACTER)S_GLO_Halsin_7628bc0e-52b8-42a7-856a-13a6fd413323)
+AND
+DB_PartOfTheTeam((CHARACTER)S_GOB_DrowCommander_25721313-0c15-4935-8176-9f134385451b)
+AND
+QRY_GetBestAvatarForCompanion((CHARACTER)S_GLO_Halsin_7628bc0e-52b8-42a7-856a-13a6fd413323)
+AND
+DB_QRYRTN_GetBestAvatarForCompanion((CHARACTER)S_GLO_Halsin_7628bc0e-52b8-42a7-856a-13a6fd413323, _Tav)
+AND
+GetDistanceTo(_Tav, S_GLO_Halsin_7628bc0e-52b8-42a7-856a-13a6fd413323, _Distance)
+AND
+_Distance < 12.0
+AND
+NOT DB_ReallyShadowheart_HalsinMintharaConfrontationStarted(1)
+AND
+QRY_StartDialog_Fixed((DIALOGRESOURCE)CAMP_Halsin_Minthara_CFM_Confrontation_e06aa537-c287-4815-d8b2-591f5c1e7b52, S_GLO_Halsin_7628bc0e-52b8-42a7-856a-13a6fd413323, S_GOB_DrowCommander_25721313-0c15-4935-8176-9f134385451b, _Tav)
+THEN
+DB_ReallyShadowheart_HalsinMintharaConfrontationStarted(1);
+
+
+IF
+TimerFinished("ReallyShadowheart_HalsinMintharaConfrontationStart")
+AND
+NOT DB_ReallyShadowheart_HalsinMintharaConfrontationStarted(1)
+THEN
+TimerLaunch("ReallyShadowheart_HalsinMintharaConfrontationStart", 500);
+
+
+IF
+DialogEnded(CAMP_Halsin_Minthara_CFM_Confrontation_e06aa537-c287-4815-d8b2-591f5c1e7b52, _)
+THEN
+PROC_ReallyShadowheart_CheckWhosLeaving();
+
+
+// Fallback: if players ends the night without talking to the creep
+PROC
+PROC_Camp_TryLeaveNightMode_CampNightCheck((CHARACTER)_Player)
+AND
+GetFlag((FLAG)CURRENTREGION_INT_Main_A_7f78a1d7-3e5e-4cd2-8fcd-f751b01c0ee0, NULL_00000000-0000-0000-0000-000000000000, 1)
+AND
+NOT DB_ReallyShadowheart_HalsinMintharaConfrontationStarted(1)
+AND
+QRY_GetBestAvatarForCompanion((CHARACTER)S_GLO_Halsin_7628bc0e-52b8-42a7-856a-13a6fd413323)
+AND
+DB_QRYRTN_GetBestAvatarForCompanion((CHARACTER)S_GLO_Halsin_7628bc0e-52b8-42a7-856a-13a6fd413323, _Tav)
+AND
+QRY_StartDialog_Fixed((DIALOGRESOURCE)CAMP_Halsin_Minthara_CFM_Confrontation_e06aa537-c287-4815-d8b2-591f5c1e7b52, S_GLO_Halsin_7628bc0e-52b8-42a7-856a-13a6fd413323, S_GOB_DrowCommander_25721313-0c15-4935-8176-9f134385451b, _Tav)
+THEN
+DB_ReallyShadowheart_HalsinMintharaConfrontationStarted(1);
+NOT DB_Camp_GoingToSleep(1);
+
+
+// These procedures make Orin to prioritize the druid over other companions.
+PROC
+PROC_ReallyShadowheart_OrinTakesDruidFirst()
+AND
+DB_GEN_OrinsAbduction_AbducteeList(_CharacterName, _Character, _CampfireMoment)
+THEN
+NOT DB_GEN_OrinsAbduction_AbducteeList(_CharacterName, _Character, _CampfireMoment);
+
+PROC
+PROC_ReallyShadowheart_OrinTakesDruidFirst()
+THEN
+DB_GEN_OrinsAbduction_AbducteeList("Halsin", (CHARACTER)S_GLO_Halsin_7628bc0e-52b8-42a7-856a-13a6fd413323, CAMP_OrinAbduction_CFM_Halsin_35d0f127-5932-65a5-241c-d97b2d6a7ebc);
+DB_GEN_OrinsAbduction_AbducteeList("Laezel", (CHARACTER)S_Player_Laezel_58a69333-40bf-8358-1d17-fff240d7fb12, CAMP_OrinAbduction_CFM_Laezel_23ce00ef-2178-950c-42bf-30f4e6cba0d9);
+DB_GEN_OrinsAbduction_AbducteeList("Gale", (CHARACTER)S_Player_Gale_ad9af97d-75da-406a-ae13-7071c563f604, CAMP_OrinAbduction_CFM_Gale_9b6d59ec-165e-5bf1-7219-0ef7b02e3c63);
+DB_GEN_OrinsAbduction_AbducteeList("Minthara", (CHARACTER)S_GOB_DrowCommander_25721313-0c15-4935-8176-9f134385451b, CAMP_OrinAbduction_CFM_Minthara_c5574476-5235-147f-d7e7-b021abfd0891);
+DB_GEN_OrinsAbduction_AbducteeList("Yenna", (CHARACTER)S_GLO_Yenna_d496d903-d3d6-4314-a324-18542de77b0f, CAMP_OrinAbduction_CFM_Yenna_eee61c9f-3d9c-86bf-06bf-d0eec00df54d);
+DB_ReallyShadowheart_OrinTakesTheDruid(1);
+
+PROC
+PROC_ReallyShadowheart_GameStarted()
+AND
+NOT DB_ReallyShadowheart_OrinTakesTheDruid(1)
+AND
+GetHostCharacter(_Player)
+AND
+GetRegion(_Player, "BGO_Main_A")
+THEN
+PROC_ReallyShadowheart_OrinTakesDruidFirst();
+EXITSECTION
+
+ENDEXITSECTION

@@ -1,0 +1,73 @@
+Version 1
+SubGoalCombiner SGC_AND
+INITSECTION
+
+KBSECTION
+PROC
+PROC_ReallyShadowheart_InitBackground()
+AND
+NOT DB_GLO_Backgrounds_Goal((TAG)ACOLYTE_906d1961-e9c6-4170-b775-62797a0efe1c, "Act3_Acolyte_StickToYourMorals", 9f83d20a-f717-4c3c-891a-6d427ea61062)
+THEN
+DB_GLO_Backgrounds_Goal((TAG)ACOLYTE_906d1961-e9c6-4170-b775-62797a0efe1c, "Act3_Acolyte_StickToYourMorals", 9f83d20a-f717-4c3c-891a-6d427ea61062);
+DB_GLO_Backgrounds_ChainAfterGlobalFlagPartyWide((FLAG)Acolyte_StickToYourMorals_f54ead6e-929c-4ad9-86a4-acf352c3eee8, "Act3_Acolyte_StickToYourMorals");
+
+PROC
+PROC_ReallyShadowheart_InitBackground()
+AND
+NOT DB_GLO_Backgrounds_Goal((TAG)URCHIN_2faee476-d77b-42a7-a4c6-2b9ac934673c, "Act3_Urchin_WhenLessIsMore", ede620ed-a17d-434a-b8a8-fa4538120cd6)
+THEN
+DB_GLO_Backgrounds_Goal((TAG)URCHIN_2faee476-d77b-42a7-a4c6-2b9ac934673c, "Act3_Urchin_WhenLessIsMore", ede620ed-a17d-434a-b8a8-fa4538120cd6);
+DB_GLO_Backgrounds_ChainAfterGlobalFlagPartyWide((FLAG)Urchin_WhenLessIsMore_ab9fa289-dae9-486c-8cd8-35953da26834, "Act3_Urchin_WhenLessIsMore");
+
+PROC
+PROC_ReallyShadowheart_FixBackgroundGoals()
+AND
+NOT DB_GLO_Backgrounds_ChainAfterGlobalFlagInDialog((FLAG)WYR_SharessCaress_NymphRoom_State_Rewarded_d4544fdc-6991-42eb-83d3-865cd7050877, "Act3_Acolyte_ServicedBySharessCaress")
+THEN
+DB_GLO_Backgrounds_ChainAfterGlobalFlagInDialog((FLAG)WYR_SharessCaress_NymphRoom_State_Rewarded_d4544fdc-6991-42eb-83d3-865cd7050877, "Act3_Acolyte_ServicedBySharessCaress");
+
+PROC
+PROC_ReallyShadowheart_FixBackgroundGoals()
+AND
+DB_GLO_Backgrounds_ChainAfterCharacterFlag((FLAG)WYR_DapperDrow_State_HiredBoth_4dc060ee-1076-ba53-8663-e436665b4800, "Act3_Acolyte_ServicedBySharessCaress")
+THEN
+NOT DB_GLO_Backgrounds_ChainAfterCharacterFlag((FLAG)WYR_DapperDrow_State_HiredBoth_4dc060ee-1076-ba53-8663-e436665b4800, "Act3_Acolyte_ServicedBySharessCaress");
+
+PROC
+PROC_ReallyShadowheart_FixBackgroundGoals()
+AND
+DB_GLO_Backgrounds_ChainAfterCharacterFlag((FLAG)WYR_DapperDrow_State_HiredSister_390a05d9-0313-095d-1356-1884bdf6273e, "Act3_Acolyte_ServicedBySharessCaress")
+THEN
+NOT DB_GLO_Backgrounds_ChainAfterCharacterFlag((FLAG)WYR_DapperDrow_State_HiredSister_390a05d9-0313-095d-1356-1884bdf6273e, "Act3_Acolyte_ServicedBySharessCaress");
+
+PROC
+PROC_ReallyShadowheart_FixBackgroundGoals()
+AND
+DB_GLO_Backgrounds_ChainAfterCharacterFlag((FLAG)WYR_DapperDrow_State_HiredBrother_e0d6ad5e-c5d4-9d8c-8c6f-997694d6f7b8, "Act3_Acolyte_ServicedBySharessCaress")
+THEN
+NOT DB_GLO_Backgrounds_ChainAfterCharacterFlag((FLAG)WYR_DapperDrow_State_HiredBrother_e0d6ad5e-c5d4-9d8c-8c6f-997694d6f7b8, "Act3_Acolyte_ServicedBySharessCaress");
+
+IF
+LevelLoaded("BGO_Main_A")
+THEN
+TimerLaunch("ReallyShadowheart_InitBackground", 2000);
+
+IF
+TimerFinished("ReallyShadowheart_InitBackground")
+THEN
+PROC_ReallyShadowheart_InitBackground();
+PROC_ReallyShadowheart_FixBackgroundGoals();
+
+IF
+DialogEnded((DIALOGRESOURCE)WYR_DapperDrow_SiblingsThreeWay_86e1a78a-6cbe-0af6-5cdb-2db1c0f466d5, _)
+AND
+DB_Avatars(_Character)
+AND
+GetFlag((FLAG)Shadowheart_State_RejectedDapperDrow3some_e9d590df-3c6e-48c5-b19e-7ad3899b4eab, _Character, 1)
+AND
+GetFlag((FLAG)Shadowheart_State_RejectedDapperDrow_0ff9ee19-b9ca-40e1-b67f-f5f172fb83f9, _Character, 1)
+THEN
+PROC_GlobalSetFlagAndCache((FLAG)Acolyte_StickToYourMorals_f54ead6e-929c-4ad9-86a4-acf352c3eee8);
+EXITSECTION
+
+ENDEXITSECTION

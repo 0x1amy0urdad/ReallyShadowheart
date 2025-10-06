@@ -1,0 +1,314 @@
+Version 1
+SubGoalCombiner SGC_AND
+INITSECTION
+NOT DB_ReallyShadowheart_CoupleInBed((CHARACTER)NULL_00000000-0000-0000-0000-000000000000, (CHARACTER)NULL_00000000-0000-0000-0000-000000000000);
+NOT DB_ReallyShadowheart_CAMP_SkipSleepCutscene(0);
+NOT DB_ReallyShadowheart_CAMP_SleepCutscene("", (DIALOGRESOURCE)NULL_00000000-0000-0000-0000-000000000000);
+KBSECTION
+//////////////////////////////////////////////////////////////////////////
+//
+// Initialization
+//
+//////////////////////////////////////////////////////////////////////////
+
+PROC
+PROC_ReallyShadowheart_InitNightSleep()
+AND
+DB_ReallyShadowheart_CoupleInBed(_Character1, _Character2)
+THEN
+NOT DB_ReallyShadowheart_CoupleInBed(_Character1, _Character2);
+
+PROC
+PROC_ReallyShadowheart_InitNightSleep()
+AND
+DB_GlobalFlag((FLAG)GLO_CAMP_State_NightMode_fb53edc2-9a89-4ad2-af83-20b5fe425cdd)
+AND
+DB_Avatars(_Tav)
+AND
+GetFlag(Shadowheart_Tav_Sleep_Together_0187f803-6b3c-4249-b5a8-0e968306978b, _Tav, 1)
+THEN
+DB_CAMP_SkipSleepCutscene(1);
+
+PROC
+PROC_ReallyShadowheart_InitNightSleep()
+AND
+NOT DB_ReallyShadowheart_CAMP_SleepCutscene(_, _)
+THEN
+DB_ReallyShadowheart_CAMP_SleepCutscene("FARM", (DIALOGRESOURCE)CAMP_FARM_SleepCutscene_8a3df1b7-0ecf-a20f-922b-dbb4a54242f1);
+DB_ReallyShadowheart_CAMP_SleepCutscene("SLUMS", (DIALOGRESOURCE)CAMP_SLUMS_SleepCutscene_7ae7f235-e8a0-3478-628a-1a7529a4b1a8);
+DB_ReallyShadowheart_CAMP_SleepCutscene("ELFSONG", (DIALOGRESOURCE)CAMP_ELFSONG_SleepCutscene_e48d2f0b-a1c8-67be-10cd-cd3457e5f8be);
+
+
+//////////////////////////////////////////////////////////////////////////
+//
+// Procedural hooks
+//
+//////////////////////////////////////////////////////////////////////////
+
+// This prevents Tav from going to bed before speaking to Shadowheart
+
+// Skinny Dipping CRD
+IF
+DB_HandlingRelationshipDialog(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, CAMP_Shadowheart_CRD_SkinnyDippingRomance_dfb63080-93da-035a-0435-56eee35a63c0, _, _, _, _)
+THEN
+DB_Camp_RequiredTalks(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679);
+DB_Camp_RequiredTalks(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, CAMP_Shadowheart_CRD_SkinnyDippingRomance_dfb63080-93da-035a-0435-56eee35a63c0);
+
+IF
+DialogEnded(CAMP_Shadowheart_CRD_SkinnyDippingRomance_dfb63080-93da-035a-0435-56eee35a63c0, _)
+THEN
+PROC_Camp_RequiredTalks_Complete(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679);
+
+PROC
+PROC_Camp_TryLeaveNightMode_CampNightCheck((CHARACTER)_Player)
+AND
+GetFlag(ORI_State_PartneredWithShadowheart_3808ae35-ad4e-465b-800b-63d32b77211e, _Player, 1)
+AND
+DB_HandlingRelationshipDialog(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, CAMP_Shadowheart_CRD_SkinnyDippingRomance_dfb63080-93da-035a-0435-56eee35a63c0, _, _, _, _)
+THEN
+OpenMessageBox(_Player, "ReallyShadowheart_TalkToHer");
+
+// Shared Future CRD
+IF
+DB_HandlingRelationshipDialog(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, CAMP_Shadowheart_CRD_SharedFuture_d60d0152-14ff-b185-942b-d48182f66bf0, _, _, _, _)
+THEN
+DB_Camp_RequiredTalks(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679);
+DB_Camp_RequiredTalks(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, CAMP_Shadowheart_CRD_SharedFuture_d60d0152-14ff-b185-942b-d48182f66bf0);
+
+IF
+DialogEnded(CAMP_Shadowheart_CRD_SharedFuture_d60d0152-14ff-b185-942b-d48182f66bf0, _)
+THEN
+PROC_Camp_RequiredTalks_Complete(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679);
+
+PROC
+PROC_Camp_TryLeaveNightMode_CampNightCheck((CHARACTER)_Player)
+AND
+GetFlag(ORI_State_PartneredWithShadowheart_3808ae35-ad4e-465b-800b-63d32b77211e, _Player, 1)
+AND
+DB_HandlingRelationshipDialog(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, CAMP_Shadowheart_CRD_SharedFuture_d60d0152-14ff-b185-942b-d48182f66bf0, _, _, _, _)
+THEN
+OpenMessageBox(_Player, "ReallyShadowheart_TalkToHer");
+
+// Shar Romance CRD
+IF
+DB_HandlingRelationshipDialog(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, CAMP_Shadowheart_CRD_SharRomance_c1cefc29-3ca9-414f-9351-ee98a6103c2c, _, _, _, _)
+THEN
+DB_Camp_RequiredTalks(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679);
+DB_Camp_RequiredTalks(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, CAMP_Shadowheart_CRD_SharRomance_c1cefc29-3ca9-414f-9351-ee98a6103c2c);
+
+IF
+DialogEnded(CAMP_Shadowheart_CRD_SharRomance_c1cefc29-3ca9-414f-9351-ee98a6103c2c, _)
+THEN
+PROC_Camp_RequiredTalks_Complete(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679);
+
+PROC
+PROC_Camp_TryLeaveNightMode_CampNightCheck((CHARACTER)_Player)
+AND
+GetFlag(ORI_State_PartneredWithShadowheart_3808ae35-ad4e-465b-800b-63d32b77211e, _Player, 1)
+AND
+DB_HandlingRelationshipDialog(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, CAMP_Shadowheart_CRD_SharRomance_c1cefc29-3ca9-414f-9351-ee98a6103c2c, _, _, _, _)
+THEN
+OpenMessageBox(_Player, "ReallyShadowheart_TalkToHer");
+
+// Nightfall Romance CRD
+IF
+DB_HandlingRelationshipDialog(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, CAMP_Shadowheart_CRD_NightfallRomance_4e995131-a9dc-24f7-5e0a-5cb703b3df43, _, _, _, _)
+THEN
+DB_Camp_RequiredTalks(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679);
+DB_Camp_RequiredTalks(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, CAMP_Shadowheart_CRD_NightfallRomance_4e995131-a9dc-24f7-5e0a-5cb703b3df43);
+
+IF
+DialogEnded(CAMP_Shadowheart_CRD_SharRomance_c1cefc29-3ca9-414f-9351-ee98a6103c2c, _)
+THEN
+PROC_Camp_RequiredTalks_Complete(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679);
+
+PROC
+PROC_Camp_TryLeaveNightMode_CampNightCheck((CHARACTER)_Player)
+AND
+GetFlag(ORI_State_PartneredWithShadowheart_3808ae35-ad4e-465b-800b-63d32b77211e, _Player, 1)
+AND
+DB_HandlingRelationshipDialog(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, CAMP_Shadowheart_CRD_NightfallRomance_4e995131-a9dc-24f7-5e0a-5cb703b3df43, _, _, _, _)
+THEN
+OpenMessageBox(_Player, "ReallyShadowheart_TalkToHer");
+
+
+// In the morning, Shadowheart wakes up with Tav if they sleep together at night
+// This is an add-on for the existing procedure.
+// Use the timer to let the game process teleportations to wake up triggers first.
+//PROC
+//PROC_LongRest_Player((CHARACTER)_Tav, (INTEGER)_)
+//AND
+//DB_ReallyShadowheart_PartneredWithShadowheart(_Tav)
+//AND
+//DB_ReallyShadowheart_CoupleInBed(_Tav, _Partner)
+//THEN
+//TimerLaunch("ReallyShadowheart_WakeUpInTheSameBed", 500);
+
+//IF
+//TimerFinished("ReallyShadowheart_WakeUpInTheSameBed")
+//AND
+//DB_ReallyShadowheart_CoupleInBed(_Tav, _Partner)
+//THEN
+//TeleportTo(_Partner, _Tav, "CAMP_WakeUpInTheSameBed", 0, 0, 0, 0, 1);
+//NOT DB_ReallyShadowheart_CoupleInBed(_Tav, _Partner);
+
+IF
+EntityEvent(_Partner, "CAMP_WakeUpAtTrigger")
+AND
+DB_ReallyShadowheart_CoupleInBed(_Tav, (CHARACTER)_Partner)
+THEN
+TeleportTo(_Partner, _Tav, "CAMP_WakeUpInTheSameBed", 0, 0, 0, 0, 1);
+NOT DB_ReallyShadowheart_CoupleInBed(_Tav, _Partner);
+
+PROC
+PROC_Camp_InstantLongRestWithFade()
+AND
+DB_ReallyShadowheart_PartneredWithShadowheart(_Tav)
+AND
+GetFlag(Shadowheart_Tav_Sleep_Together_0187f803-6b3c-4249-b5a8-0e968306978b, _Tav, 1)
+THEN
+DB_ReallyShadowheart_CAMP_SkipSleepCutscene(1);
+
+PROC
+PROC_Camp_TryDefaultSleepCutscene((CHARACTER)_Tav)
+AND
+NOT DB_ReallyShadowheart_CAMP_SkipSleepCutscene(1)
+AND
+DB_ReallyShadowheart_PartneredWithShadowheart(_Tav)
+AND
+GetFlag(Shadowheart_Tav_Sleep_Together_0187f803-6b3c-4249-b5a8-0e968306978b, _Tav, 1)
+AND
+DB_PlayerInCamp(_Tav)
+AND
+DB_PlayerInCamp(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679)
+AND
+DB_ActiveCamp(_Camp)
+AND
+DB_ReallyShadowheart_CAMP_SleepCutscene(_Camp, _SleepCustcene)
+AND
+IsSpeakerReserved(_Tav, 0)
+AND
+IsControlled(_Tav, 1)
+AND
+QRY_StartDialog_Fixed(_SleepCustcene, _Tav, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679)
+THEN
+DB_ReallyShadowheart_CoupleInBed(_Tav, (CHARACTER)S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679);
+DB_Camp_AtLeastOnePlayerHasSleepCutscene(1);
+
+PROC
+PROC_Camp_TryDefaultSleepCutscene(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679)
+AND
+NOT DB_ReallyShadowheart_CAMP_SkipSleepCutscene(1)
+AND
+DB_ReallyShadowheart_PartneredWithShadowheart(_Tav)
+AND
+GetFlag(Shadowheart_Tav_Sleep_Together_0187f803-6b3c-4249-b5a8-0e968306978b, _Tav, 1)
+AND
+DB_PlayerInCamp(_Tav)
+AND
+DB_PlayerInCamp(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679)
+AND
+DB_ActiveCamp(_Camp)
+AND
+DB_ReallyShadowheart_CAMP_SleepCutscene(_Camp, _SleepCustcene)
+AND
+IsSpeakerReserved(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0)
+AND
+IsControlled(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 1)
+AND
+QRY_StartDialog_Fixed(_SleepCustcene, _Tav, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679)
+THEN
+DB_ReallyShadowheart_CoupleInBed(_Tav, (CHARACTER)S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679);
+DB_Camp_AtLeastOnePlayerHasSleepCutscene(1);
+
+PROC
+PROC_Camp_TryDefaultSleepCutscene((CHARACTER)_Tav)
+AND
+NOT DB_ReallyShadowheart_CAMP_SkipSleepCutscene(1)
+AND
+DB_ReallyShadowheart_PartneredWithShadowheart(_Tav)
+AND
+GetFlag(Shadowheart_Tav_Sleep_Together_0187f803-6b3c-4249-b5a8-0e968306978b, _Tav, 1)
+AND
+DB_PlayerInCamp(_Tav)
+AND
+NOT DB_PlayerInCamp(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679)
+AND
+DB_ActiveCamp(_Camp)
+AND
+DB_ReallyShadowheart_CAMP_SleepCutscene(_Camp, _SleepCustcene)
+AND
+IsSpeakerReserved(_Tav, 0)
+AND
+IsControlled(_Tav, 1)
+AND
+QRY_StartDialog_Fixed(_SleepCustcene, _Tav)
+THEN
+DB_Camp_AtLeastOnePlayerHasSleepCutscene(1);
+
+PROC
+PROC_Camp_TryDefaultSleepCutscene((CHARACTER)_Player)
+AND
+NOT DB_ReallyShadowheart_CAMP_SkipSleepCutscene(1)
+AND
+GetFlag(Shadowheart_Tav_Sleep_Together_0187f803-6b3c-4249-b5a8-0e968306978b, _Player, 0)
+AND
+DB_PlayerInCamp(_Player)
+AND
+DB_ActiveCamp(_Camp)
+AND
+DB_ReallyShadowheart_CAMP_SleepCutscene(_Camp, _SleepCustcene)
+AND
+IsSpeakerReserved(_Player, 0)
+AND
+IsControlled(_Player, 1)
+AND
+QRY_StartDialog_Fixed(_SleepCustcene, _Player)
+THEN
+DB_Camp_AtLeastOnePlayerHasSleepCutscene(1);
+
+PROC
+PROC_Camp_EveryoneWakeup()
+THEN
+NOT DB_ReallyShadowheart_CAMP_SkipSleepCutscene(1);
+
+//////////////////////////////////////////////////////////////////////////
+//
+// Event handlers
+//
+//////////////////////////////////////////////////////////////////////////
+
+PROC
+PROC_ReallyShadowheart_GameStarted()
+AND
+DB_ReallyShadowheart_PartneredWithShadowheart(_Tav)
+AND
+GetFlag(Shadowheart_Tav_Sleep_Together_0187f803-6b3c-4249-b5a8-0e968306978b, _Tav, 1)
+THEN
+PROC_ReallyShadowheart_InitNightSleep();
+
+IF
+FlagSet((FLAG)GLO_CAMP_State_NightMode_fb53edc2-9a89-4ad2-af83-20b5fe425cdd, _, _)
+AND
+DB_ReallyShadowheart_PartneredWithShadowheart(_Tav)
+AND
+GetFlag(Shadowheart_Tav_Sleep_Together_0187f803-6b3c-4249-b5a8-0e968306978b, _Tav, 1)
+THEN
+PROC_ReallyShadowheart_InitNightSleep();
+
+IF
+FlagSet((FLAG)Shadowheart_Tav_Sleep_Together_0187f803-6b3c-4249-b5a8-0e968306978b, _Tav, _)
+AND
+DB_ReallyShadowheart_PartneredWithShadowheart((CHARACTER)_Tav)
+AND
+GetFlag((FLAG)GLO_CAMP_State_NightMode_fb53edc2-9a89-4ad2-af83-20b5fe425cdd, NULL_00000000-0000-0000-0000-000000000000, 1)
+THEN
+PROC_ReallyShadowheart_InitNightSleep();
+
+IF
+FlagSet((FLAG)GLO_Camp_Event_SkipSleepCutscene_1ee0a25e-4115-44ef-b87d-c2a5eee494b6, NULL_00000000-0000-0000-0000-000000000000, _)
+THEN
+DB_ReallyShadowheart_CAMP_SkipSleepCutscene(1);
+EXITSECTION
+
+ENDEXITSECTION

@@ -1,3 +1,19 @@
+# Resources
+resources/*/osiris/Story/*.dat
+resources/*/osiris/Story/*.div
+resources/*/osiris/Story/*.div.osi
+resources/*/osiris/Story/*.raw
+resources/*/osiris/Story/*.txt
+resources/*/osiris/Story/RawFiles/*.div
+resources/unused/
+resources/no_notes/
+resources/main/speech/
+resources/main/templates/
+
+src/*/_build.py
+src/context/
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

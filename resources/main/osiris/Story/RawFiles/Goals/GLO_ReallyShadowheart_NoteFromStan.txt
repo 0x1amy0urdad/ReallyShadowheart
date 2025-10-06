@@ -1,0 +1,113 @@
+Version 1
+SubGoalCombiner SGC_AND
+INITSECTION
+NOT DB_ReallyShadowheart_SentNotes((CHARACTER)Noone_00000000-0000-0000-0000-000000000000, (GUIDSTRING)NULL_00000000-0000-0000-0000-000000000000);
+
+NOT DB_ReallyShadowheart_StopSendingNotes(0);
+
+NOT DB_ReallyShadowheart_DontShowNoteNotification(0);
+KBSECTION
+QRY
+QRY_ReallyShadowheart_DontSendTheNote()
+THEN
+DB_ReallyShadowheart_StopSendingNotes(0);
+
+
+PROC
+PROC_ReallyShadowheart_RemoveTheOldNote()
+AND
+DB_Avatars(_Player)
+AND
+DB_ReallyShadowheart_SentNotes(_Player, _Note)
+AND
+GetTemplate(_Note, BOOK_ReallyShadowheart_A_Note_From_Stan_ff8a16ab-ad4c-43d3-b832-b9105a4eec94)
+THEN
+RequestDelete((ITEM)_Note);
+NOT DB_ReallyShadowheart_SentNotes(_Player, _Note);
+DB_ReallyShadowheart_DontShowNoteNotification(1);
+
+
+PROC
+PROC_ReallyShadowheart_AddTheNoteToInventory((CHARACTER)_Player)
+AND
+DB_ReallyShadowheart_DontShowNoteNotification(1)
+THEN
+TemplateAddTo(BOOK_ReallyShadowheart_A_Note_From_Stan_Compat_28921aea-3ee6-458f-9760-b6e35deb609c, _Player, 1, 0);
+
+PROC
+PROC_ReallyShadowheart_AddTheNoteToInventory((CHARACTER)_Player)
+AND
+NOT DB_ReallyShadowheart_DontShowNoteNotification(1)
+THEN
+TemplateAddTo(BOOK_ReallyShadowheart_A_Note_From_Stan_Compat_28921aea-3ee6-458f-9760-b6e35deb609c, _Player, 1, 1);
+
+
+PROC
+PROC_ReallyShadowheart_SendTheNote()
+AND
+QRY_ReallyShadowheart_DontSendTheNote()
+AND
+NOT DB_ReallyShadowheart_StopSendingNotes(1)
+AND
+DB_Avatars(_Player)
+AND
+DB_ReallyShadowheart_SentNotes(_Player, _Note)
+AND
+IsInInventory(_Note, 0)
+THEN
+RequestDelete((ITEM)_Note);
+NOT DB_ReallyShadowheart_SentNotes((CHARACTER)_Player, _Note);
+PROC_ReallyShadowheart_AddTheNoteToInventory(_Player);
+
+
+// Send the note to the players
+PROC
+PROC_ReallyShadowheart_SendTheNote()
+AND
+QRY_ReallyShadowheart_DontSendTheNote()
+AND
+NOT DB_ReallyShadowheart_StopSendingNotes(1)
+AND
+DB_Avatars(_Player)
+AND
+NOT DB_ReallyShadowheart_SentNotes(_Player, _)
+THEN
+PROC_ReallyShadowheart_AddTheNoteToInventory(_Player);
+
+
+// Mod installation confirmation
+IF
+LevelLoaded(_)
+AND
+DB_Avatars(_)
+THEN
+PROC_ReallyShadowheart_RemoveTheOldNote();
+TimerLaunch("ReallyShadowheart_SendTheNote", 4000);
+
+
+IF
+TimerFinished("ReallyShadowheart_SendTheNote")
+THEN
+PROC_ReallyShadowheart_SendTheNote();
+
+
+IF
+TemplateAddedTo(BOOK_ReallyShadowheart_A_Note_From_Stan_Compat_28921aea-3ee6-458f-9760-b6e35deb609c, _Note, _Player, _)
+THEN
+DB_ReallyShadowheart_SentNotes((CHARACTER)_Player, _Note);
+
+
+// When someone reads the note, play a small voice bark.
+IF
+TemplateUseFinished(_Character, (ITEMROOT)BOOK_ReallyShadowheart_A_Note_From_Stan_ff8a16ab-ad4c-43d3-b832-b9105a4eec94, _, _)
+THEN
+StartVoiceBark((VOICEBARKRESOURCE)DEN_DruidLair_VB_UnlockedStudy_054c9a4f-b0a8-cbc4-c6fd-04eee5f77401, (CHARACTER)_Character);
+
+IF
+TemplateUseFinished(_Character, (ITEMROOT)BOOK_ReallyShadowheart_A_Note_From_Stan_Compat_28921aea-3ee6-458f-9760-b6e35deb609c, _, _)
+THEN
+StartVoiceBark((VOICEBARKRESOURCE)DEN_DruidLair_VB_UnlockedStudy_054c9a4f-b0a8-cbc4-c6fd-04eee5f77401, (CHARACTER)_Character);
+
+EXITSECTION
+
+ENDEXITSECTION

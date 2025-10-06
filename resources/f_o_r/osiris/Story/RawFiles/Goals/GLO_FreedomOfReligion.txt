@@ -1,0 +1,154 @@
+Version 1
+SubGoalCombiner SGC_AND
+INITSECTION
+NOT DB_FreedomOfReligion_GodsAndWorshippersV2((TAG)NULL_00000000-0000-0000-0000-000000000000, (TAG)NULL_00000000-0000-0000-0000-000000000000, (TAG)NULL_00000000-0000-0000-0000-000000000000, (TAG)NULL_00000000-0000-0000-0000-000000000000);
+NOT DB_FreedomOfReligion_UpdateCompanionOnce((CHARACTER)NULL_00000000-0000-0000-0000-000000000000);
+KBSECTION
+PROC
+PROC_FreedomOfReligion_Initialize()
+AND
+NOT DB_FreedomOfReligion_GodsAndWorshippersV2((TAG)GOD_TIAMAT_328683c2-8785-4b71-b128-7cec90df0abe, (TAG)TAG_CLERIC_TIAMAT_4cd1c7f7-7a8c-421a-87dc-687c4eefd683, (TAG)ALIGN_EVIL_6d08632e-0300-4587-80b9-8e411b0efb3b, (TAG)CLERIC_EVIL_aa9f126f-ac9a-48d9-a128-1394fae8f4e8)
+THEN
+DB_FreedomOfReligion_GodsAndWorshippersV2((TAG)GOD_SELUNE_4533d292-5b1f-43c7-ad44-6bc7db1000ca, (TAG)TAG_CLERIC_SELUNE_10b2a53c-3eb0-451c-8057-0f1cc9e62a4d, (TAG)ALIGN_GOOD_34064d50-38fe-44e4-aaed-129ac3b44933, (TAG)CLERIC_GOOD_64dc9d31-db7a-418e-bbbe-6f5b4d32608f);
+DB_FreedomOfReligion_GodsAndWorshippersV2((TAG)GOD_SHAR_486e4a27-e6f9-40a5-9dd1-108a1d0f60eb, (TAG)TAG_CLERIC_SHAR_0d1d64b8-70d6-4702-8643-be348b0f3fc6, (TAG)ALIGN_EVIL_6d08632e-0300-4587-80b9-8e411b0efb3b, (TAG)CLERIC_EVIL_aa9f126f-ac9a-48d9-a128-1394fae8f4e8);
+DB_FreedomOfReligion_GodsAndWorshippersV2((TAG)GOD_TEMPUS_f6b88f18-328f-41c3-a579-e8a9b99c410b, (TAG)TAG_CLERIC_TEMPUS_31d96353-a4b8-4abf-9cce-f7a9174e65da, (TAG)ALIGN_NEUTRAL_c1ff8a7f-c430-4671-bc4e-098f874ae302, (TAG)CLERIC_NEUTRAL_2947a463-3c45-4a70-959a-3e81a943ab92);
+DB_FreedomOfReligion_GodsAndWorshippersV2((TAG)GOD_TYR_aa9a53ed-afad-4a6d-824c-ff0125986eb7, (TAG)TAG_CLERIC_TYR_16657b43-323e-4eee-8982-77338229444b, (TAG)ALIGN_GOOD_34064d50-38fe-44e4-aaed-129ac3b44933, (TAG)CLERIC_GOOD_64dc9d31-db7a-418e-bbbe-6f5b4d32608f);
+DB_FreedomOfReligion_GodsAndWorshippersV2((TAG)GOD_HELM_c33d2cf7-1c8d-41ea-b4d9-4773778410f6, (TAG)TAG_CLERIC_HELM_6c28eba6-f46c-4755-9e4e-0223e64f7d72, (TAG)ALIGN_NEUTRAL_c1ff8a7f-c430-4671-bc4e-098f874ae302, (TAG)CLERIC_NEUTRAL_2947a463-3c45-4a70-959a-3e81a943ab92);
+DB_FreedomOfReligion_GodsAndWorshippersV2((TAG)GOD_ILMATER_75586076-1aaf-4e4a-a516-93f1e6cd3472, (TAG)TAG_CLERIC_ILMATER_838e9a70-94fc-4bcf-850a-19be5247a43b, (TAG)ALIGN_GOOD_34064d50-38fe-44e4-aaed-129ac3b44933, (TAG)CLERIC_GOOD_64dc9d31-db7a-418e-bbbe-6f5b4d32608f);
+DB_FreedomOfReligion_GodsAndWorshippersV2((TAG)GOD_MYSTRA_e79d9eca-e8ac-486a-bd21-cf42ef1133af, (TAG)TAG_CLERIC_MYSTRA_90de46bd-9f0c-4c2f-9505-56063b31b360, (TAG)ALIGN_GOOD_34064d50-38fe-44e4-aaed-129ac3b44933, (TAG)CLERIC_GOOD_64dc9d31-db7a-418e-bbbe-6f5b4d32608f);
+DB_FreedomOfReligion_GodsAndWorshippersV2((TAG)GOD_OGHMA_7b019d89-9b7e-4c2a-a6b4-ffb64f25f734, (TAG)TAG_CLERIC_OGHMA_9fbbedb6-c485-4c6b-94b7-c7d7592223b3, (TAG)ALIGN_NEUTRAL_c1ff8a7f-c430-4671-bc4e-098f874ae302, (TAG)CLERIC_NEUTRAL_2947a463-3c45-4a70-959a-3e81a943ab92);
+DB_FreedomOfReligion_GodsAndWorshippersV2((TAG)GOD_KELEMVOR_23541bea-8177-496d-b58b-c29c4f13c22c, (TAG)TAG_CLERIC_KELEMVOR_a01efcc1-9e2f-4438-956b-b448cbf73bde, (TAG)ALIGN_NEUTRAL_c1ff8a7f-c430-4671-bc4e-098f874ae302, (TAG)CLERIC_NEUTRAL_2947a463-3c45-4a70-959a-3e81a943ab92);
+DB_FreedomOfReligion_GodsAndWorshippersV2((TAG)GOD_MORADIN_cfad7ead-098a-4944-84a6-d0570a98984d, (TAG)TAG_CLERIC_MORADIN_3ce8734c-440c-43f8-b0f4-079d69e7eb33, (TAG)ALIGN_GOOD_34064d50-38fe-44e4-aaed-129ac3b44933, (TAG)CLERIC_GOOD_64dc9d31-db7a-418e-bbbe-6f5b4d32608f);
+DB_FreedomOfReligion_GodsAndWorshippersV2((TAG)GOD_CORELLON_LARETHIAN_575b3b3c-4a5b-44d5-868f-0c6875f95568, (TAG)TAG_CLERIC_CORELLON_ca4e5850-139e-4b52-9d5e-553e33ff082a, (TAG)ALIGN_GOOD_34064d50-38fe-44e4-aaed-129ac3b44933, (TAG)CLERIC_GOOD_64dc9d31-db7a-418e-bbbe-6f5b4d32608f);
+DB_FreedomOfReligion_GodsAndWorshippersV2((TAG)GOD_GARL_GLITTERGOLD_4a4130a1-c96a-43e8-91cc-1e3959e50053, (TAG)TAG_CLERIC_GARL_67bd28cc-9cf4-4c64-9213-8d26fbe27e1b, (TAG)ALIGN_GOOD_34064d50-38fe-44e4-aaed-129ac3b44933, (TAG)CLERIC_GOOD_64dc9d31-db7a-418e-bbbe-6f5b4d32608f);
+DB_FreedomOfReligion_GodsAndWorshippersV2((TAG)GOD_YONDALLA_dc005135-7eee-4406-a46e-9535e7412422, (TAG)TAG_CLERIC_YONDALLA_4335093d-2fa7-4775-a4cc-bc17b5d16e5a, (TAG)ALIGN_GOOD_34064d50-38fe-44e4-aaed-129ac3b44933, (TAG)CLERIC_GOOD_64dc9d31-db7a-418e-bbbe-6f5b4d32608f);
+DB_FreedomOfReligion_GodsAndWorshippersV2((TAG)GOD_LOLTH_899a6ce7-731e-473b-b87b-5d0cf383abff, (TAG)TAG_CLERIC_LOLTH_7aee9e55-ecb4-4cdc-804d-1ec20d07efc5, (TAG)ALIGN_EVIL_6d08632e-0300-4587-80b9-8e411b0efb3b, (TAG)CLERIC_EVIL_aa9f126f-ac9a-48d9-a128-1394fae8f4e8);
+DB_FreedomOfReligion_GodsAndWorshippersV2((TAG)GOD_LADUGUER_92919073-a23b-490a-a316-a083f179f083, (TAG)TAG_CLERIC_LADUGUER_4276e5a0-f6b3-4f4e-8836-4cd8b0cade2f, (TAG)ALIGN_EVIL_6d08632e-0300-4587-80b9-8e411b0efb3b, (TAG)CLERIC_EVIL_aa9f126f-ac9a-48d9-a128-1394fae8f4e8);
+DB_FreedomOfReligion_GodsAndWorshippersV2((TAG)GOD_VLAAKITH_d84b4081-6800-45f9-b03f-16dba592c75d, (TAG)TAG_CLERIC_VLAAKITH_91b2d344-fce8-48b3-a83d-9688cbddb1b8, (TAG)ALIGN_EVIL_6d08632e-0300-4587-80b9-8e411b0efb3b, (TAG)CLERIC_EVIL_aa9f126f-ac9a-48d9-a128-1394fae8f4e8);
+DB_FreedomOfReligion_GodsAndWorshippersV2((TAG)GOD_EILISTRAEE_7cef166f-7766-4332-b9aa-d0d06fbca61e, (TAG)TAG_CLERIC_EILISTRAEE_c4749983-8bb9-4aa5-bf18-afd9cb1ce915, (TAG)ALIGN_GOOD_34064d50-38fe-44e4-aaed-129ac3b44933, (TAG)CLERIC_GOOD_64dc9d31-db7a-418e-bbbe-6f5b4d32608f);
+DB_FreedomOfReligion_GodsAndWorshippersV2((TAG)GOD_LATHANDER_7cae2d74-89f3-4312-9816-6ae6827f318c, (TAG)TAG_CLERIC_LATHANDER_6e31b516-92fc-4526-b1cd-92516e02cf86, (TAG)ALIGN_GOOD_34064d50-38fe-44e4-aaed-129ac3b44933, (TAG)CLERIC_GOOD_64dc9d31-db7a-418e-bbbe-6f5b4d32608f);
+DB_FreedomOfReligion_GodsAndWorshippersV2((TAG)GOD_TALOS_c8650f16-4610-4648-95d1-18a44a1188b7, (TAG)TAG_CLERIC_TALOS_da25a7cc-066d-43dc-8f1e-74c17cd0d589, (TAG)ALIGN_EVIL_6d08632e-0300-4587-80b9-8e411b0efb3b, (TAG)CLERIC_EVIL_aa9f126f-ac9a-48d9-a128-1394fae8f4e8);
+DB_FreedomOfReligion_GodsAndWorshippersV2((TAG)GOD_TYMORA_c0b03fe2-6495-4340-a0c8-ed6ccf206bcc, (TAG)TAG_CLERIC_TYMORA_edc085f7-63f8-4bb0-b60c-b68c92b67708, (TAG)ALIGN_GOOD_34064d50-38fe-44e4-aaed-129ac3b44933, (TAG)CLERIC_GOOD_64dc9d31-db7a-418e-bbbe-6f5b4d32608f);
+DB_FreedomOfReligion_GodsAndWorshippersV2((TAG)GOD_MIELIKKI_f21f419c-bbf8-42df-ae89-f1de72e90cf5, (TAG)TAG_CLERIC_MIELIKKI_5ce73ec6-be80-4853-ad3c-12149d71e07e, (TAG)ALIGN_GOOD_34064d50-38fe-44e4-aaed-129ac3b44933, (TAG)CLERIC_GOOD_64dc9d31-db7a-418e-bbbe-6f5b4d32608f);
+DB_FreedomOfReligion_GodsAndWorshippersV2((TAG)GOD_BAHAMUT_fdccfc34-47e9-45ff-8755-511f91cb0e97, (TAG)TAG_CLERIC_BAHAMUT_28ee4ac1-86a3-490e-ab02-7085bd7c56d6, (TAG)ALIGN_GOOD_34064d50-38fe-44e4-aaed-129ac3b44933, (TAG)CLERIC_GOOD_64dc9d31-db7a-418e-bbbe-6f5b4d32608f);
+DB_FreedomOfReligion_GodsAndWorshippersV2((TAG)GOD_GRUUMSH_7ef33e10-bdb0-4268-833a-5da1e52aa26a, (TAG)TAG_CLERIC_GRUUMSH_c3743bdd-3653-47fb-8a5c-d8489d7a1be0, (TAG)ALIGN_EVIL_6d08632e-0300-4587-80b9-8e411b0efb3b, (TAG)CLERIC_EVIL_aa9f126f-ac9a-48d9-a128-1394fae8f4e8);
+DB_FreedomOfReligion_GodsAndWorshippersV2((TAG)GOD_TIAMAT_328683c2-8785-4b71-b128-7cec90df0abe, (TAG)TAG_CLERIC_TIAMAT_4cd1c7f7-7a8c-421a-87dc-687c4eefd683, (TAG)ALIGN_EVIL_6d08632e-0300-4587-80b9-8e411b0efb3b, (TAG)CLERIC_EVIL_aa9f126f-ac9a-48d9-a128-1394fae8f4e8);
+
+PROC
+PROC_FreedomOfReligion_Initialize()
+AND
+NOT DB_FreedomOfReligion_GodsAndWorshippersV2((TAG)GOD_MYRKUL_f1fc9c3f-0db9-4d19-adb4-18b1174a6b9d, (TAG)TAG_CLERIC_MYRKUL_7ea36792-21e5-4ea9-9544-de276651c376, (TAG)ALIGN_EVIL_6d08632e-0300-4587-80b9-8e411b0efb3b, (TAG)CLERIC_EVIL_aa9f126f-ac9a-48d9-a128-1394fae8f4e8)
+THEN
+DB_FreedomOfReligion_GodsAndWorshippersV2((TAG)GOD_BHAAL_f5e62c47-fb93-449f-9057-cb1a3c003aff, (TAG)TAG_CLERIC_BHAAL_b03d4a89-bba7-45a4-a89d-a132ddd75637, (TAG)ALIGN_EVIL_6d08632e-0300-4587-80b9-8e411b0efb3b, (TAG)CLERIC_EVIL_aa9f126f-ac9a-48d9-a128-1394fae8f4e8);
+DB_FreedomOfReligion_GodsAndWorshippersV2((TAG)GOD_BANE_494bddcf-9325-4883-a937-817fbdf11161, (TAG)TAG_CLERIC_BANE_178016d5-e3d3-44bd-8aa5-6ac3d1c61e6c, (TAG)ALIGN_EVIL_6d08632e-0300-4587-80b9-8e411b0efb3b, (TAG)CLERIC_EVIL_aa9f126f-ac9a-48d9-a128-1394fae8f4e8);
+DB_FreedomOfReligion_GodsAndWorshippersV2((TAG)GOD_MYRKUL_f1fc9c3f-0db9-4d19-adb4-18b1174a6b9d, (TAG)TAG_CLERIC_MYRKUL_7ea36792-21e5-4ea9-9544-de276651c376, (TAG)ALIGN_EVIL_6d08632e-0300-4587-80b9-8e411b0efb3b, (TAG)CLERIC_EVIL_aa9f126f-ac9a-48d9-a128-1394fae8f4e8);
+
+PROC
+PROC_FreedomOfReligion_UpdateTags((CHARACTER)_Tav)
+AND
+DB_FreedomOfReligion_GodsAndWorshippersV2(_God, _Worshipper, _Alignment, _WorshipAlignment)
+AND
+IsTagged(_Tav, _God, 1)
+AND
+IsTagged(_Tav, _Worshipper, 0)
+THEN
+SetTag(_Tav, _Worshipper);
+SetTag(_Tav, _Alignment);
+SetTag(_Tav, _WorshipAlignment);
+
+PROC
+PROC_FreedomOfReligion_UpdateTags((CHARACTER)_Tav)
+AND
+DB_FreedomOfReligion_GodsAndWorshippersV2(_God, _Worshipper, _Alignment, _WorshipAlignment)
+AND
+IsTagged(_Tav, _God, 0)
+AND
+IsTagged(_Tav, _Worshipper, 1)
+THEN
+ClearTag(_Tav, _Worshipper);
+ClearTag(_Tav, _Alignment);
+ClearTag(_Tav, _WorshipAlignment);
+
+PROC
+PROC_FreedomOfReligion_UpdateCompanion((CHARACTER)_Companion)
+AND
+NOT DB_Avatars(_Companion)
+AND
+IsTagged(_Companion, (TAG)TAG_CLERIC_1671b4bf-4f47-4bb7-9cb9-80bb1f6009d5, 0)
+AND
+DB_IsOrWasInParty(_Companion)
+AND
+NOT DB_FreedomOfReligion_UpdateCompanionOnce(_Companion)
+THEN
+DB_FreedomOfReligion_UpdateCompanionOnce(_Companion);
+SetGodOverride(_Companion, (GUIDSTRING)NULL_00000000-0000-0000-0000-000000000000);
+
+IF
+SavegameLoaded()
+THEN
+PROC_FreedomOfReligion_Initialize();
+
+IF
+LevelLoaded(_)
+AND
+DB_Avatars(_)
+THEN
+TimerCancel("FreedomOfReligion_UpdateTags");
+TimerLaunch("FreedomOfReligion_UpdateTags", 1000);
+
+IF
+TagSet(_Target, _Tag)
+AND
+DB_FreedomOfReligion_GodsAndWorshippersV2(_Tag, _, _, _)
+AND
+DB_IsOrWasInParty((CHARACTER)_Target)
+THEN
+PROC_FreedomOfReligion_UpdateTags(_Target);
+
+IF
+TagCleared(_Target, _Tag)
+AND
+DB_FreedomOfReligion_GodsAndWorshippersV2(_Tag, _, _, _)
+AND
+DB_IsOrWasInParty((CHARACTER)_Target)
+THEN
+PROC_FreedomOfReligion_UpdateTags(_Target);
+
+IF
+TimerFinished("FreedomOfReligion_UpdateTags")
+AND
+DB_Avatars(_Character)
+THEN
+PROC_FreedomOfReligion_UpdateTags(_Character);
+
+IF
+TimerFinished("FreedomOfReligion_UpdateTags")
+AND
+DB_Origins(_Character)
+AND
+NOT DB_Avatars(_Character)
+THEN
+PROC_FreedomOfReligion_UpdateCompanion(_Character);
+
+IF
+CharacterJoinedParty(_Character)
+AND
+DB_Origins(_Character)
+AND
+NOT DB_Avatars(_Character)
+THEN
+TimerLaunch("FreedomOfReligion_UpdateCompanion", 2000);
+
+IF
+TimerFinished("FreedomOfReligion_UpdateCompanion")
+AND
+DB_Origins(_Character)
+AND
+NOT DB_Avatars(_Character)
+AND
+DB_IsOrWasInParty(_Character)
+THEN
+PROC_FreedomOfReligion_UpdateCompanion(_Character);
+EXITSECTION
+
+ENDEXITSECTION

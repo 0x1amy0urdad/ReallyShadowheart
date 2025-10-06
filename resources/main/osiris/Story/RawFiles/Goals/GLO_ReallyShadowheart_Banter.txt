@@ -1,0 +1,128 @@
+Version 1
+SubGoalCombiner SGC_AND
+INITSECTION
+NOT DB_ReallyShadowheart_DisableBanters((CHARACTER)NULL_00000000-0000-0000-0000-000000000000);
+NOT DB_ReallyShadowheart_DisableWoundFlares(0);
+KBSECTION
+PROC
+PROC_ReallyShadowheart_DisableBanter((CHARACTER)_Character)
+AND
+NOT DB_ReallyShadowheart_DisableBanters(_Character)
+THEN
+DB_ReallyShadowheart_DisableBanters(_Character);
+
+PROC
+PROC_ReallyShadowheart_EnableBanter((CHARACTER)_Character)
+AND
+DB_ReallyShadowheart_DisableBanters(_Character)
+THEN
+NOT DB_ReallyShadowheart_DisableBanters(_Character);
+
+IF
+FlagSet((FLAG)Disable_Banters_d04c7721-fa3a-4ec0-a047-f36e48ecb293, (CHARACTER)_Character, _)
+THEN
+PROC_ReallyShadowheart_DisableBanter(_Character);
+
+IF
+FlagCleared((FLAG)Disable_Banters_d04c7721-fa3a-4ec0-a047-f36e48ecb293, (CHARACTER)_Character, _)
+THEN
+PROC_ReallyShadowheart_EnableBanter(_Character);
+
+IF
+FlagSet((FLAG)ORI_Shadowheart_State_ExistentialistCrisis_b441440e-832f-4ba2-a82c-a425ae11cf9b, NULL_00000000-0000-0000-0000-000000000000, _)
+THEN
+SetFlag((FLAG)Disable_Banters_d04c7721-fa3a-4ec0-a047-f36e48ecb293, (CHARACTER)S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+
+IF
+FlagCleared((FLAG)ORI_Shadowheart_State_ExistentialistCrisis_b441440e-832f-4ba2-a82c-a425ae11cf9b, NULL_00000000-0000-0000-0000-000000000000, _)
+THEN
+ClearFlag((FLAG)Disable_Banters_d04c7721-fa3a-4ec0-a047-f36e48ecb293, (CHARACTER)S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+
+// Query override
+QRY
+QRY_WorldGossip_IsAnyoneNearbyBlocked((CHARACTER)_Anchor)
+AND
+DB_ReallyShadowheart_DisableBanters(_Player)
+AND
+GetDistanceTo(_Player, _Anchor, _Dist)
+AND
+_Dist < 20.0
+THEN
+DB_NOOP(1);
+
+
+// This disables wound flares for 2 minutes when banter plays
+PROC
+PROC_StartWorldGossip((CHARACTER)_Character)
+AND
+NOT DB_ReallyShadowheart_DisableWoundFlares(1)
+THEN
+DB_ReallyShadowheart_DisableWoundFlares(1);
+
+PROC
+PROC_StartWorldGossip((CHARACTER)_Character)
+THEN
+TimerCancel("ReallyShadowheart_EnableWoundFlares");
+TimerLaunch("ReallyShadowheart_EnableWoundFlares", 120000);
+
+IF
+TimerFinished("ReallyShadowheart_EnableWoundFlares")
+AND
+DB_ReallyShadowheart_DisableWoundFlares(1)
+THEN
+NOT DB_ReallyShadowheart_DisableWoundFlares(1);
+
+// Replica of vanilla wound flare logic
+QRY
+QRY_ReallyShadowheart_PartyUnavailable()
+AND
+DB_Players(_Player)
+AND
+DB_Is_InCombat(_Player, _)
+AND
+QRY_SpeakerIsInDialogRange(_Player, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679)
+THEN
+DB_NOOP(1);
+
+QRY
+QRY_ReallyShadowheart_PartyUnavailable()
+AND
+DB_Players(_Player)
+AND
+NOT QRY_SpeakerIsAvailable(_Player)
+AND
+QRY_SpeakerIsInDialogRange(_Player, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679)
+THEN
+DB_NOOP(1);
+
+IF
+DB_InRegion(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _WorldGossipTrigger)
+AND
+NOT DB_ReallyShadowheart_DisableWoundFlares(1)
+AND
+DB_WorldGossipTrigger(_WorldGossipTrigger, 0, _)
+AND
+IsTagged(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, (TAG)SHADOWHEART_ENEMYOFSHARPATH_8eca8027-996c-4c61-bec6-77f853de295b, 1)
+AND
+NOT DB_GlobalFlag((FLAG)ORI_Shadowheart_State_RejectShar_KilledParents_e9060caf-66b0-4701-8dfd-5ae1125f5afd)
+AND
+NOT DB_ORI_Shadowheart_IncurableWound_RandomFlareQueued(_)
+AND
+NOT QRY_ReallyShadowheart_PartyUnavailable()
+AND
+Random(10, _Random)
+AND
+_Random >= 8
+THEN
+PROC_IncreaseCounter("ORI_Shadowheart_IncurableWoundFlares");
+DB_ORI_Shadowheart_IncurableWound_RandomFlareQueued(1);
+TimerLaunch("ORI_Shadowheart_IncurableWound_RandomFlareUp", 5000);
+
+// This disables the vanilla logic of random wound flares
+QRY
+QRY_ORI_Shadowheart_PartyUnavailable()
+THEN
+DB_NOOP(1);
+EXITSECTION
+
+ENDEXITSECTION
