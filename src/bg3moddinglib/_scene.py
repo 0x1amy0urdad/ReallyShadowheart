@@ -42,10 +42,366 @@ class scene_object:
     def lsx_xml(self) -> et.Element:
         return self.__lsx_file.root_node
 
+    def get_actor_type(self, index: int) -> int:
+        actors = self.lsf_xml.findall('./region[@id="TLScene"]/node[@id="TLScene"]/children/node[@id="TLActors"]/children/node[@id="TLActor"]')
+        if index >= len(actors):
+            raise KeyError(f'There is no actor with index {index} in {self.__lsf_file.relative_file_path}')
+        actor_type = get_bg3_attribute(actors[index], 'ActorType')
+        if isinstance(actor_type, str):
+            return int(actor_type)
+        return 0
+
+    def get_number_of_actors(self) -> int:
+        return len(self.lsf_xml.findall('./region[@id="TLScene"]/node[@id="TLScene"]/children/node[@id="TLActors"]/children/node[@id="TLActor"]'))
+
+    def get_actor_position(self, index: int) -> tuple[str, str, str]:
+        actors = self.lsf_xml.findall('./region[@id="TLScene"]/node[@id="TLScene"]/children/node[@id="TLActors"]/children/node[@id="TLActor"]')
+        if index >= len(actors):
+            raise KeyError(f'There is no actor with index {index} in {self.__lsf_file.relative_file_path}')
+        actor = actors[index]
+        transform = actor.find('./children/node[@id="Transforms"]/children/node[@id="Object"]/children/node[@id="MapValue"]')
+        if transform is None:
+            raise RuntimeError(f'Failed to determine position of an actor with index {index} in {self.__lsf_file.relative_file_path}')
+        position = get_required_bg3_attribute(transform, 'Position')
+        positions = position.split(' ')
+        if len(positions) != 3:
+            raise RuntimeError(f'Unexpected number ({len(positions)}) of components in position, actor index {index}, scene file {self.__lsf_file.relative_file_path}')
+        return (positions[0], positions[1], positions[2])
+
+    def set_actor_position(self, index: int, pos: tuple[str | float, str | float, str | float]) -> None:
+        # update lsf
+        actors = self.lsf_xml.findall('./region[@id="TLScene"]/node[@id="TLScene"]/children/node[@id="TLActors"]/children/node[@id="TLActor"]')
+        if index >= len(actors):
+            raise KeyError(f'There is no actor with index {index} in {self.__lsf_file.relative_file_path}')
+        actor = actors[index]
+        transform = actor.find('./children/node[@id="Transforms"]/children/node[@id="Object"]/children/node[@id="MapValue"]')
+        if transform is None:
+            raise RuntimeError(f'Failed to determine position of an actor with index {index} in {self.__lsf_file.relative_file_path}')
+        set_bg3_attribute(transform, 'Position', f'{pos[0]} {pos[1]} {pos[2]}', attribute_type = 'fvec3')
+
+        # update lsx
+        actors = self.lsx_xml.findall('./region[@id="TLScene"]/node[@id="root"]/children/node[@id="TLActors"]/children/node[@id="TLActor"]')
+        if index >= len(actors):
+            raise KeyError(f'There is no actor with index {index} in {self.__lsx_file.relative_file_path}')
+        actor = actors[index]
+        transform = actor.find('./children/node[@id="Transforms"]/children/node[@id="Object"]/children/node[@id="MapValue"]')
+        if transform is None:
+            raise RuntimeError(f'Failed to determine transform of an actor with index {index} in {self.__lsx_file.relative_file_path}')
+        attr = transform.find('./attribute[@id="Position"]')
+        if attr is not None:
+            transform.remove(attr)
+        transform.append(et.fromstring(f'<attribute id="Position" type="fvec3"><float3 x="{pos[0]}" y="{pos[1]}" z="{pos[2]}" /></attribute>'))
+
+    def get_actor_rotation(self, index: int) -> tuple[str, str, str, str]:
+        actors = self.lsf_xml.findall('./region[@id="TLScene"]/node[@id="TLScene"]/children/node[@id="TLActors"]/children/node[@id="TLActor"]')
+        if index >= len(actors):
+            raise KeyError(f'There is no actor with index {index} in {self.__lsf_file.relative_file_path}')
+        actor = actors[index]
+        transform = actor.find('./children/node[@id="Transforms"]/children/node[@id="Object"]/children/node[@id="MapValue"]')
+        if transform is None:
+            raise RuntimeError(f'Failed to determine rotation of an actor with index {index} in {self.__lsf_file.relative_file_path}')
+        rotation = get_required_bg3_attribute(transform, 'RotationQuat')
+        rotations = rotation.split(' ')
+        if len(rotations) != 4:
+            raise RuntimeError(f'Unexpected number ({len(rotations)}) of components in rotation, actor index {index}, scene file {self.__lsf_file.relative_file_path}')
+        return (rotations[0], rotations[1], rotations[2], rotations[3])
+
+    def set_actor_rotation(self, index: int, rot: tuple[str | float, str | float, str | float, str | float]) -> None:
+        # update lsf
+        actors = self.lsf_xml.findall('./region[@id="TLScene"]/node[@id="TLScene"]/children/node[@id="TLActors"]/children/node[@id="TLActor"]')
+        if index >= len(actors):
+            raise KeyError(f'There is no actor with index {index} in {self.__lsf_file.relative_file_path}')
+        actor = actors[index]
+        transform = actor.find('./children/node[@id="Transforms"]/children/node[@id="Object"]/children/node[@id="MapValue"]')
+        if transform is None:
+            raise RuntimeError(f'Failed to determine rotation of an actor with index {index} in {self.__lsf_file.relative_file_path}')
+        set_bg3_attribute(transform, 'RotationQuat', f'{rot[0]} {rot[1]} {rot[2]} {rot[3]}', attribute_type = 'fvec4')
+
+        # update lsx
+        actors = self.lsx_xml.findall('./region[@id="TLScene"]/node[@id="root"]/children/node[@id="TLActors"]/children/node[@id="TLActor"]')
+        if index >= len(actors):
+            raise KeyError(f'There is no actor with index {index} in {self.__lsx_file.relative_file_path}')
+        actor = actors[index]
+        transform = actor.find('./children/node[@id="Transforms"]/children/node[@id="Object"]/children/node[@id="MapValue"]')
+        if transform is None:
+            raise RuntimeError(f'Failed to determine transform of an actor with index {index} in {self.__lsx_file.relative_file_path}')
+        attr = transform.find('./attribute[@id="RotationQuat"]')
+        if attr is not None:
+            transform.remove(attr)
+        transform.append(et.fromstring(f'<attribute id="RotationQuat" type="fvec4"><float3 x="{rot[0]}" y="{rot[1]}" z="{rot[2]}" w="{rot[3]}" /></attribute>'))
+
+    def get_actor_scale(self, index: int) -> str:
+        actors = self.lsf_xml.findall('./region[@id="TLScene"]/node[@id="TLScene"]/children/node[@id="TLActors"]/children/node[@id="TLActor"]')
+        if index >= len(actors):
+            raise KeyError(f'There is no actor with index {index} in {self.__lsf_file.relative_file_path}')
+        actor = actors[index]
+        transform = actor.find('./children/node[@id="Transforms"]/children/node[@id="Object"]/children/node[@id="MapValue"]')
+        if transform is None:
+            raise RuntimeError(f'Failed to determine scale of an actor with index {index} in {self.__lsf_file.relative_file_path}')
+        return get_required_bg3_attribute(transform, 'Scale')
+
+    def set_actor_scale(self, index: int, scale: str) -> None:
+        # update lsf
+        actors = self.lsf_xml.findall('./region[@id="TLScene"]/node[@id="TLScene"]/children/node[@id="TLActors"]/children/node[@id="TLActor"]')
+        if index >= len(actors):
+            raise KeyError(f'There is no actor with index {index} in {self.__lsf_file.relative_file_path}')
+        actor = actors[index]
+        transform = actor.find('./children/node[@id="Transforms"]/children/node[@id="Object"]/children/node[@id="MapValue"]')
+        if transform is None:
+            raise RuntimeError(f'Failed to determine rotation of an actor with index {index} in {self.__lsf_file.relative_file_path}')
+        set_bg3_attribute(transform, 'Scale', f'{scale}', attribute_type = 'float')
+
+        # update lsx
+        actors = self.lsx_xml.findall('./region[@id="TLScene"]/node[@id="root"]/children/node[@id="TLActors"]/children/node[@id="TLActor"]')
+        if index >= len(actors):
+            raise KeyError(f'There is no actor with index {index} in {self.__lsx_file.relative_file_path}')
+        actor = actors[index]
+        transform = actor.find('./children/node[@id="Transforms"]/children/node[@id="Object"]/children/node[@id="MapValue"]')
+        if transform is None:
+            raise RuntimeError(f'Failed to determine transform of an actor with index {index} in {self.__lsx_file.relative_file_path}')
+        set_bg3_attribute(transform, 'Scale', f'{scale}', attribute_type = 'float')
+
+    def get_actor_transform(self, index: int) -> tuple[tuple[str, str, str], tuple[str, str, str, str], str]:
+        actors = self.lsf_xml.findall('./region[@id="TLScene"]/node[@id="TLScene"]/children/node[@id="TLActors"]/children/node[@id="TLActor"]')
+        if index >= len(actors):
+            raise KeyError(f'There is no actor with index {index} in {self.__lsf_file.relative_file_path}')
+        actor = actors[index]
+        transform = actor.find('./children/node[@id="Transforms"]/children/node[@id="Object"]/children/node[@id="MapValue"]')
+        if transform is None:
+            raise RuntimeError(f'Failed to determine transform of an actor with index {index} in {self.__lsf_file.relative_file_path}')
+        position = get_required_bg3_attribute(transform, 'Position')
+        positions = position.split(' ')
+        if len(positions) != 3:
+            raise RuntimeError(f'Unexpected number ({len(positions)}) of components in position, actor index {index}, scene file {self.__lsf_file.relative_file_path}')
+        rotation = get_required_bg3_attribute(transform, 'RotationQuat')
+        rotations = rotation.split(' ')
+        if len(rotations) != 4:
+            raise RuntimeError(f'Unexpected number ({len(rotations)}) of components in rotation, actor index {index}, scene file {self.__lsf_file.relative_file_path}')
+        scale = get_required_bg3_attribute(transform, 'Scale')
+        return ((positions[0], positions[1], positions[2]), (rotations[0], rotations[1], rotations[2], rotations[3]), scale)
+
+    def set_actor_transform(self, index: int, pos: tuple[str, str, str], rot: tuple[str, str, str, str], scale: str) -> None:
+        # update lsf
+        actors = self.lsf_xml.findall('./region[@id="TLScene"]/node[@id="TLScene"]/children/node[@id="TLActors"]/children/node[@id="TLActor"]')
+        if index >= len(actors):
+            raise KeyError(f'There is no actor with index {index} in {self.__lsf_file.relative_file_path}')
+        actor = actors[index]
+        transform = actor.find('./children/node[@id="Transforms"]/children/node[@id="Object"]/children/node[@id="MapValue"]')
+        if transform is None:
+            raise RuntimeError(f'Failed to determine transform of an actor with index {index} in {self.__lsf_file.relative_file_path}')
+        set_bg3_attribute(transform, 'Position', f'{pos[0]} {pos[1]} {pos[2]}', attribute_type = 'fvec3')
+        set_bg3_attribute(transform, 'RotationQuat', f'{rot[0]} {rot[1]} {rot[2]} {rot[3]}', attribute_type = 'fvec4')
+        set_bg3_attribute(transform, 'Scale', f'{scale}', attribute_type = 'float')
+
+        # update lsx
+        actors = self.lsx_xml.findall('./region[@id="TLScene"]/node[@id="root"]/children/node[@id="TLActors"]/children/node[@id="TLActor"]')
+        if index >= len(actors):
+            raise KeyError(f'There is no actor with index {index} in {self.__lsx_file.relative_file_path}')
+        actor = actors[index]
+        transform = actor.find('./children/node[@id="Transforms"]/children/node[@id="Object"]/children/node[@id="MapValue"]')
+        if transform is None:
+            raise RuntimeError(f'Failed to determine transform of an actor with index {index} in {self.__lsx_file.relative_file_path}')
+        all_attrs = transform.findall('./attribute')
+        for attr in all_attrs:
+            transform.remove(attr)
+        transform.append(et.fromstring(f'<attribute id="Position" type="fvec3"><float3 x="{pos[0]}" y="{pos[1]}" z="{pos[2]}" /></attribute>'))
+        transform.append(et.fromstring(f'<attribute id="RotationQuat" type="fvec4"><float3 x="{rot[0]}" y="{rot[1]}" z="{rot[2]}" w="{rot[3]}" /></attribute>'))
+        transform.append(et.fromstring(f'<attribute id="Scale" type="float" value="{scale}" />'))
+
+    def is_attached_camera(self, index: int) -> bool:
+        cameras = self.lsf_xml.findall('./region[@id="TLScene"]/node[@id="TLScene"]/children/node[@id="TLCameras"]/children/node[@id="Object"]')
+        if index >= len(cameras):
+            raise KeyError(f'There is no camera with index {index} in {self.__lsf_file.relative_file_path}')
+        camera = cameras[index].find('./children/node[@id="TLCameras"]')
+        if camera is None:
+            raise KeyError(f'Failed to find a camera with index {index} in {self.__lsf_file.relative_file_path}')
+        return get_bg3_attribute(camera, 'AttachTo') is not None
+
+    def get_number_of_cameras(self) -> int:
+        return len(self.lsf_xml.findall('./region[@id="TLScene"]/node[@id="TLScene"]/children/node[@id="TLCameras"]/children/node[@id="Object"]'))
+
+    def get_camera_position(self, index: int) -> tuple[str, str, str]:
+        cameras = self.lsf_xml.findall('./region[@id="TLScene"]/node[@id="TLScene"]/children/node[@id="TLCameras"]/children/node[@id="Object"]')
+        if index >= len(cameras):
+            raise KeyError(f'There is no camera with index {index} in {self.__lsf_file.relative_file_path}')
+        camera = cameras[index].find('./children/node[@id="TLCameras"]')
+        if camera is None:
+            raise KeyError(f'Failed to find a camera with index {index} in {self.__lsf_file.relative_file_path}')
+        transform = camera.find('./children/node[@id="Transform"]/children/node[@id="Object"]/children/node[@id="MapValue"]')
+        if transform is None:
+            raise RuntimeError(f'Failed to determine transform of a camera with index {index} in {self.__lsf_file.relative_file_path}')
+        position = get_required_bg3_attribute(transform, 'Position')
+        positions = position.split(' ')
+        if len(positions) != 3:
+            raise RuntimeError(f'Unexpected number ({len(positions)}) of components in position, actor index {index}, scene file {self.__lsf_file.relative_file_path}')
+        return (positions[0], positions[1], positions[2])
+
+    def set_camera_position(self, index: int, pos: tuple[str, str, str]) -> None:
+        # update lsf
+        cameras = self.lsf_xml.findall('./region[@id="TLScene"]/node[@id="TLScene"]/children/node[@id="TLCameras"]/children/node[@id="Object"]')
+        if index >= len(cameras):
+            raise KeyError(f'There is no camera with index {index} in {self.__lsf_file.relative_file_path}')
+        camera = cameras[index].find('./children/node[@id="TLCameras"]')
+        if camera is None:
+            raise KeyError(f'Failed to find a camera with index {index} in {self.__lsf_file.relative_file_path}')
+        transform = camera.find('./children/node[@id="Transform"]/children/node[@id="Object"]/children/node[@id="MapValue"]')
+        if transform is None:
+            raise RuntimeError(f'Failed to determine transform of a camera with index {index} in {self.__lsf_file.relative_file_path}')
+        set_bg3_attribute(transform, 'Position', f'{pos[0]} {pos[1]} {pos[2]}', attribute_type = 'fvec3')
+
+        # update lsx
+        cameras = self.lsx_xml.findall('./region[@id="TLScene"]/node[@id="root"]/children/node[@id="TLCameras"]/children/node[@id="Object"]')
+        if index >= len(cameras):
+            raise KeyError(f'There is no camera with index {index} in {self.__lsf_file.relative_file_path}')
+        camera = cameras[index].find('./children/node[@id="TLCameras"]')
+        if camera is None:
+            raise KeyError(f'Failed to find a camera with index {index} in {self.__lsf_file.relative_file_path}')
+        transform = camera.find('./children/node[@id="Transform"]/children/node[@id="Object"]/children/node[@id="MapValue"]')
+        if transform is None:
+            raise RuntimeError(f'Failed to determine transform of a camera with index {index} in {self.__lsf_file.relative_file_path}')
+        attr = transform.find('./attribute[@id="Position"]')
+        if attr is not None:
+            transform.remove(attr)
+        transform.append(et.fromstring(f'<attribute id="Position" type="fvec3"><float3 x="{pos[0]}" y="{pos[1]}" z="{pos[2]}" /></attribute>'))
+
+    def get_camera_rotation(self, index: int) -> tuple[str, str, str, str]:
+        cameras = self.lsf_xml.findall('./region[@id="TLScene"]/node[@id="TLScene"]/children/node[@id="TLCameras"]/children/node[@id="Object"]')
+        if index >= len(cameras):
+            raise KeyError(f'There is no camera with index {index} in {self.__lsf_file.relative_file_path}')
+        camera = cameras[index].find('./children/node[@id="TLCameras"]')
+        if camera is None:
+            raise KeyError(f'Failed to find a camera with index {index} in {self.__lsf_file.relative_file_path}')
+        transform = camera.find('./children/node[@id="Transform"]/children/node[@id="Object"]/children/node[@id="MapValue"]')
+        if transform is None:
+            raise RuntimeError(f'Failed to determine transform of a camera with index {index} in {self.__lsf_file.relative_file_path}')
+        rotation = get_required_bg3_attribute(transform, 'RotationQuat')
+        rotations = rotation.split(' ')
+        if len(rotations) != 4:
+            raise RuntimeError(f'Unexpected number ({len(rotations)}) of components in rotation, actor index {index}, scene file {self.__lsf_file.relative_file_path}')
+        return (rotations[0], rotations[1], rotations[2], rotations[3])
+
+    def set_camera_rotation(self, index: int, rot: tuple[str, str, str, str]) -> None:
+        # update lsf
+        cameras = self.lsf_xml.findall('./region[@id="TLScene"]/node[@id="TLScene"]/children/node[@id="TLCameras"]/children/node[@id="Object"]')
+        if index >= len(cameras):
+            raise KeyError(f'There is no camera with index {index} in {self.__lsf_file.relative_file_path}')
+        camera = cameras[index].find('./children/node[@id="TLCameras"]')
+        if camera is None:
+            raise KeyError(f'Failed to find a camera with index {index} in {self.__lsf_file.relative_file_path}')
+        transform = camera.find('./children/node[@id="Transform"]/children/node[@id="Object"]/children/node[@id="MapValue"]')
+        if transform is None:
+            raise RuntimeError(f'Failed to determine transform of a camera with index {index} in {self.__lsf_file.relative_file_path}')
+        set_bg3_attribute(transform, 'RotationQuat', f'{rot[0]} {rot[1]} {rot[2]} {rot[3]}', attribute_type = 'fvec4')
+
+        # update lsx
+        cameras = self.lsx_xml.findall('./region[@id="TLScene"]/node[@id="root"]/children/node[@id="TLCameras"]/children/node[@id="Object"]')
+        if index >= len(cameras):
+            raise KeyError(f'There is no camera with index {index} in {self.__lsf_file.relative_file_path}')
+        camera = cameras[index].find('./children/node[@id="TLCameras"]')
+        if camera is None:
+            raise KeyError(f'Failed to find a camera with index {index} in {self.__lsf_file.relative_file_path}')
+        transform = camera.find('./children/node[@id="Transform"]/children/node[@id="Object"]/children/node[@id="MapValue"]')
+        if transform is None:
+            raise RuntimeError(f'Failed to determine transform of a camera with index {index} in {self.__lsf_file.relative_file_path}')
+        attr = transform.find('./attribute[@id="RotationQuat"]')
+        if attr is not None:
+            transform.remove(attr)
+        transform.append(et.fromstring(f'<attribute id="RotationQuat" type="fvec4"><float3 x="{rot[0]}" y="{rot[1]}" z="{rot[2]}" w="{rot[3]}" /></attribute>'))
+
+    def get_camera_scale(self, index: int) -> str:
+        cameras = self.lsf_xml.findall('./region[@id="TLScene"]/node[@id="TLScene"]/children/node[@id="TLCameras"]/children/node[@id="Object"]')
+        if index >= len(cameras):
+            raise KeyError(f'There is no camera with index {index} in {self.__lsf_file.relative_file_path}')
+        camera = cameras[index].find('./children/node[@id="TLCameras"]')
+        if camera is None:
+            raise KeyError(f'Failed to find a camera with index {index} in {self.__lsf_file.relative_file_path}')
+        transform = camera.find('./children/node[@id="Transform"]/children/node[@id="Object"]/children/node[@id="MapValue"]')
+        if transform is None:
+            raise RuntimeError(f'Failed to determine transform of a camera with index {index} in {self.__lsf_file.relative_file_path}')
+        return get_required_bg3_attribute(transform, 'Scale')
+
+    def set_camera_scale(self, index: int, scale: str) -> None:
+        # update lsf
+        cameras = self.lsf_xml.findall('./region[@id="TLScene"]/node[@id="TLScene"]/children/node[@id="TLCameras"]/children/node[@id="Object"]')
+        if index >= len(cameras):
+            raise KeyError(f'There is no camera with index {index} in {self.__lsf_file.relative_file_path}')
+        camera = cameras[index].find('./children/node[@id="TLCameras"]')
+        if camera is None:
+            raise KeyError(f'Failed to find a camera with index {index} in {self.__lsf_file.relative_file_path}')
+        transform = camera.find('./children/node[@id="Transform"]/children/node[@id="Object"]/children/node[@id="MapValue"]')
+        if transform is None:
+            raise RuntimeError(f'Failed to determine transform of a camera with index {index} in {self.__lsf_file.relative_file_path}')
+        set_bg3_attribute(transform, 'Scale', f'{scale}', attribute_type = 'float')
+
+        # update lsx
+        cameras = self.lsx_xml.findall('./region[@id="TLScene"]/node[@id="root"]/children/node[@id="TLCameras"]/children/node[@id="Object"]')
+        if index >= len(cameras):
+            raise KeyError(f'There is no camera with index {index} in {self.__lsf_file.relative_file_path}')
+        camera = cameras[index].find('./children/node[@id="TLCameras"]')
+        if camera is None:
+            raise KeyError(f'Failed to find a camera with index {index} in {self.__lsf_file.relative_file_path}')
+        transform = camera.find('./children/node[@id="Transform"]/children/node[@id="Object"]/children/node[@id="MapValue"]')
+        if transform is None:
+            raise RuntimeError(f'Failed to determine transform of a camera with index {index} in {self.__lsf_file.relative_file_path}')
+        set_bg3_attribute(transform, 'Scale', f'{scale}', attribute_type = 'float')
+
+    def get_camera_transform(self, index: int) -> tuple[tuple[str, str, str], tuple[str, str, str, str], str]:
+        cameras = self.lsf_xml.findall('./region[@id="TLScene"]/node[@id="TLScene"]/children/node[@id="TLCameras"]/children/node[@id="Object"]')
+        if index >= len(cameras):
+            raise KeyError(f'There is no camera with index {index} in {self.__lsf_file.relative_file_path}')
+        camera = cameras[index].find('./children/node[@id="TLCameras"]')
+        if camera is None:
+            raise KeyError(f'Failed to find a camera with index {index} in {self.__lsf_file.relative_file_path}')
+        transform = camera.find('./children/node[@id="Transform"]/children/node[@id="Object"]/children/node[@id="MapValue"]')
+        if transform is None:
+            raise RuntimeError(f'Failed to determine transform of a camera with index {index} in {self.__lsf_file.relative_file_path}')
+        position = get_required_bg3_attribute(transform, 'Position')
+        positions = position.split(' ')
+        if len(positions) != 3:
+            raise RuntimeError(f'Unexpected number ({len(positions)}) of components in position, actor index {index}, scene file {self.__lsf_file.relative_file_path}')
+        rotation = get_required_bg3_attribute(transform, 'RotationQuat')
+        rotations = rotation.split(' ')
+        if len(rotations) != 4:
+            raise RuntimeError(f'Unexpected number ({len(rotations)}) of components in rotation, actor index {index}, scene file {self.__lsf_file.relative_file_path}')
+        scale = get_required_bg3_attribute(transform, 'Scale')
+        return ((positions[0], positions[1], positions[2]), (rotations[0], rotations[1], rotations[2], rotations[3]), scale)
+
+    def set_camera_transform(self, index: int, pos: tuple[str, str, str], rot: tuple[str, str, str, str], scale: str) -> None:
+        # update lsf
+        cameras = self.lsf_xml.findall('./region[@id="TLScene"]/node[@id="TLScene"]/children/node[@id="TLCameras"]/children/node[@id="Object"]')
+        if index >= len(cameras):
+            raise KeyError(f'There is no camera with index {index} in {self.__lsf_file.relative_file_path}')
+        camera = cameras[index].find('./children/node[@id="TLCameras"]')
+        if camera is None:
+            raise KeyError(f'Failed to find a camera with index {index} in {self.__lsf_file.relative_file_path}')
+        transform = camera.find('./children/node[@id="Transform"]/children/node[@id="Object"]/children/node[@id="MapValue"]')
+        if transform is None:
+            raise RuntimeError(f'Failed to determine transform of a camera with index {index} in {self.__lsf_file.relative_file_path}')
+        set_bg3_attribute(transform, 'Position', f'{pos[0]} {pos[1]} {pos[2]}', attribute_type = 'fvec3')
+        set_bg3_attribute(transform, 'RotationQuat', f'{rot[0]} {rot[1]} {rot[2]} {rot[3]}', attribute_type = 'fvec4')
+        set_bg3_attribute(transform, 'Scale', f'{scale}', attribute_type = 'float')
+
+        # update lsx
+        cameras = self.lsx_xml.findall('./region[@id="TLScene"]/node[@id="root"]/children/node[@id="TLCameras"]/children/node[@id="Object"]')
+        if index >= len(cameras):
+            raise KeyError(f'There is no camera with index {index} in {self.__lsf_file.relative_file_path}')
+        camera = cameras[index].find('./children/node[@id="TLCameras"]')
+        if camera is None:
+            raise KeyError(f'Failed to find a camera with index {index} in {self.__lsf_file.relative_file_path}')
+        transform = camera.find('./children/node[@id="Transform"]/children/node[@id="Object"]/children/node[@id="MapValue"]')
+        if transform is None:
+            raise RuntimeError(f'Failed to determine transform of a camera with index {index} in {self.__lsf_file.relative_file_path}')
+        all_attrs = transform.findall('./attribute')
+        for attr in all_attrs:
+            transform.remove(attr)
+        transform.append(et.fromstring(f'<attribute id="Position" type="fvec3"><float3 x="{pos[0]}" y="{pos[1]}" z="{pos[2]}" /></attribute>'))
+        transform.append(et.fromstring(f'<attribute id="RotationQuat" type="fvec4"><float3 x="{rot[0]}" y="{rot[1]}" z="{rot[2]}" w="{rot[3]}" /></attribute>'))
+        transform.append(et.fromstring(f'<attribute id="Scale" type="float" value="{scale}" />'))
+
     def set_light_radius(
             self,
             light_id: str,
-            radius: float,
+            radius: float | str,
             /,
             lighting_setup_id: str = '00000000-0000-0000-0000-000000000000'
     ) -> None:
@@ -58,6 +414,29 @@ class scene_object:
         if light_id not in lsx_lights:
             raise RuntimeError(f'Light {light_id} is not found in lighting setup f{lighting_setup_id} in f{self.__lsx_file.relative_file_path}')
         set_bg3_attribute(lsx_lights[light_id], 'Radius', str(radius), attribute_type = 'float')
+
+
+    def set_light_position(
+            self,
+            light_id: str,
+            pos: tuple[float | str, float | str, float | str],
+            /,
+            lighting_setup_id: str = '00000000-0000-0000-0000-000000000000'
+    ) -> None:
+        lsf_lights = self.__get_lights_lsf(lighting_setup_id)
+        if light_id not in lsf_lights:
+            raise RuntimeError(f'Light {light_id} is not found in lighting setup f{lighting_setup_id} in f{self.__lsf_file.relative_file_path}')
+        set_bg3_attribute(lsf_lights[light_id], 'Position', f'{pos[0]} {pos[1]} {pos[2]}', attribute_type = 'fvec3')
+
+        lsx_lights = self.__get_lights_lsx(lighting_setup_id)
+        if light_id not in lsx_lights:
+            raise RuntimeError(f'Light {light_id} is not found in lighting setup f{lighting_setup_id} in f{self.__lsx_file.relative_file_path}')
+        pos_attr = lsx_lights[light_id].find('./attribute[@id="Position"]/float3')
+        if pos_attr is None:
+            raise RuntimeError(f'Light {light_id} does not have a position')
+        pos_attr.set('x', str(pos[0]))
+        pos_attr.set('y', str(pos[1]))
+        pos_attr.set('z', str(pos[2]))
 
 
     def __get_lights_lsf(self, lighting_setup_id: str) -> dict[str, et.Element]:

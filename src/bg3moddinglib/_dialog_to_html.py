@@ -28,6 +28,7 @@ from ._reactions import reaction_object
 from ._skillchecks import difficulty_classes
 from ._soundbank import soundbank_object
 from ._tags import tag_registry
+from ._timeline import timeline_object
 
 
 PAD = ' ' * 4
@@ -696,6 +697,7 @@ class dialog_to_html:
             self,
             d: dialog_object,
             d_editor_ctx: dialog_object | None,
+            t: timeline_object | None,
             node_uuid: str,
             parent_node_uuid: str,
             visible: bool,
@@ -768,7 +770,7 @@ class dialog_to_html:
             html_lines.append(f'{inner_padding}<div class="orphan">')
             html_lines.append(f'{inner_padding}{PAD}<label>ORPHANED NODE</label>')
             html_lines.append(f'{inner_padding}</div>')
-        html_lines += self.get_info_lines(d, node, node_uuid, parent_node_uuid, ctor, inner_padding)
+        html_lines += self.get_info_lines(d, t, node, node_uuid, parent_node_uuid, ctor, inner_padding)
 
         reactions = self.get_reactions_line(node, inner_padding)
         if reactions:
@@ -852,13 +854,14 @@ class dialog_to_html:
         f.write('\n')
         for child_node in children:
             child_node_uuid = get_required_bg3_attribute(child_node, 'UUID')
-            self.convert_dialog_node_to_html(d, d_editor_ctx, child_node_uuid, node_uuid, False, f, inner_padding)
+            self.convert_dialog_node_to_html(d, d_editor_ctx, t, child_node_uuid, node_uuid, False, f, inner_padding)
         f.write(f'{outer_padding}</div>\n')
 
 
     def get_info_lines(
             self,
             d: dialog_object,
+            t: timeline_object | None,
             dialog_node: et.Element[str],
             node_uuid: str,
             parent_node_uuid: str,
@@ -872,7 +875,13 @@ class dialog_to_html:
         group_id = get_bg3_attribute(dialog_node, 'GroupID')
         group_index = get_bg3_attribute(dialog_node, 'GroupIndex')
 
-        description = [
+        description = []
+        if t is not None:
+            phase_index = t.get_timeline_phase_index(node_uuid)
+            if phase_index is not None:
+                description.append('timeline phase index ' + str(phase_index))
+
+        description += [
             'RootNode' if root else '',
             'EndNode' if endnode else '',
             'ShowOnce' if showonce else '',
@@ -1267,6 +1276,7 @@ class dialog_to_html:
             d_editor_ctx = self.__assets.get_dialog_object(dialog_name, with_editor_context = True)
         except:
             d_editor_ctx = d
+        t = self.__assets.get_timeline_object(dialog_name)
         root_path = os.path.join(self.__assets.tool.env.env_root_path, 'dialog_parser')
 
         e = self.__assets.index.get_entry(dialog_name)
@@ -1308,7 +1318,7 @@ class dialog_to_html:
         synopsis_lines = self.retrieve_dialog_synopsis(e)
 
         self.__relative_file_path = relative_file_path
-        self.__internal_convert_dialog_file_to_html(output_file_path, index_file_path, d, d_editor_ctx, e, synopsis_lines)
+        self.__internal_convert_dialog_file_to_html(output_file_path, index_file_path, d, d_editor_ctx, t, e, synopsis_lines)
 
 
     def convert_dialogs_to_html(self) -> None:
@@ -1488,8 +1498,12 @@ class dialog_to_html:
                 f.close()
 
 
-    def convert_modded_dialog_to_html(self, mod_name: str, dialog_file: game_file) -> None:
+    def convert_modded_dialog_to_html(self, mod_name: str, dialog_file: game_file, timeline_file: game_file | None) -> None:
         d = dialog_object(dialog_file)
+        if timeline_file is not None:
+            t = timeline_object(timeline_file, d)
+        else:
+            t = None
         root_path = os.path.join(self.__assets.tool.env.env_root_path, 'dialog_parser_' + mod_name)
 
         fn = dialog_file.relative_file_path
@@ -1522,7 +1536,7 @@ class dialog_to_html:
         synopsis_lines = [' | '.join(speaker_slots)]
 
         self.__relative_file_path = ''
-        self.__internal_convert_dialog_file_to_html(output_file_path, '', d, None, e, synopsis_lines)
+        self.__internal_convert_dialog_file_to_html(output_file_path, '', d, None, t, e, synopsis_lines)
 
 
     def __internal_convert_dialog_file_to_html(
@@ -1531,6 +1545,7 @@ class dialog_to_html:
             index_file_path: str,
             dialog: dialog_object,
             dialog_with_context: dialog_object | None,
+            timeline: timeline_object | None,
             dialog_entry: dict[str, str],
             synopsis_lines: list[str]
     ) -> None:
@@ -1557,10 +1572,10 @@ class dialog_to_html:
         with open(output_file_path, 'wt', encoding='utf-8', errors='replace') as f:
             self.start_dialog_html_file(dialog, dialog_entry, f, synopsis_lines)
             for node_uuid in root_uuids:
-                self.convert_dialog_node_to_html(dialog, dialog_with_context, node_uuid, '', True, f, f'{PAD}{PAD}')            
+                self.convert_dialog_node_to_html(dialog, dialog_with_context, timeline, node_uuid, '', True, f, f'{PAD}{PAD}')            
             for node_uuid in all_nodes_uuids:
                 if node_uuid not in self.__known_nodes and node_uuid not in self.__referenced_nodes:
-                    self.convert_dialog_node_to_html(dialog, dialog_with_context, node_uuid, '', True, f, f'{PAD}{PAD}', is_orphan = True)
+                    self.convert_dialog_node_to_html(dialog, dialog_with_context, timeline, node_uuid, '', True, f, f'{PAD}{PAD}', is_orphan = True)
             self.finish_dialog_html_file(f)
         if index_file_path:
             with open(index_file_path, 'wt', encoding='utf-8', errors='replace') as f:
@@ -1605,28 +1620,37 @@ class dialog_to_html:
                             self.__extra_soundbanks[sb.speaker_id] = sb
 
                 dialogs = list[str]()
+                timelines = dict[str, str]()
                 for fn in mod_files:
                     if 'Localization/English/' in fn and fn.endswith('.loca'):
                         print_and_write(log_file, f'{datetime.datetime.now().astimezone()} found mod textbank: {fn}')
                         self.__mod_textbank = loca_object(game_file(self.__assets.tool, fn, pak_name = pak_file_path))
-                    if '/Story/DialogsBinary/' in fn and fn.endswith('.lsf'):
+                    elif '/Story/DialogsBinary/' in fn and fn.endswith('.lsf'):
                         dialogs.append(fn)
-                    if '/Localization/English/Soundbanks/' in fn and fn.endswith('.lsf'):
+                    elif '/Timeline/Generated/' in fn and fn.endswith('.lsf'):
+                        timeline_key, _ = os.path.splitext(os.path.basename(fn))
+                        timelines[timeline_key.lower()] = fn
+                    elif '/Localization/English/Soundbanks/' in fn and fn.endswith('.lsf'):
                         print_and_write(log_file, f'{datetime.datetime.now().astimezone()} found mod soundbank: {fn}')
                         sb = soundbank_object(game_file(self.__assets.tool, fn, pak_name = pak_file_path))
                         self.__mod_soundbanks[sb.speaker_id] = sb
 
                 for dialog in dialogs:
-                    dialog_file_name = dialog[dialog.rfind('/') + 1:]
-                    dialog_name = dialog_file_name[:-4].lower()
+                    dialog_file_name = os.path.basename(dialog)
+                    dialog_name, _ = os.path.splitext(dialog_file_name)
+                    dialog_name = dialog_name.lower()
                     processed += 1
                     if include_only_these and dialog_name not in include_only_these:
                         print_and_write(log_file, f'{datetime.datetime.now().astimezone()} Skipping {processed} / {len(dialogs)}: {dialog_file_name}')
                         continue
                     t = time.time()
                     print_and_write(log_file, f'{datetime.datetime.now().astimezone()} Converting {processed} / {len(dialogs)}: {dialog_file_name}')
-                    gf = game_file(self.__assets.files.tool, dialog, pak_name = pak_file_path)
-                    self.convert_modded_dialog_to_html(mod_name, gf)
+                    if dialog_name in timelines:
+                        timeline_gf = game_file(self.__assets.files.tool, timelines[dialog_name], pak_name = pak_file_path)
+                    else:
+                        timeline_gf = None
+                    dialog_gf = game_file(self.__assets.files.tool, dialog, pak_name = pak_file_path)
+                    self.convert_modded_dialog_to_html(mod_name, dialog_gf, timeline_gf)
                     print_and_write(log_file, f'{datetime.datetime.now().astimezone()} Converted {processed} / {len(dialogs)}: {dialog_file_name}; time elapsed {time.time() - t}')
 
             finally:

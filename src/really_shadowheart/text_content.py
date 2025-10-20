@@ -332,6 +332,10 @@ def create_text_content() -> None:
         "h93d2e7aeg716eg463fga1dag2f1110664d35": (1, "You don't waste time, do you?"),
         "h18ffbc26g6b50g4068g8b32g273ff82086a0": (1,  "Yes. I ... love you."),
         "h8aa24494g5c0dg400dg810bg94afbed5b8fd": (1, "Did the noblestalk help you recall anything from your past?"),
+        "hd23c4788gb0c8g4facg9e05gc0c3d502e3f4": (1, "Game Over"),
+        "haf81aa5cg9a4cg4d59ga2dega391c7c6f212": (1, "I've spent years studying martial arts and even longer in meditation. I can harm you or help you. Your choice."),
+        "hc0ac1647g6a79g4596gab70g55a73961e74b": (1, "I've devoted years to martial arts and even more to meditation. I can be your enemy or your ally. You decide."),
+        "h89819073g94d3g482ag9217g6a03d68c3d38": (1, "First, you need to calm down. That would be a great start."),
     }
     loca = bg3.loca_object(files.add_new_file(files.get_loca_relative_path()))
     loca.add_lines(content)

@@ -14,8 +14,9 @@ def create_obfuscate_text_content() -> None:
         "hef879f48gf239g4f67g934cg234e684f2571": (1, "&lt;i&gt;Share your memories about Jarell, about his best years as a faithful warrior of Selûne, and the darkness that swallowed him afterwards...&lt;/i&gt;"),
         "hbadfd58fg48e6g48f1g8cd6g540840681696": (1, "&lt;i&gt;Take a deep breath, and tell her about your deepest fear of failing your friends; tell her about the heavy burden of responsibility, and hard choices you had to make.&lt;/i&gt;"),
         "h41e16b9cg1017g419bga093ge2ec19add985": (1, "Do you think my deeds made this world better... am I the person my Master Sophia wanted me to be?"),
-        "h4f7de021g4443g4f22g94b7g2bd8275f99ed": (1, "Thank you for being my light and my strength. I am happy you opened your heart to me and allowed me to be at your side. You're my starlight, Shadowheart."),
+        "h4f7de021g4443g4f22g94b7g2bd8275f99ed": (1, "Thank you for being my light and strength. I am happy you opened your heart to me and let me be by your side. You are my starlight, Shadowheart."),
         "h207ba395gb926g44beg8e54gdcd644853feb": (1, "&lt;i&gt;Say nothing, and kiss her.&lt;/i&gt;"),
+        "h2c79553ag48edg4641g93dfg98b19c1dacaf": (1, "Shadowheart, I want you to hear this from me. You have always been much more than a Sharran. You don't belong to Shar or the mother superior. You're your own woman. Your story is your own. Never forget this.")
     }
     loca = bg3.loca_object(files.add_new_file(files.get_loca_relative_path()))
     loca.add_lines(content)

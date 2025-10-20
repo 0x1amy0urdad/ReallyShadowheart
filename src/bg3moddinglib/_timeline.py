@@ -7,12 +7,12 @@ from ._attitudes import *
 from ._common import (
     DECIMAL_ZERO,
     TIMELINE_DECIMAL_PRECISION,
-    TIMELINE_PRECISION,
     get_bg3_attribute,
     get_len,
     get_required_bg3_attribute,
     decimal_from,
     decimal_from_str,
+    delete_bg3_attribute,
     new_random_uuid,
     set_bg3_attribute,
     to_compact_string
@@ -27,6 +27,7 @@ from ._constants import (
 )
 from ._dialog import dialog_object
 from ._files import game_file
+from ._types import XmlElement
 
 from typing import Iterable
 
@@ -87,8 +88,9 @@ class timeline_object:
     PHYSICS = 'TLPhysics'
     SPRINGS = 'TLSprings'
     PLAY_EFFECT = 'TLPlayEffectEvent'
+    PLAY_EFFECT_PHASE = 'TLEffectPhaseEvent'
 
-    VALID_ACTOR_NODES = frozenset([ATTITUDE, EMOTION, LOOK_AT, SOUND, SHOW_VISUAL, SHOW_WEAPON, HANDS_IK, PHYSICS, SPRINGS, PLAY_EFFECT])
+    VALID_ACTOR_NODES = frozenset([ATTITUDE, EMOTION, LOOK_AT, SOUND, SHOW_VISUAL, SHOW_WEAPON, HANDS_IK, PHYSICS, SPRINGS, PLAY_EFFECT, PLAY_EFFECT_PHASE])
 
     SWITCH_STAGE = 'TLSwitchStageEvent'
     SWITCH_LOCATION = 'TLSwitchLocationEvent'
@@ -209,6 +211,8 @@ class timeline_object:
                 if t > start_time:
                     break
                 insert_pos += 1
+            if insert_pos > 0:
+                insert_pos -= 1
             self.__effect_components_parent_node.insert(insert_pos, tl_node)
 
     def scan_timeline(self) -> dc.Decimal:
@@ -270,6 +274,11 @@ class timeline_object:
             if actor_type_ids is None or type_id in actor_type_ids:
                 result[actor_uuid] = value
         return result
+
+    def get_tl_node_actor_uuid(self, node: XmlElement) -> str | None:
+        actor = node.find('./children/node[@id="Actor"]')
+        if actor is not None:
+            return get_bg3_attribute(actor, 'UUID')
 
     def get_timeline_actors_uuids(self, actor_type_id: str | Iterable[str] | None = None) -> tuple[str, ...]:
         return tuple(self.get_timeline_actors(actor_type_id).keys())
@@ -1841,6 +1850,22 @@ class timeline_object:
         else:
             self.__effect_components_parent_node.remove(effect_component)
 
+    def get_timeline_phase_index(self, dialog_node_uuid: str) -> int | None:
+        tl_voice_nodes = self.find_effect_components(effect_component_types = 'TLVoice')
+        for tl_voice in tl_voice_nodes:
+            phase_index = get_bg3_attribute(tl_voice, 'PhaseIndex')
+            if phase_index is None:
+                phase_index = 0
+            else:
+                phase_index = int(phase_index)
+            if dialog_node_uuid == get_required_bg3_attribute(tl_voice, 'DialogNodeId') or dialog_node_uuid == get_required_bg3_attribute(tl_voice, 'ReferenceId'):
+                return phase_index
+        timeline_phases = self.__file.root_node.findall('./region[@id="TimelineContent"]/node[@id="TimelineContent"]/children/node[@id="TimelinePhases"]/children/node[@id="Object"]/children/node[@id="Object"]')
+        for timeline_phase in timeline_phases:
+            if dialog_node_uuid == get_required_bg3_attribute(timeline_phase, 'MapKey'):
+                return int(get_required_bg3_attribute(timeline_phase, 'MapValue'))
+        return None
+
     def get_timeline_phase(self, phase_id: str | int) -> timeline_phase:
         phases = self.__file.root_node.findall('./region[@id="TimelineContent"]/node[@id="TimelineContent"]/children/node[@id="Effect"]/children/node[@id="Phases"]/children/node[@id="Phase"]')
         timeline_phases = self.__file.root_node.findall('./region[@id="TimelineContent"]/node[@id="TimelineContent"]/children/node[@id="TimelinePhases"]/children/node[@id="Object"]/children/node[@id="Object"]')
@@ -1902,6 +1927,90 @@ class timeline_object:
         end_time = get_required_bg3_attribute(tl_node, 'EndTime')
         return start_time, end_time
 
+    def get_tl_animation_target_transform_position(self, node: XmlElement | str) -> tuple[str, str, str]:
+        if isinstance(node, str):
+            node = self.find_effect_component(node)
+        target_transform = node.find('./children/node[@id="TargetTransform"]')
+        if target_transform is None:
+            return ('', '', '')
+        position = get_bg3_attribute(target_transform, 'Position')
+        if position is None:
+            return ('', '', '')
+        coords = position.split(' ')
+        if len(coords) != 3:
+            return ('', '', '')
+        return (coords[0], coords[1], coords[2])
+
+    def set_tl_animation_target_transform_position(self, node: XmlElement | str, pos: tuple[str | float, str | float, str | float]) -> None:
+        if isinstance(node, str):
+            node = self.find_effect_component(node)
+        target_transform = node.find('./children/node[@id="TargetTransform"]')
+        if target_transform is None:
+            id = get_required_bg3_attribute(node, 'ID')
+            raise RuntimeError(f'TLAnimation node {id} does not have TargetTransform')
+        set_bg3_attribute(target_transform, 'Position', f'{pos[0]} {pos[1]} {pos[2]}', attribute_type = 'fvec3')
+
+    def get_tl_animation_target_transform_rotation(self, node: XmlElement | str) -> tuple[str, str, str, str]:
+        if isinstance(node, str):
+            node = self.find_effect_component(node)
+        target_transform = node.find('./children/node[@id="TargetTransform"]')
+        if target_transform is None:
+            return ('', '', '', '')
+        quaternion = get_bg3_attribute(target_transform, 'RotationQuat')
+        if quaternion is None:
+            return ('', '', '', '')
+        quat_comps = quaternion.split(' ')
+        if len(quat_comps) != 4:
+            return ('', '', '', '')
+        return (quat_comps[0], quat_comps[1], quat_comps[2], quat_comps[3])
+
+    def set_tl_animation_target_transform_rotation(self, node: XmlElement | str, rot: tuple[str | float, str | float, str | float, str | float]) -> None:
+        if isinstance(node, str):
+            node = self.find_effect_component(node)
+        target_transform = node.find('./children/node[@id="TargetTransform"]')
+        if target_transform is None:
+            id = get_required_bg3_attribute(node, 'ID')
+            raise RuntimeError(f'TLAnimation node {id} does not have TargetTransform')
+        set_bg3_attribute(target_transform, 'RotationQuat', f'{rot[0]} {rot[1]} {rot[2]} {rot[3]}', attribute_type = 'fvec4')
+
+    def set_tl_animation_target_transform(
+            self,
+            node: XmlElement | str,
+            position: tuple[str | float, str | float, str | float],
+            rotation: tuple[str | float, str | float, str | float, str | float],
+            scale: str | float
+    ) -> None:
+        if isinstance(node, str):
+            node = self.find_effect_component(node)
+        children = node.find('./children')
+        if children is None:
+            id = get_required_bg3_attribute(node, 'ID')
+            raise RuntimeError(f'TLAnimation node {id} does not have children')
+        target_transform = children.find('./node[@id="TargetTransform"]')
+        pos = f'{position[0]} {position[1]} {position[2]}'
+        rot = f'{rotation[0]} {rotation[1]} {rotation[2]} {rotation[3]}'
+        if target_transform is None:
+            children.append(et.fromstring(
+                '<node id="TargetTransform">' +
+                f'<attribute id="Scale" type="float" value="{scale}" />' +
+                f'<attribute id="Position" type="fvec3" value="{pos}" />' +
+                f'<attribute id="RotationQuat" type="fvec4" value="{rot}" />' +
+                '</node>'))
+        else:
+            set_bg3_attribute(target_transform, 'Scale', scale, attribute_type = 'float')
+            set_bg3_attribute(target_transform, 'Position', pos, attribute_type = 'fvec3')
+            set_bg3_attribute(target_transform, 'RotationQuat', rot, attribute_type = 'fvec4')
+
+    def remove_tl_animation_target_transform(self, node: XmlElement | str) -> None:
+        if isinstance(node, str):
+            node = self.find_effect_component(node)
+        children = node.find('./children')
+        if children:
+            target_transform = children.find('./node[@id="TargetTransform"]')
+            if target_transform:
+                children.remove(target_transform)
+
+
     def edit_tl_animation(
             self,
             node_uuid: str,
@@ -1923,6 +2032,71 @@ class timeline_object:
             val = f'{target_transform_rotation[0]} {target_transform_rotation[1]} {target_transform_rotation[2]} {target_transform_rotation[3]}'
             set_bg3_attribute(target_transform, 'RotationQuat', val, attribute_type = 'fvec4')
         return tl_node
+
+    def get_tl_transform_position(self, node: XmlElement | str, index: int = 0) -> tuple[str, str, str]:
+        if isinstance(node, str):
+            node = self.find_effect_component(node)
+        channels = node.findall('./children/node[@id="TransformChannels"]/children/node[@id="TransformChannel"]')
+        if len(channels) == 0:
+            return ('', '', '')
+        if len(channels) != 6:
+            id = get_required_bg3_attribute(node, 'ID')
+            raise RuntimeError(f'Malformed TLTransform node: {id}')
+        x_nodes = channels[0].findall('./children/node[@id="Keys"]/children/node[@id="Key"]')
+        y_nodes = channels[1].findall('./children/node[@id="Keys"]/children/node[@id="Key"]')
+        z_nodes = channels[2].findall('./children/node[@id="Keys"]/children/node[@id="Key"]')
+        if len(x_nodes) <= index or len(y_nodes) <= index or len(z_nodes) <= index:
+            return ('', '', '')
+        return (
+            get_required_bg3_attribute(x_nodes[index], 'Value'),
+            get_required_bg3_attribute(y_nodes[index], 'Value'),
+            get_required_bg3_attribute(z_nodes[index], 'Value'))
+
+    def set_tl_transform_position(self, node: XmlElement | str, pos: tuple[str | float, str | float, str | float], index: int = 0) -> None:
+        if isinstance(node, str):
+            node = self.find_effect_component(node)
+        channels = node.findall('./children/node[@id="TransformChannels"]/children/node[@id="TransformChannel"]')
+        if len(channels) != 6:
+            id = get_required_bg3_attribute(node, 'ID')
+            raise RuntimeError(f'Malformed TLTransform node: {id}')
+        x_nodes = channels[0].findall('./children/node[@id="Keys"]/children/node[@id="Key"]')
+        y_nodes = channels[1].findall('./children/node[@id="Keys"]/children/node[@id="Key"]')
+        z_nodes = channels[2].findall('./children/node[@id="Keys"]/children/node[@id="Key"]')
+        if len(x_nodes) <= index or len(y_nodes) <= index or len(z_nodes) <= index:
+            id = get_required_bg3_attribute(node, 'ID')
+            raise RuntimeError(f'No position is defined in TLTransform node {id} for index {index}')
+        set_bg3_attribute(x_nodes[index], 'Value', pos[0], attribute_type = 'float')
+        set_bg3_attribute(y_nodes[index], 'Value', pos[1], attribute_type = 'float')
+        set_bg3_attribute(z_nodes[index], 'Value', pos[2], attribute_type = 'float')
+
+    def get_tl_transform_coordinate(self, node: XmlElement | str, channel_index: int, index: int = 0) -> str:
+        if isinstance(node, str):
+            node = self.find_effect_component(node)
+        channels = node.findall('./children/node[@id="TransformChannels"]/children/node[@id="TransformChannel"]')
+        if len(channels) == 0:
+            return ''
+        if len(channels) != 6:
+            id = get_required_bg3_attribute(node, 'ID')
+            raise RuntimeError(f'Malformed TLTransform node: {id}')
+        nodes = channels[channel_index].findall('./children/node[@id="Keys"]/children/node[@id="Key"]')
+        if len(nodes) <= index:
+            return ''
+        return get_required_bg3_attribute(nodes[index], 'Value')
+
+    def set_tl_transform_coordinate(self, node: XmlElement | str, channel_index: int, val: str, index: int = 0, val_type : str = 'float') -> None:
+        if isinstance(node, str):
+            node = self.find_effect_component(node)
+        channels = node.findall('./children/node[@id="TransformChannels"]/children/node[@id="TransformChannel"]')
+        if len(channels) == 0:
+            return
+        if len(channels) != 6:
+            id = get_required_bg3_attribute(node, 'ID')
+            raise RuntimeError(f'Malformed TLTransform node: {id}')
+        nodes = channels[channel_index].findall('./children/node[@id="Keys"]/children/node[@id="Key"]')
+        if len(nodes) <= index:
+            id = get_required_bg3_attribute(node, 'ID')
+            raise RuntimeError(f'No position is defined in TLTransform node {id} for channel {channel_index} and index {index}')
+        set_bg3_attribute(nodes[index], 'Value', val, attribute_type = val_type)
 
     def edit_tl_transform(
             self,
@@ -2024,7 +2198,8 @@ class timeline_object:
             /,
             start: str | dc.Decimal | None = None,
             end: str | dc.Decimal | None = None,
-            camera_uuid: str | None = None
+            camera_uuid: str | None = None,
+            is_snapped_to_end: bool | None = None
     ) -> None:
         tl_node = self.find_effect_component(node_uuid)
         tl_phase = self.get_phase_by_tl_node(tl_node)
@@ -2041,6 +2216,42 @@ class timeline_object:
         if end is not None:
             end_time = phase_start_time + decimal_from_str(end)
             set_bg3_attribute(tl_node, 'EndTime', str(end_time), attribute_type="float")
+        if is_snapped_to_end is not None:
+            if is_snapped_to_end:
+                set_bg3_attribute(tl_node, "IsSnappedToEnd", "True", attribute_type="bool")
+            elif get_bg3_attribute(tl_node, "IsSnappedToEnd") is not None:
+                delete_bg3_attribute(tl_node, "IsSnappedToEnd")
+
+    def edit_tl_node_append_keys(self, node_uuid: str, keys: Iterable[XmlElement]) -> None:
+        tl_node = self.find_effect_component(node_uuid)
+        children = tl_node.find('./children')
+        if children is None:
+            raise RuntimeError(f'timeline node {node_uuid} has no children')
+        keys_node = children.find('./node[@id="Keys"]')
+        if keys_node is None:
+            keys_node = et.fromstring('<node id="Keys"><children></children></node>')
+            children.append(keys_node)
+        keys_children = keys_node.find('./node/children')
+        if keys_children is None:
+            raise RuntimeError()
+        for key in keys:
+            keys_children.append(key)
+        
+    def edit_tl_node_set_keys(self, node_uuid: str, keys: Iterable[XmlElement]) -> None:
+        tl_node = self.find_effect_component(node_uuid)
+        children = tl_node.find('./children')
+        if children is None:
+            raise RuntimeError(f'timeline node {node_uuid} has no children')
+        keys_node = children.find('./node[@id="Keys"]')
+        if keys_node is not None:
+            children.remove(keys_node)
+        keys_node = et.fromstring('<node id="Keys"><children></children></node>')
+        keys_children = keys_node.find('./children')
+        if keys_children is None:
+            raise RuntimeError()
+        for key in keys:
+            keys_children.append(key)
+        children.append(keys_node)
 
     def edit_tl_node(
             self,
@@ -2049,22 +2260,29 @@ class timeline_object:
             start: str | dc.Decimal | None = None,
             end: str | dc.Decimal | None = None,
             fade_in: str | dc.Decimal | None = None,
-            fade_out: str | dc.Decimal | None = None,            
+            fade_out: str | dc.Decimal | None = None,
+            is_snapped_to_end: bool | None = None
     ) -> None:
         tl_node = self.find_effect_component(node_uuid)
         tl_phase = self.get_phase_by_tl_node(tl_node)
         phase_start_time = tl_phase.start
-        tl_node = self.find_effect_component(node_uuid)
+        phase_end_time = tl_phase.end
         if start is not None:
             start_time = phase_start_time + decimal_from_str(start)
-            set_bg3_attribute(tl_node, 'StartTime', str(start_time), attribute_type="float")
+            set_bg3_attribute(tl_node, 'StartTime', str(start_time), attribute_type = "float")
         if end is not None:
             end_time = phase_start_time + decimal_from_str(end)
-            set_bg3_attribute(tl_node, 'EndTime', str(end_time), attribute_type="float")
+            set_bg3_attribute(tl_node, 'EndTime', str(end_time), attribute_type = "float")
         if fade_in is not None:
             set_bg3_attribute(tl_node, 'FadeIn', str(fade_in), attribute_type = 'double')
         if fade_out is not None:
             set_bg3_attribute(tl_node, 'FadeOut', str(fade_out), attribute_type = 'double')
+        if is_snapped_to_end is not None:
+            if is_snapped_to_end:
+                set_bg3_attribute(tl_node, "IsSnappedToEnd", "True", attribute_type = "bool")
+            elif get_bg3_attribute(tl_node, "IsSnappedToEnd") is not None:
+                delete_bg3_attribute(tl_node, "IsSnappedToEnd")
+
 
     def get_emotions(self, speaker: str, target_text_handle: str) -> list[tuple[str, int, int]]:
         custom_seq_id = None

@@ -1375,7 +1375,7 @@ def shadowheart_how_am_i_holding_up() -> None:
     d.create_alias_dialog_node(
         'e744ed29-95ae-4b3d-b95c-a27d52eb8612',
         im_not_afraid_to_admit_when_im_wrong_node_uuid,
-        ['f53ffb79-7b9b-4562-82e3-eb0b10a661d1'],
+        ['f53ffb79-7b9b-4562-82e3-eb0b10a661d1', jump_back_node_uuid],
         checkflags = (
             bg3.flag_group('Object', (
                 bg3.flag(bg3.FLAG_Approval_AtLeast_20_For_Sp2, True, speaker_idx_shadowheart),

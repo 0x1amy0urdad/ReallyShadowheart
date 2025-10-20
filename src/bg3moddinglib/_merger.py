@@ -143,6 +143,7 @@ class pak_content:
     def initialize(self) -> None:
         self.__pak_files = tuple(self.__tool.list(self.__file_path))
         cb : content_bundle
+        content_bundles = dict[str, content_bundle]()
         for file_path in self.__pak_files:
             if file_path.startswith('Public/'):
                 if '/Content/' in file_path and file_path.endswith('.lsf'):
@@ -153,37 +154,37 @@ class pak_content:
                 elif '/Timeline/Generated/' in file_path:
                     if file_path.endswith('_Scene.lsx'):
                         filename = os.path.basename(file_path)[:-10].lower()
-                        if filename not in self.__content_bundles:
+                        if filename not in content_bundles:
                             cb = content_bundle(self)
-                            self.__content_bundles[filename] = cb
+                            content_bundles[filename] = cb
                         else:
-                            cb = self.__content_bundles[filename]
+                            cb = content_bundles[filename]
                         cb.scene_lsx_file = file_path
                     elif file_path.endswith('_Scene.lsf'):
                         filename = os.path.basename(file_path)[:-10].lower()
-                        if filename not in self.__content_bundles:
+                        if filename not in content_bundles:
                             cb = content_bundle(self)
-                            self.__content_bundles[filename] = cb
+                            content_bundles[filename] = cb
                         else:
-                            cb = self.__content_bundles[filename]
+                            cb = content_bundles[filename]
                         cb.scene_lsf_file = file_path
                     else:
                         filename = os.path.basename(file_path)[:-4].lower()
-                        if filename not in self.__content_bundles:
+                        if filename not in content_bundles:
                             cb = content_bundle(self)
-                            self.__content_bundles[filename] = cb
+                            content_bundles[filename] = cb
                         else:
-                            cb = self.__content_bundles[filename]
+                            cb = content_bundles[filename]
                         cb.timeline_file = file_path
             elif file_path.startswith('Mods/') and '/Story/DialogsBinary/' in file_path and file_path.endswith('.lsf'):
                 filename = os.path.basename(file_path)[:-4].lower()
-                if filename not in self.__content_bundles:
+                if filename not in content_bundles:
                     cb = content_bundle(self)
-                    self.__content_bundles[filename] = cb
+                    content_bundles[filename] = cb
                 else:
-                    cb = self.__content_bundles[filename]
+                    cb = content_bundles[filename]
                 cb.dialog_file = file_path
-        for fn, cb in self.__content_bundles.items():
+        for fn, cb in content_bundles.items():
             if fn in self.__dialog_bank:
                 dialog_res = self.__dialog_bank[fn]
                 cb.dialog_uuid = get_required_bg3_attribute(dialog_res, 'ID')
@@ -196,7 +197,9 @@ class pak_content:
             else:
                 entry = self.__index.get_entry(fn)
                 cb.timeline_uuid = entry['timeline_uuid']
-                
+        self.__content_bundles = dict[str, content_bundle]()
+        for fn, cb in content_bundles.items():
+            self.__content_bundles[cb.dialog_uuid] = cb
 
     @property
     def tool(self) -> bg3_modding_tool:

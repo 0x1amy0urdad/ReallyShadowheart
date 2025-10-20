@@ -107,6 +107,8 @@ FLAG_COM = '7075ec1a-70ad-bd25-3111-0a955cf07585' # Companion Origin Moment
 
 FLAG_OriginAddToParty = '4870b2cd-210c-0fdc-9c58-4d0142bdae29' # Add this origin to the party
 
+FLAG_SetOriginHostileAfterDialog = '91659c6d-ed58-4b95-894b-763b69df824d' # Object flag. Set on unrecruited origin to make them hostile.
+
 TUT_TransformChamber_State_DisableWard = '5276092d-7b2b-49c8-b3fa-7220c801c1ce'
 TUT_TransformChamber_State_EndPodDialogue = '46cfbaa6-ffae-4aec-afeb-78843d3f2d5d'
 

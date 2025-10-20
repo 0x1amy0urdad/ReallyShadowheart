@@ -3773,7 +3773,7 @@ def create_intimate_followups() -> None:
     # You don't waste time, do you?
     d.create_standard_dialog_node(
         you_dont_waste_time_node_uuid,
-        bg3.SPEAKER_PLAYER,
+        bg3.SPEAKER_SHADOWHEART,
         [perhaps_well_see_node_uuid],
         bg3.text_content('h93d2e7aeg716eg463fga1dag2f1110664d35', 1))
     t.create_simple_dialog_answer_phase(

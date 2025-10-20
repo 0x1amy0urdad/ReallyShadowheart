@@ -1571,8 +1571,9 @@ QRY_OriginMoments_SpeakerIsAvailable(_OriginDialog, _MainNPC, LOW_SharGrotto_Con
 THEN
 DB_NOOP(1);
 
-
+//
 // ReallyShadowheart Lite (softener) integration
+//
 PROC
 PROC_ReallyShadowheart_GameStarted()
 THEN
@@ -1591,10 +1592,6 @@ AND
 NOT QRY_ReallyShadowheart_Softened()
 THEN
 PROC_GlobalClearFlagAndCache(Really_Shadowheart_Softened_Version_6435fd62-be1d-4bed-9f00-70c8468c02d4);
-
-
-
-
 EXITSECTION
 
 ENDEXITSECTION

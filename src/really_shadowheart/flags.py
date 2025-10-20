@@ -637,3 +637,5 @@ Gale_Gave_Compliment_Shadowheart = bg3.flag_object(
 Tav_Asked_How_Are_You = bg3.flag_object(
     files, 'Tav_Asked_How_Are_You', bg3.GLOBAL_FLAG, flag_uuid='6f7b54a6-1467-42f0-a73f-4bf04621f8a1', description='On late redemption arc, after the cloister, Tav asked her how is she')
 
+Shadowheart_Ultimatum = bg3.flag_object(
+    files, 'Shadowheart_Ultimatum', bg3.GLOBAL_FLAG, flag_uuid='debb58ec-6394-4054-832b-6fa1a8c76d29', description='Shadowheart wasnt recruited on the bridge near the goblin camp, she will show up in camp at night and things can get messy.')

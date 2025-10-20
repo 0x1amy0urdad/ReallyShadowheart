@@ -171,7 +171,7 @@ class game_files:
     __mod_version: int | None
     __files: dict[str, game_file]
 
-    def __init__(self, tool: bg3_modding_tool, mod_name: str, mod_uuid: str) -> None:
+    def __init__(self, tool: bg3_modding_tool, mod_name: str = 'UnnamedMod', mod_uuid: str = '17d21eca-4b0d-45e8-826f-38f82489f36c') -> None:
         self.__tool = tool
         self.__mod_pretty_name = mod_name
         self.__mod_name = mod_name + "_" + mod_uuid

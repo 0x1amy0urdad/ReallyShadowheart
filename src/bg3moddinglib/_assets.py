@@ -14,6 +14,7 @@ from ._common import new_random_uuid, set_bg3_attribute, get_bg3_attribute, get_
 from ._constants import *
 from ._files import game_file, game_files
 from ._loca import loca_object
+from ._scene import scene_object
 from ._timeline import timeline_object
 from ._tool import bg3_modding_tool
 
@@ -85,7 +86,7 @@ class dialog_index:
     __files: game_files
     __index: dict[str, dict]
 
-    INDEX_VERSION = '2025-10-05'
+    INDEX_VERSION = '2025-10-16'
 
     def __init__(self, files: game_files) -> None:
         self.__paks = ()
@@ -226,6 +227,7 @@ class dialog_index:
                         'dialog_bank_pak': pak_name,
                     }
                     file_name, _ = os.path.splitext(os.path.basename(lsf_path))
+                    file_name = file_name.lower()
                     dialog_idx[name_key] = index_entry
                     if file_name != name_key:
                         dialog_idx[file_name] = index_entry
@@ -412,7 +414,7 @@ class bg3_assets:
         try:
             source_dialog_path = index_entry['lsf_path']
             pak_name = self.__index.get_pak_by_file(source_dialog_path)
-            d =  dialog_object(self.__files.get_file(pak_name, source_dialog_path, exclude_from_build = True))
+            d = dialog_object(self.__files.get_file(pak_name, source_dialog_path, exclude_from_build = True))
         except:
             pass
         if d is None:
@@ -423,6 +425,18 @@ class bg3_assets:
         timeline_path = get_required_bg3_attribute(tr, 'SourceFile')
         pak_name = self.__index.get_pak_by_file(timeline_path)
         return timeline_object(self.__files.get_file(pak_name, timeline_path, exclude_from_build = True), d)
+
+
+    def get_scene_object(self, dialog_name: str) -> scene_object:
+        index_entry = self.__index.get_entry(dialog_name)
+        tr = self.index.get_timeline_resource(index_entry['timeline_uuid'])
+        timeline_path = get_required_bg3_attribute(tr, 'SourceFile')
+        pak_name = self.__index.get_pak_by_file(timeline_path)
+        scene_lsf_path = timeline_path[:-4] + '_Scene.lsf'
+        scene_lsf = self.__files.get_file(pak_name, scene_lsf_path, exclude_from_build = True)
+        scene_lsx_path = timeline_path[:-4] + '_Scene.lsx'
+        scene_lsx = self.__files.get_file(pak_name, scene_lsx_path, exclude_from_build = True)
+        return scene_object(scene_lsf, scene_lsx)
 
 
     def copy_dialog_to_mod(self, dialog_name: str, new_dialog_uuid: str | None = None, new_timeline_uuid: str | None = None) -> dialog_asset_bundle:

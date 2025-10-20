@@ -119,6 +119,8 @@ class bg3_modding_env:
 
     def __read_config(self) -> None:
         config_file_path = os.path.join(self.__env_root_path, "config.json")
+        if not os.path.isfile(config_file_path):
+            return
         try:
             with open(config_file_path, "rt") as f:
                 cfg = cast(dict[str, object], json.load(f))
@@ -144,16 +146,13 @@ class bg3_modding_env:
             raise RuntimeError(f"Failed to read configuration from {config_file_path}") from exc
 
     def __sanity_check(self) -> None:
-        # try:
         if not (os.path.isfile(os.path.join(self.__bg3_data_path, "Gustav.pak")) \
                 and os.path.isfile(os.path.join(self.__bg3_data_path, "Shared.pak")) \
                 and os.path.isfile(os.path.join(self.__bg3_data_path, "Engine.pak")) \
                 and os.path.isdir(os.path.join(self.__bg3_data_path, "Localization"))):
-            raise RuntimeError("Baldur's Gate III data files are not found at " + self.__bg3_data_path)
+            raise RuntimeError("BG3 data files aren't found at " + self.__bg3_data_path)
         if not os.path.isfile(self.__divine_exe):
             raise RuntimeError("Divine.exe, lslib and other tools are not found at " + self.__lslib_path)
-        # except Exception as exc:
-            # raise RuntimeError("Sanity check failed") from exc
 
     @staticmethod
     def download_file(url: str, dest_file_path: str) -> None:

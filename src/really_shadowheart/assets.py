@@ -5,25 +5,6 @@ import bg3moddinglib as bg3
 from .context import game_assets
 
 ASSETS : dict[str, dict[str, str]] = {
-    # 'CAMP_FARM_SleepCutscene': {
-    #     'dialog_uuid': '7bfa521a-93c7-4c5e-bab8-3f2fc3d2c3e0',
-    #     'timeline_uuid': '8bed768f-0550-40c1-9a4b-afa5ec4eacab',
-    # },
-    # 'CAMP_SLUMS_SleepCutscene': {
-    #     'dialog_uuid': '93b41f8a-8e8f-4b8f-bb1c-9d4ba6bf15c8',
-    #     'timeline_uuid': 'ff0394f0-e392-4d2e-bfbe-36232aaaed5d',
-    # },
-    # 'CAMP_ELFSONG_SleepCutscene': {
-    #     'dialog_uuid': '4d112f3a-dfa0-4299-96ac-144a6c8dae0d',
-    #     'timeline_uuid': '9522481b-1e32-4d9e-972e-414d7bb4cc18',
-    # },
-    # 'Shadowheart_InParty': {
-    #     'dialog_uuid': 'e7426efd-91c4-4800-ba21-dca78c316375',
-    #     'timeline_uuid': '155e408a-bd27-42e3-88ba-1c00471f4875'
-    # }
-
-
-
     # Shadowheart dialogs
     'Shadowheart_InParty': {},
     'ShadowHeart_InPartyEND': {},
@@ -50,6 +31,7 @@ ASSETS : dict[str, dict[str, str]] = {
     'CAMP_Shadowheart_CRD_SkinnyDippingRomance': {},
     'CAMP_Shadowheart_DaughterTears_SD': {},
     'CAMP_MizoraMorningAfter_CFM_ROM': {},
+    'CAMP_Shadowheart_CFM_Ultimatum': {},
 
     # Shadowheart's parents
     'CAMP_ShadowheartFather': {},
@@ -243,6 +225,7 @@ ASSETS_OVERRIDES : dict[str, dict[str, str]] = {
     'CAMP_Shadowheart_IVB_CFM_WildMagic': {},
     'CAMP_NightsongShadowheartVisit_CFM': {},
     'CAMP_MizoraMorningAfter_CFM_ROM': {},
+    'CAMP_Shadowheart_CFM_Ultimatum': {},
 
     # Shadowheart's parents
     'CAMP_ShadowheartFather': {

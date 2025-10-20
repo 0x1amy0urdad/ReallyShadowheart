@@ -37,6 +37,10 @@ from ._merger import (
     dialog_timeline_phase,
     pak_content, 
 )
+from ._mod_tools import (
+    mod_info,
+    mod_manager
+)
 from ._reactions import reaction_object
 from ._scanner import dialog_scanner
 from ._scene import scene_object

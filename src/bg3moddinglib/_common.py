@@ -49,6 +49,12 @@ def decimal_from(val: str | dc.Decimal | float) -> dc.Decimal:
     return dc.Decimal(val).quantize(TIMELINE_DECIMAL_PRECISION)
 
 
+def decimal_to_str(val: dc.Decimal) -> str:
+    if val.is_zero():
+        return '0'
+    return str(val)
+
+
 TIMELINE_DECIMAL_PRECISION = dc.Decimal('0.' + '0' * (TIMELINE_PRECISION - 1) + '1')
 DECIMAL_ZERO = decimal_from_str('0')
 DECIMAL_HALF = decimal_from_str('0.5')
@@ -138,11 +144,11 @@ def set_bg3_attribute(
     else:
         if attribute_type:
             attribute_node.set("type", attribute_type)
-        if version is not None:
+        if version is None:
+            attribute_node.set("value", value)
+        else:
             attribute_node.set("handle", str(attribute_value))
             attribute_node.set("version", str(version))
-        else:
-            attribute_node.set("value", value)
 
 
 def delete_bg3_attribute(node: et.Element, attribute_name: str) -> None:
@@ -344,7 +350,7 @@ def euler_to_quaternion(x_deg: float, y_deg: float, z_deg: float, sequence: str 
     w, x, y, z = calculations[sequence]()
 
     norm = np.sqrt(w * w + x * x + y * y + z * z)
-    return (float(x / norm), float(y / norm), float(z / norm), float(w / norm))
+    return (round(float(x / norm), 9), round(float(y / norm), 9), round(float(z / norm), 9), round(float(w / norm), 9))
 
 def quaternion_to_euler(x: float, y: float, z: float, w: float, sequence: str = 'xyz') -> tuple[float, float, float]:
     sequence = sequence.lower()
@@ -387,7 +393,7 @@ def quaternion_to_euler(x: float, y: float, z: float, w: float, sequence: str = 
         case _:
             raise ValueError(f"Rotation sequence '{sequence}' not supported")
 
-    return float(np.rad2deg(x_rad)), float(np.rad2deg(y_rad)), float(np.rad2deg(z_rad))
+    return round(float(np.rad2deg(x_rad)), 9), round(float(np.rad2deg(y_rad)), 9), round(float(np.rad2deg(z_rad)), 9)
 
 def generate_ai_prompt_for_dialog_search(
         question: str,
