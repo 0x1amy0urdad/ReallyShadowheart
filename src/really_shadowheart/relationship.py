@@ -4123,14 +4123,21 @@ def patch_post_shadowfell_conversation() -> None:
         phase_duration = '8.0',
         emotions = {
             bg3.SPEAKER_SHADOWHEART: ((0.0, 2, 23), (1.04, 64, 1), (4.26, 2, None), (6.09, 2, 1)),
-            bg3.SPEAKER_PLAYER: ((6.91, 64, 1),)
+            bg3.SPEAKER_PLAYER: ((6.91, 2, None),)
         },
         attitudes = {
             bg3.SPEAKER_PLAYER: (
                 ('6.92', bg3.ATTITUDE_DIAG_Pose_Confused_L_01, bg3.ATTITUDE_DIAG_T_Pose, None),
-                ('8.0', bg3.ATTITUDE_DIAG_Pose_Stand_R_Forward_01, bg3.ATTITUDE_DIAG_T_Pose, None),
             ),
         })
+
+    tl_phase = t.get_timeline_phase(shows_what_i_know_node_uuid)
+    t.use_existing_phase(tl_phase.index)
+    t.remove_effect_component('492d430a-4570-473b-bdf1-161934dc0e29') # Tav TLAttitudeEvent
+    t.create_tl_actor_node(bg3.timeline_object.ATTITUDE, bg3.SPEAKER_PLAYER, '0.0', tl_phase.duration, (
+        t.create_attitude_key('0.5', bg3.ATTITUDE_DIAG_Pose_Stand_R_Forward_01, bg3.ATTITUDE_DIAG_T_Pose),
+    ))
+    
 
     d.add_child_dialog_node(now_and_always_node_uuid, i_love_you_node_uuid, 0)
 

@@ -43,8 +43,11 @@ ASSETS : dict[str, dict[str, str]] = {
     'FOR_Owlbear_OM_Shadowheart_COM': {},
 
     # Shadowheart recruitment
+    'ShadowHeart_Recruitment': {},
     'ShadowHeart_Recruitment_Beach': {},
     'ShadowHeart_Recruitment_Den': {},
+    'ShadowHeart_Recruitment_Gob': {},
+    'Shadowheart_Recruitment_Camp': {},
 
     # Epilogue
     'EPI_Epilogue_Shadowheart': {},

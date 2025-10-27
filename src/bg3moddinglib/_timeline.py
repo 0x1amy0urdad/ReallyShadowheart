@@ -380,7 +380,9 @@ class timeline_object:
                 return node
         raise KeyError(f"node {node_uuid} doesn't exist in timeline {self.__file.relative_file_path}")
 
-    def get_phase_by_tl_node(self, tl_node: et.Element) -> timeline_phase:
+    def get_phase_by_tl_node(self, tl_node: et.Element | str) -> timeline_phase:
+        if isinstance(tl_node, str):
+            tl_node = self.find_effect_component(tl_node)
         node_phase_idx = get_bg3_attribute(tl_node, 'PhaseIndex')
         if node_phase_idx is None:
             node_phase_idx = 0
@@ -1866,6 +1868,9 @@ class timeline_object:
                 return int(get_required_bg3_attribute(timeline_phase, 'MapValue'))
         return None
 
+    def get_number_of_phases(self) -> int:
+        return len(self.__phases_durations)
+
     def get_timeline_phase(self, phase_id: str | int) -> timeline_phase:
         phases = self.__file.root_node.findall('./region[@id="TimelineContent"]/node[@id="TimelineContent"]/children/node[@id="Effect"]/children/node[@id="Phases"]/children/node[@id="Phase"]')
         timeline_phases = self.__file.root_node.findall('./region[@id="TimelineContent"]/node[@id="TimelineContent"]/children/node[@id="TimelinePhases"]/children/node[@id="Object"]/children/node[@id="Object"]')
@@ -2109,6 +2114,8 @@ class timeline_object:
             continuous: bool = False,
             is_snapped_to_end: bool = False
     ) -> et.Element:
+        if self.__current_phase_start_time is None:
+            raise RuntimeError("new phase should be created before effect components")
         tl_node = self.find_effect_component(node_uuid)
         tl_phase = self.get_phase_by_tl_node(tl_node)
         phase_start_time = tl_phase.start
@@ -2142,6 +2149,10 @@ class timeline_object:
                     if channel_node_keys_children is None:
                         raise RuntimeError('channel_node_keys_children is None')
                     for key in channel:
+                        time = get_bg3_attribute(key, 'Time')
+                        if time is not None:
+                            time_val = decimal_from_str(time) + self.__current_phase_start_time
+                            set_bg3_attribute(key, 'Time', str(time_val), attribute_type = 'float')
                         channel_node_keys_children.append(key)
                     transform_channels_children.append(channel_node)
             tl_node_children = tl_node.find('./children')

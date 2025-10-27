@@ -3997,4 +3997,4 @@ bg3.add_build_procedure('patch_act3_romance_conversations', patch_act3_romance_c
 bg3.add_build_procedure('patch_skinny_dipping_scene', patch_skinny_dipping_scene)
 bg3.add_build_procedure('create_2nd_skinny_dipping_scene', create_2nd_skinny_dipping_scene)
 bg3.add_build_procedure('create_act3_breakup_scene', create_act3_breakup_scene)
-# bg3.add_build_procedure('allow_character_customizations_in_skinny_dipping_cutscene', allow_character_customizations_in_skinny_dipping_cutscene)
+bg3.add_build_procedure('allow_character_customizations_in_skinny_dipping_cutscene', allow_character_customizations_in_skinny_dipping_cutscene)

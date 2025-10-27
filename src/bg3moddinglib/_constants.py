@@ -105,9 +105,11 @@ FLAG_AOM = '794d7d9a-4e15-849c-7c0d-6e6cdb67cdcb' # Avatar Origin Moment
 FLAG_OOM = '018ab052-38df-6d2c-117f-8d7c1e56b061' # Non-Avatar (Origin) Origin Moment
 FLAG_COM = '7075ec1a-70ad-bd25-3111-0a955cf07585' # Companion Origin Moment
 
-FLAG_OriginAddToParty = '4870b2cd-210c-0fdc-9c58-4d0142bdae29' # Add this origin to the party
+FLAG_GEN_MaxPlayerCountReached = '823b5064-8aa4-c0b7-1b8c-657b46987ccd' # Global flag. Set if the party is already at the maximum size.
+FLAG_GLO_ORI_Event_InvitedToCamp_Run = '07c4d37e-fc82-4055-b768-167650be9956' # Object flag. Set on a companion to make them join and go to camp.
+FLAG_OriginAddToParty = '4870b2cd-210c-0fdc-9c58-4d0142bdae29' # Object flag. Add this origin to the party.
 
-FLAG_SetOriginHostileAfterDialog = '91659c6d-ed58-4b95-894b-763b69df824d' # Object flag. Set on unrecruited origin to make them hostile.
+FLAG_SetOriginHostileAfterDialog = '91659c6d-ed58-4b95-894b-763b69df824d' # Object flag. Set on an origin to make them hostile.
 
 TUT_TransformChamber_State_DisableWard = '5276092d-7b2b-49c8-b3fa-7220c801c1ce'
 TUT_TransformChamber_State_EndPodDialogue = '46cfbaa6-ffae-4aec-afeb-78843d3f2d5d'
@@ -115,6 +117,7 @@ TUT_TransformChamber_State_EndPodDialogue = '46cfbaa6-ffae-4aec-afeb-78843d3f2d5
 FLAG_GLO_InfernalBox_State_BoxBoundedTo = 'f4d2be66-0443-4069-8ca2-570143f17e27' # Object flag. Set on a character that has the artefact
 
 FLAG_GLO_Camp_Event_SkipSleepCutscene = '1ee0a25e-4115-44ef-b87d-c2a5eee494b6' # Set this during a night dialogue to skip the succeeding sleepcutscene
+
 
 FLAG_GLO_Pixie_State_ShieldActive = '1225b030-2183-4033-8bcd-819be1bb9e61' # The party is shielded from the shadow curse
 FLAG_GLO_Pixie_Event_GivesImmunity = '4c29ab8b-9b56-49a8-838c-c83a257976e5' # Triggers the pixie blessing status

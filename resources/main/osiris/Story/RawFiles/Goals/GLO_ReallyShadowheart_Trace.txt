@@ -1,0 +1,52 @@
+Version 1
+SubGoalCombiner SGC_AND
+INITSECTION
+NOT DB_ReallyShadowheart_Trace(0, "");
+
+NOT DB_ReallyShadowheart_TraceID(0);
+KBSECTION
+QRY
+QRY_ReallyShadowheart_GetTraceID()
+AND
+DB_ReallyShadowheart_TraceID(_ExistingID)
+AND
+IntegerSum(_ExistingID, 1, _NewID)
+THEN
+NOT DB_ReallyShadowheart_TraceID(_ExistingID);
+DB_ReallyShadowheart_TraceID(_NewID);
+
+QRY
+QRY_ReallyShadowheart_GetTraceID()
+AND
+NOT DB_ReallyShadowheart_TraceID(_)
+THEN
+DB_ReallyShadowheart_TraceID(1);
+
+PROC
+PROC_ReallyShadowheart_Trace((STRING)_Trace)
+AND
+QRY_ReallyShadowheart_GetTraceID()
+AND
+DB_ReallyShadowheart_TraceID(_TraceID)
+AND
+NOT DB_ReallyShadowheart_Trace(_TraceID, _)
+THEN
+DB_ReallyShadowheart_Trace(_TraceID, _Trace);
+
+PROC
+PROC_ReallyShadowheart_ClearTrace()
+AND
+DB_ReallyShadowheart_Trace(_A, _B)
+THEN
+NOT DB_ReallyShadowheart_Trace(_A, _B);
+
+PROC
+PROC_ReallyShadowheart_ClearTrace()
+AND
+DB_ReallyShadowheart_TraceID(_ID)
+THEN
+NOT DB_ReallyShadowheart_TraceID(_ID);
+
+EXITSECTION
+
+ENDEXITSECTION

@@ -2,26 +2,129 @@ Version 1
 SubGoalCombiner SGC_AND
 INITSECTION
 NOT DB_ReallyShadowheart_UltimatumNightCounter(0);
+
+NOT DB_ReallyShadowheart_UltimatumTarget((CHARACTER)NULL_00000000-0000-0000-0000-000000000000);
+
+NOT DB_ReallyShadowheart_UltimatumDone(0);
 KBSECTION
+PROC
+PROC_ReallyShadowheart_Initialize()
+THEN
+PROC_ReallyShadowheart_ClearTrace();
+PROC_ReallyShadowheart_Trace("ReallyShadowheart_Initialize 2.1.0.9");
+
+
+// When Shadowheart appears in camp, SHADOWHEARTCOMPANION_09baaab1-c743-44d5-84e4-1915165b9935 is immediately set before she properly joins the party
+// These modifications make sure these nights don't trigger prematurely
+PROC
+PROC_ReallyShadowheart_Initialize()
+AND
+DB_CampNight_Requirement((FLAG)NIGHT_ShadowHeart_LaezelFight_a3445b22-7973-416b-b8a3-1856414589ea, (FLAG)NIGHT_DaisyDream1_52669b07-9584-4c9d-8219-49679811fd4f, (FLAG)LAEZELCOMPANION_9c5bc0ce-cb2e-4685-b597-89a290837535, (FLAG)SHADOWHEARTCOMPANION_09baaab1-c743-44d5-84e4-1915165b9935)
+THEN
+NOT DB_CampNight_Requirement((FLAG)NIGHT_ShadowHeart_LaezelFight_a3445b22-7973-416b-b8a3-1856414589ea, (FLAG)NIGHT_DaisyDream1_52669b07-9584-4c9d-8219-49679811fd4f, (FLAG)LAEZELCOMPANION_9c5bc0ce-cb2e-4685-b597-89a290837535, (FLAG)SHADOWHEARTCOMPANION_09baaab1-c743-44d5-84e4-1915165b9935);
+DB_CampNight_Requirement((FLAG)NIGHT_ShadowHeart_LaezelFight_a3445b22-7973-416b-b8a3-1856414589ea, (FLAG)NIGHT_DaisyDream1_52669b07-9584-4c9d-8219-49679811fd4f, (FLAG)LAEZELCOMPANION_9c5bc0ce-cb2e-4685-b597-89a290837535, (FLAG)SHADOWHEARTCOMPANION_09baaab1-c743-44d5-84e4-1915165b9935, (FLAG)ORI_ShadowHeart_State_IsInParty_9a029c5a-e3c3-45ef-9cd4-1cb45718deb1);
+
+PROC
+PROC_ReallyShadowheart_Initialize()
+AND
+DB_CampNight_Requirement((FLAG)NIGHT_ShadowHeart_WildMagic_5ce39313-f4bc-4aba-a51e-bfb9cd9ecfd1, (FLAG)SHADOWHEARTCOMPANION_09baaab1-c743-44d5-84e4-1915165b9935)
+THEN
+NOT DB_CampNight_Requirement((FLAG)NIGHT_ShadowHeart_WildMagic_5ce39313-f4bc-4aba-a51e-bfb9cd9ecfd1, (FLAG)SHADOWHEARTCOMPANION_09baaab1-c743-44d5-84e4-1915165b9935);
+DB_CampNight_Requirement((FLAG)NIGHT_ShadowHeart_WildMagic_5ce39313-f4bc-4aba-a51e-bfb9cd9ecfd1, (FLAG)SHADOWHEARTCOMPANION_09baaab1-c743-44d5-84e4-1915165b9935, (FLAG)ORI_ShadowHeart_State_IsInParty_9a029c5a-e3c3-45ef-9cd4-1cb45718deb1);
+
+
 //
 // Trigger CAMP_Shadowheart_CFM_Ultimatum_abda7d73-f698-dbe3-a2b7-24d651a3675e at night in camp
 // after the voice of absolute event if Shadowheart is not in party
 //
 PROC
-PROC_ReallyShadowheart_NightInCamp()
+PROC_ReallyShadowheart_PrepForUltimatum()
 AND
-NOT DB_GlobalFlag((FLAG)Shadowheart_Ultimatum_debb58ec-6394-4054-832b-6fa1a8c76d29)
+IsOnStage(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 1)
+THEN
+PROC_State_Remove(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, "Recruitment");
+PROC_GlobalSetFlagAndCache(Shadowheart_Ultimatum_debb58ec-6394-4054-832b-6fa1a8c76d29);
+TeleportTo(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, S_Dummy_Monitor_HumanForm_003_66e722c8-ecc5-40f3-b6a9-587b8f683451, "Shadowheart_Monitor_Teleported", 0, 0, 0, 1, 1);
+DB_ReallyShadowheart_UltimatumNightCounter(0);
+PROC_ReallyShadowheart_Trace("Preparation for Ultimatum, Shadowheart was ON stage.");
+
+PROC
+PROC_ReallyShadowheart_PrepForUltimatum()
+AND
+IsOnStage(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0)
+THEN
+PROC_State_Remove(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, "Recruitment");
+PROC_GlobalSetFlagAndCache(Shadowheart_Ultimatum_debb58ec-6394-4054-832b-6fa1a8c76d29);
+DB_ReallyShadowheart_UltimatumNightCounter(0);
+PROC_CancelDisappearOutOfSight(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679);
+SetOnStage(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 1);
+PROC_ReallyShadowheart_Trace("Preparation for Ultimatum, Shadowheart was OFF stage.");
+
+IF
+WentOnStage(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 1)
+AND
+DB_GlobalFlag((FLAG)Shadowheart_Ultimatum_debb58ec-6394-4054-832b-6fa1a8c76d29)
+THEN
+TeleportTo(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, S_Dummy_Monitor_HumanForm_003_66e722c8-ecc5-40f3-b6a9-587b8f683451, "Shadowheart_Monitor_Teleported", 0, 0, 0, 1, 1);
+PROC_ReallyShadowheart_Trace("Shadowheart went ON stage and was teleported.");
+
+IF
+EntityEvent(_, "Shadowheart_Monitor_Teleported")
+THEN
+PROC_ReallyShadowheart_Trace("Shadowheart has been teleported to the safe place.");
+
+PROC
+PROC_State_Changed(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, "Recruitment", "GOB")
 AND
 NOT DB_GlobalFlag((FLAG)GLO_Origin_PartOfTheTeam_Shadowheart_7f9ac9e8-1e8d-4bf8-8716-68215f0f066e)
 AND
-DB_GlobalFlag((FLAG)GOB_Orpheus_State_HadVoiceOfAbsoluteEvent_9546407d-19e3-4f26-88af-5970896997d7)
+NOT DB_GlobalFlag((FLAG)Shadowheart_Ultimatum_debb58ec-6394-4054-832b-6fa1a8c76d29)
+AND
+NOT DB_ReallyShadowheart_UltimatumDone(1)
 THEN
-PROC_GlobalSetFlagAndCache(Shadowheart_Ultimatum_debb58ec-6394-4054-832b-6fa1a8c76d29);
-TeleportTo(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, S_Dummy_Monitor_HumanForm_003_66e722c8-ecc5-40f3-b6a9-587b8f683451, "", 0, 0, 0, 1, 1);
-DB_ReallyShadowheart_UltimatumNightCounter(0);
+PROC_ReallyShadowheart_GroveCleanup();
+PROC_GlobalSetFlagAndCache(Shadowheart_ReadyForUltimatum_12040db6-f300-4b55-84bf-09e328a64df4);
+PROC_ReallyShadowheart_Trace("Shadowheart is on the bridge near the goblin camp, ready for the ultimatum.");
+
+
+// This prevents Shadowheart from disappearing when the Druid attack happens.
+PROC
+PROC_ReallyShadowheart_GroveCleanup()
+AND
+DB_DEN_DruidAttack_NonDruids(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _A, _B, _C)
+THEN
+NOT DB_DEN_DruidAttack_NonDruids(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _A, _B, _C);
+
+
+//IF
+//WentOnStage(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0)
+//AND
+//NOT DB_GlobalFlag((FLAG)GLO_Origin_PartOfTheTeam_Shadowheart_7f9ac9e8-1e8d-4bf8-8716-68215f0f066e)
+//AND
+//NOT DB_GlobalFlag((FLAG)Shadowheart_Ultimatum_debb58ec-6394-4054-832b-6fa1a8c76d29)
+//AND
+//NOT DB_ReallyShadowheart_UltimatumDone(1)
+//THEN
+//PROC_GlobalSetFlagAndCache(Shadowheart_ReadyForUltimatum_12040db6-f300-4b55-84bf-09e328a64df4);
+//PROC_ReallyShadowheart_Trace("Shadowheart went OFF stage, ready for the ultimatum.");
+
 
 PROC
 PROC_ReallyShadowheart_NightInCamp()
+AND
+NOT DB_ReallyShadowheart_UltimatumDone(1)
+AND
+NOT DB_GlobalFlag((FLAG)Shadowheart_Ultimatum_debb58ec-6394-4054-832b-6fa1a8c76d29)
+AND
+DB_GlobalFlag((FLAG)Shadowheart_ReadyForUltimatum_12040db6-f300-4b55-84bf-09e328a64df4)
+THEN
+PROC_ReallyShadowheart_PrepForUltimatum();
+
+
+PROC
+PROC_ReallyShadowheart_NightInCamp()
+AND
+NOT DB_ReallyShadowheart_UltimatumDone(1)
 AND
 DB_GlobalFlag((FLAG)Shadowheart_Ultimatum_debb58ec-6394-4054-832b-6fa1a8c76d29)
 AND
@@ -33,9 +136,12 @@ IntegerSum(_Count, 1, _NewCount)
 THEN
 NOT DB_ReallyShadowheart_UltimatumNightCounter(_Count);
 DB_ReallyShadowheart_UltimatumNightCounter(_NewCount);
+PROC_ReallyShadowheart_Trace("Ultimatum night counter: tick.");
 
 PROC
 PROC_ReallyShadowheart_Ultimatum()
+AND
+NOT DB_ReallyShadowheart_UltimatumDone(1)
 AND
 DB_ReallyShadowheart_UltimatumNightCounter(2)
 AND
@@ -47,54 +153,62 @@ QRY_GetBestAvatarForCompanion(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034c
 AND
 DB_QRYRTN_GetBestAvatarForCompanion(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _Tav)
 THEN
+PROC_CancelDisappearOutOfSight(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679);
+DB_ReallyShadowheart_UltimatumTarget(_Tav);
 TeleportTo(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _Tav, "Shadowheart_Ultimatum_Teleported", 0, 0, 0, 1, 1);
-
+PROC_ReallyShadowheart_Trace("Set Ultimatum target.");
 
 IF
 EntityEvent(_, "Shadowheart_Ultimatum_Teleported")
 AND
-QRY_GetBestAvatarForCompanion(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679)
+NOT DB_ReallyShadowheart_UltimatumDone(1)
 AND
-DB_QRYRTN_GetBestAvatarForCompanion(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _Tav)
+DB_ReallyShadowheart_UltimatumTarget(_Tav)
 AND
 QRY_StartDialog((DIALOGRESOURCE)CAMP_Shadowheart_CFM_Ultimatum_abda7d73-f698-dbe3-a2b7-24d651a3675e, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _Tav)
 THEN
+DB_ReallyShadowheart_UltimatumDone(1);
 PROC_GlobalClearFlagAndCache(Shadowheart_Ultimatum_debb58ec-6394-4054-832b-6fa1a8c76d29);
+PROC_ReallyShadowheart_Trace("Ultimatum initiated, Ultimatum FLAG is reset.");
 
 
 // Hook into the Camp Nights flow
 PROC
 PROC_CampNight_StartSelected()
 AND
+DB_GlobalFlag((FLAG)Shadowheart_Ultimatum_debb58ec-6394-4054-832b-6fa1a8c76d29)
+AND
 NOT DB_Camp_QueuedNight(_)
 THEN
+PROC_ReallyShadowheart_Trace("No NIGHT is scheduled, trying to start the Ultimatum scene");
 PROC_ReallyShadowheart_Ultimatum();
 
 PROC
 PROC_CampNight_StartSelected()
 AND
+DB_GlobalFlag((FLAG)Shadowheart_Ultimatum_debb58ec-6394-4054-832b-6fa1a8c76d29)
+AND
 DB_Camp_QueuedNight(_Night)
 AND
 DB_CampNight_CRD(_Night, _, _, _)
 THEN
+PROC_ReallyShadowheart_Trace("CRD NIGHT is scheduled, trying to start the Ultimatum scene");
 PROC_ReallyShadowheart_Ultimatum();
 
 
 PROC
 PROC_ReallyShadowheart_GoddessMode()
+AND
+HasAppliedStatus(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, "GLO_REALLY_SHADOWHEART_GODDESS_MODE", 0)
 THEN
 TemplateAddTo((ITEMROOT)ScrollOfChainLighting_13105f7d-55fa-4292-abfe-b9d80054b48e, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 20, 0);
-TemplateAddTo((ITEMROOT)ScrollOfBlight_e0ee9263-3740-44fe-80da-4315cb836aef, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 20, 0);
-TemplateAddTo((ITEMROOT)ScrollOfSunbeam_049d70c4-7ea3-4b6c-af6f-44dab7813a89, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 20, 0);
-TemplateAddTo((ITEMROOT)ScrollOfFreezingSphere_74d0e4f0-de97-4097-a7e7-f5759a375c81, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 20, 0);
-TemplateAddTo((ITEMROOT)ScrollOfDisintegrate_3f737706-57ca-45e6-b0d1-45238da76329, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 20, 0);
-ApplyStatus(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, "GLO_REALLY_SHADOWHEART_KICKS_YOUR_ASS", -1.0, 1);
+ApplyStatus(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, "GLO_REALLY_SHADOWHEART_GODDESS_MODE", -1.0, 1);
 
 
-PROC
-PROC_ReallyShadowheart_GameOver()
-THEN
-PROC_ReallyShadowheart_GoddessMode();
+// TemplateAddTo((ITEMROOT)ScrollOfBlight_e0ee9263-3740-44fe-80da-4315cb836aef, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 20, 0);
+// TemplateAddTo((ITEMROOT)ScrollOfSunbeam_049d70c4-7ea3-4b6c-af6f-44dab7813a89, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 20, 0);
+// TemplateAddTo((ITEMROOT)ScrollOfFreezingSphere_74d0e4f0-de97-4097-a7e7-f5759a375c81, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 20, 0);
+// TemplateAddTo((ITEMROOT)ScrollOfDisintegrate_3f737706-57ca-45e6-b0d1-45238da76329, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 20, 0);
 
 
 IF
@@ -106,25 +220,33 @@ PROC_ReallyShadowheart_UltimatumAftermath();
 PROC
 PROC_ReallyShadowheart_UltimatumAftermath()
 AND
+DB_ReallyShadowheart_UltimatumDone(1)
+AND
 NOT DB_GlobalFlag((FLAG)CAMP_ShadowheartUltimatum_State_Rest_a86925f5-c656-d1c3-59b9-95d5f7b626ea)
 THEN
-PROC_ReallyShadowheart_GameOver();
-SetFaction(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, (FACTION)Origin_ShadowHeart_Hostile_68d5b0df-a555-4486-9bf3-391e8f5227d0);
+PROC_ReallyShadowheart_GoddessMode();
+SetFaction(S_Player_Shadowheart_3ed74f06-3c60-42dc-83f6-f034cb47c679, (FACTION)Origin_Shadowheart_Hostile_68d5b0df-a555-4486-9bf3-391e8f5227d0);
+PROC_ReallyShadowheart_Trace("Ultimatum aftermath: game over");
 
 
 PROC
 PROC_ReallyShadowheart_UltimatumAftermath()
+AND
+DB_ReallyShadowheart_UltimatumDone(1)
 AND
 DB_GlobalFlag((FLAG)CAMP_ShadowheartUltimatum_State_Rest_a86925f5-c656-d1c3-59b9-95d5f7b626ea)
 THEN
 SetHasDialog(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0);
 SetFaction(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, (FACTION)Neutral_NPC_cfb709b3-220f-9682-bcfb-6f0d8837462e);
 ApplyStatus(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, "SLEEPING", -1.0, 1);
+PROC_ReallyShadowheart_Trace("Ultimatum aftermath: Shadowheart is sleeping in camp");
 
 
-
+// The morning after the ultimatum, restore Shadowheart faction and set the recruitment dialog
 PROC
 PROC_ReallyShadowheart_LongRestFinished()
+AND
+DB_ReallyShadowheart_UltimatumDone(1)
 AND
 DB_GlobalFlag((FLAG)CAMP_ShadowheartUltimatum_State_Rest_a86925f5-c656-d1c3-59b9-95d5f7b626ea)
 THEN
@@ -133,18 +255,54 @@ RemoveStatus(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, "SLEEPIN
 SetHasDialog(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 1);
 SetFaction(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, (FACTION)Origin_ShadowHeart_901cd370-86ff-b538-e1e8-574c84135ca0);
 PROC_GLO_Origins_SetRecruitmentDialog(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, Shadowheart_Recruitment_Camp_1ef3642b-047a-e043-37f3-774b0c0b24cd);
+PROC_ReallyShadowheart_Trace("The morning after the ultimatum");
 
+
+// Every morning, initiate a camp recruitment dialog
+PROC
+PROC_ReallyShadowheart_LongRestFinished()
+AND
+DB_ReallyShadowheart_UltimatumDone(1)
+AND
+DB_ReallyShadowheart_UltimatumTarget(_Tav)
+AND
+QRY_StartDialog_Fixed(Shadowheart_Recruitment_Camp_1ef3642b-047a-e043-37f3-774b0c0b24cd, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _Tav)
+THEN
+DB_ReallyShadowheart_NOOP(1);
+PROC_ReallyShadowheart_Trace("Every morning, initiate a camp recruitment dialog");
+
+
+// Clear the post-ultimatum state when Shadowheart joins the party
+IF
+DB_GlobalFlag(ORI_ShadowHeart_State_IsInParty_9a029c5a-e3c3-45ef-9cd4-1cb45718deb1)
+AND
+DB_ReallyShadowheart_UltimatumDone(1)
+THEN
+PROC_ReallyShadowheart_Trace("Shadowheart joined after the Ultimatum");
+
+
+// Any attempt to attack Shadowheart will result in Game Over
+PROC
+PROC_SetRelationTemporaryHostile(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _Player)
+AND
+DB_Avatars(_Player)
+THEN
+PROC_ReallyShadowheart_GoddessMode();
+
+IF
+FlagSet(ORI_ShadowHeart_Event_RecruitmentFight_8a222492-be3e-16f3-cb58-414077beb9ef, _, _)
+THEN
+PROC_ReallyShadowheart_GoddessMode();
 
 IF
 FlagSet(GLO_Companion_Combat_d8f0c309-193b-eaed-5aaa-812cd137caf2, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _)
 THEN
-PROC_ReallyShadowheart_GameOver();
-
+PROC_ReallyShadowheart_GoddessMode();
 
 IF
 FlagSet(FactionHostileToPlayerGroupAfterDialog_d73ce44b-1b9a-2e02-f29a-d8e9e68c7edc, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _)
 THEN
-PROC_ReallyShadowheart_GameOver();
+PROC_ReallyShadowheart_GoddessMode();
 EXITSECTION
 
 ENDEXITSECTION

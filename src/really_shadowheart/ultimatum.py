@@ -7,8 +7,20 @@ from .dialog_overrides import add_dialog_dependency, get_dialog_uuid
 from .flags import *
 
 
-tav_position = ('-2.0', '0', '0.38200456')
+#tav_position = ('-2.0', '0', '0.38200456')
+tav_position = ('-2.0', '0', '-3.12')
 
+peanut_positions = (
+    ('-1.0', '-0.2956394', '-1.0'),
+    ('-2.0', '-0.2956394', '-1.0'),
+    ('-3.0', '-0.2956394', '-1.0'),
+)
+
+peanut_rotations = (
+    bg3.euler_to_quaternion(0, 0, 0, sequence='yxz'),
+    bg3.euler_to_quaternion(0, 0, 0, sequence='yxz'),
+    bg3.euler_to_quaternion(0, 0, 0, sequence='yxz'),
+)
 
 dx = bg3.decimal_from(0)
 dy = bg3.decimal_from(0)
@@ -36,12 +48,19 @@ def patch_scene(ab: bg3.dialog_asset_bundle) -> None:
     dy = bg3.decimal_from(0)
     dz = bg3.decimal_from_str(tav_position[2]) - bg3.decimal_from_str(z)
 
+    n =0
     for i in range(1, 6):
-        x, y, z = s.get_actor_position(i)
-        x = bg3.decimal_to_str(bg3.decimal_from_str(x) + dx)
-        y = bg3.decimal_to_str(bg3.decimal_from_str(y) + dy)
-        z = bg3.decimal_to_str(bg3.decimal_from_str(z) + dz)
-        s.set_actor_position(i, (x, y, z))
+        # 4 is peanut
+        if s.get_actor_type(i) == 4:
+            s.set_actor_position(i, peanut_positions[n])
+            s.set_actor_rotation(i, peanut_rotations[n])
+            n += 1
+        else:
+            x, y, z = s.get_actor_position(i)
+            x = bg3.decimal_to_str(bg3.decimal_from_str(x) + dx)
+            y = bg3.decimal_to_str(bg3.decimal_from_str(y) + dy)
+            z = bg3.decimal_to_str(bg3.decimal_from_str(z) + dz)
+            s.set_actor_position(i, (x, y, z))
 
     # Update rotation of the 2nd peanut
     s.set_actor_rotation(3, bg3.euler_to_quaternion(-10, 0, 0, sequence='yxz'))
@@ -64,7 +83,6 @@ def patch_scene(ab: bg3.dialog_asset_bundle) -> None:
     s.set_light_position('d3ff4672-e030-463f-b021-3b33b2b046a8', ('-3.0', '0.3', '-0.5'))
     s.set_light_position('da58d5f1-361b-44a3-aea8-01fb1555b773', ('-3.6', '0.8', '1.0'))
     s.set_light_position('3c3f7348-ed3d-4832-a648-72b566832495', ('-3.5', '-0.55', '-0.75'))
-
 
 
 def patch_timeline(ab: bg3.dialog_asset_bundle) -> None:
@@ -122,6 +140,26 @@ def patch_timeline(ab: bg3.dialog_asset_bundle) -> None:
     t.set_tl_transform_coordinate('b6ef8c7c-3298-40c7-bf6e-711973442b1e', 1, '1.1', 0)
     t.set_tl_transform_coordinate('b6ef8c7c-3298-40c7-bf6e-711973442b1e', 1, '1.5', 1)
 
+    tl_phase = t.use_existing_phase(1)
+    t.edit_tl_transform('b74b1d5b-ccbf-4d28-b66a-12c6026e1d53', start = '7.0', end = tl_phase.duration, channels = (
+        (
+            t.create_value_key(time = '7.0', value = '-1.999997', value_type = 'float', interpolation_type = 0),
+        ),
+        (
+            t.create_value_key(time = '7.0', value = '-0.2956394', value_type = 'float', interpolation_type = 0),
+        ),
+        (
+            t.create_value_key(time = '7.0', value = '-3.1199996', value_type = 'float', interpolation_type = 0),
+        ),
+        (
+            t.create_value_key(time = '7.0', value = '0 -0.12864251 0 0.99169105', value_type = 'fvec4', interpolation_type = 0),
+        ),
+        (
+            t.create_value_key(time = '7.0', value = '1', value_type = 'float', interpolation_type = 3),
+        ),
+        (),
+    ))
+
     # Fix the glitch in "It took me so long to find you."
     # Dialog node ec6dead7-24f4-b79e-4540-d079512238a7
     t.edit_tl_shot('7d7996a5-b4e0-4aa6-bf8f-c9429acaa1f0', end = '1.45')
@@ -133,16 +171,6 @@ def patch_timeline(ab: bg3.dialog_asset_bundle) -> None:
 
     unset ORI_Laezel_State_IsInParty_3ee6b1f2-24f4-4e85-b7dc-49060e6d2699
     Osi.PROC_GlobalClearFlagAndCache("3ee6b1f2-24f4-4e85-b7dc-49060e6d2699")
-
-    Osi.ApplyStatus("3ed74f06-3c60-42dc-83f6-f034cb47c679", "UNCONSCIOUS", -1, 1)
-
-    Osi.SetFaction("3ed74f06-3c60-42dc-83f6-f034cb47c679", "cfb709b3-220f-9682-bcfb-6f0d8837462e")
-    Osi.ApplyStatus("3ed74f06-3c60-42dc-83f6-f034cb47c679", "SLEEPING", -1, 1)
-    Osi.SetHasDialog("3ed74f06-3c60-42dc-83f6-f034cb47c679", 0)
-
-    Osi.RemoveStatus("3ed74f06-3c60-42dc-83f6-f034cb47c679", "SLEEPING")
-    Osi.SetHasDialog("3ed74f06-3c60-42dc-83f6-f034cb47c679", 1)
-    Osi.SetFaction("3ed74f06-3c60-42dc-83f6-f034cb47c679", "901cd370-86ff-b538-e1e8-574c84135ca0")
 
     Factions:
     Origin_ShadowHeart_901cd370-86ff-b538-e1e8-574c84135ca0
@@ -213,7 +241,8 @@ def patch_timeline(ab: bg3.dialog_asset_bundle) -> None:
     t.remove_effect_component('45d82127-83a0-485e-8001-16710b6ed06d') # TLTransform Shadowheart
     t.remove_effect_component('1bbb3db7-22e3-40a7-8813-9497ded69f67') # TLTransform Tav
 
-    shadowheart_with_knife_pos = ('-2.157477', '-0.2562875', '-2.23896184')
+    #shadowheart_with_knife_pos = ('-2.157477', '-0.2562875', '-2.23896184')
+    shadowheart_with_knife_pos = ('-2.157477', '-0.2562875', '-5.73896184')
     shadowheart_with_knife_rot = bg3.euler_to_quaternion(-130.0, 0.0, 0.0, sequence='yxz')
 
     # Enable narrator phrase: "*Your mind rushes into hers - a storm of desperation, confusion and a will other than her own.*"
@@ -407,6 +436,7 @@ def patch_timeline(ab: bg3.dialog_asset_bundle) -> None:
         (),
         (),
     ), is_snapped_to_end = True)
+    t.edit_tl_node('cf7c0294-7094-4033-991e-96c2a913b65a', fade_in = '0.0')
     # Adjust the knife
     t.set_tl_transform_coordinate('08fbf92b-f705-492b-beba-94c39f9b8bf5', 2, '0.0')
     t.set_tl_transform_coordinate('08fbf92b-f705-492b-beba-94c39f9b8bf5', 4, '1.0')
@@ -471,12 +501,72 @@ def patch_timeline(ab: bg3.dialog_asset_bundle) -> None:
     # Astarion's first line
     # "It sounds like death would be a mercy. Let's deliver it."
     # Dialog node c20c3eb7-63e9-655a-d1e4-2f4de70907a6 phase 16
+    tl_phase = t.use_existing_phase(16)
     t.edit_tl_shot('78c25499-871c-41a1-8b84-ad029bf2bd15', camera_uuid = 'f5a613dd-75c0-49de-ac1c-2163f30a23c2')
+    t.create_tl_camera_fov('f5a613dd-75c0-49de-ac1c-2163f30a23c2', '0.0', tl_phase.duration, (
+        t.create_value_key(time = '0.0', value_name = 'FoV', value = '30.0', value_type = 'float', interpolation_type = 0)
+    ), is_snapped_to_end = True)
+    tl_phase = t.use_existing_phase(17)
+    t.create_tl_camera_fov('f5a613dd-75c0-49de-ac1c-2163f30a23c2', '0.0', tl_phase.duration, (
+        t.create_value_key(time = '0.0', value_name = 'FoV', value = '30.0', value_type = 'float', interpolation_type = 0)
+    ), is_snapped_to_end = True)
 
+
+    # "Get out of my head! <i>All of you!</i>"
+    # Dialog node 98b3877d-7412-ec3b-96f2-8f283883462b phase 55
+    # This hides the knife.
+    tl_phase = t.use_existing_phase(55)
+    t.remove_effect_component('cf8a563f-3b2f-42ee-9736-80a88d0f842d')
+    t.create_tl_actor_node(bg3.timeline_object.SHOW_VISUAL, '39cc08bd-02ad-45d3-a7c3-c2a5eadcb2d5', '0.0', tl_phase.duration, (
+        t.create_value_key(time = '0.0', value_name = 'ShowVisual', value_type = 'bool', value = 'False', interpolation_type = 3),
+    ))
 
     # Perception check
     # "*There is a knife hidden in her belt. Her fingers twitch towards the hilt, ready to draw the blade.*"
-    bg3.set_bg3_attribute(d.find_dialog_node('98002609-eab7-6ad7-29ab-5edcc98dea24'), 'DifficultyClassID', bg3.Act1_VeryEasy)
+    bg3.set_bg3_attribute(d.find_dialog_node('98002609-eab7-6ad7-29ab-5edcc98dea24'), 'DifficultyClassID', bg3.Act1_Medium)
+
+    for node in t.find_effect_components('TLShowVisual', actor = bg3.SPEAKER_LAEZEL):
+        t.remove_effect_component(node)
+    for node in t.find_effect_components('TLShowVisual', actor = bg3.SPEAKER_WYLL):
+        t.remove_effect_component(node)
+    for node in t.find_effect_components('TLShowVisual', actor = bg3.SPEAKER_ASTARION):
+        t.remove_effect_component(node)
+    for node in t.find_effect_components('TLShowVisual', actor = bg3.SPEAKER_GALE):
+        t.remove_effect_component(node)
+    for node in t.find_effect_components('TLShowVisual', actor = bg3.SPEAKER_KARLACH):
+        t.remove_effect_component(node)
+
+    laezel_phases = { 6, 24 }
+    wyll_phases = { 18, 43 }
+    astarion_phases = { 16, 17 }
+    gale_phases = { 12, 34 }
+
+    for n in range(0, t.get_number_of_phases()):
+        tl_phase = t.get_timeline_phase(n)
+        t.use_existing_phase(n)
+        if n == 1:
+            t.create_tl_actor_node(bg3.timeline_object.SHOW_VISUAL, bg3.SPEAKER_LAEZEL, '0.0', '7.0', (
+                t.create_value_key(time = '0.0', value_name = 'ShowVisual', value = False, value_type = 'bool', interpolation_type = 3),
+            ))
+            t.create_tl_actor_node(bg3.timeline_object.SHOW_VISUAL, bg3.SPEAKER_LAEZEL, '7.0', tl_phase.duration, (
+                t.create_value_key(time = '0.0', value_name = 'ShowVisual', value = True, value_type = 'bool', interpolation_type = 3),
+            ), is_snapped_to_end = True)
+        else:
+            t.create_tl_actor_node(bg3.timeline_object.SHOW_VISUAL, bg3.SPEAKER_LAEZEL, '0.0', tl_phase.duration, (
+                t.create_value_key(time = '0.0', value_name = 'ShowVisual', value = n in laezel_phases, value_type = 'bool', interpolation_type = 3),
+            ), is_snapped_to_end = True)
+        t.create_tl_actor_node(bg3.timeline_object.SHOW_VISUAL, bg3.SPEAKER_WYLL, '0.0', tl_phase.duration, (
+            t.create_value_key(time = '0.0', value_name = 'ShowVisual', value = n in wyll_phases, value_type = 'bool', interpolation_type = 3),
+        ), is_snapped_to_end = True)
+        t.create_tl_actor_node(bg3.timeline_object.SHOW_VISUAL, bg3.SPEAKER_ASTARION, '0.0', tl_phase.duration, (
+            t.create_value_key(time = '0.0', value_name = 'ShowVisual', value = n in astarion_phases, value_type = 'bool', interpolation_type = 3),
+        ), is_snapped_to_end = True)
+        t.create_tl_actor_node(bg3.timeline_object.SHOW_VISUAL, bg3.SPEAKER_GALE, '0.0', tl_phase.duration, (
+            t.create_value_key(time = '0.0', value_name = 'ShowVisual', value = n in gale_phases, value_type = 'bool', interpolation_type = 3),
+        ), is_snapped_to_end = True)
+        t.create_tl_actor_node(bg3.timeline_object.SHOW_VISUAL, bg3.SPEAKER_KARLACH, '0.0', tl_phase.duration, (
+            t.create_value_key(time = '0.0', value_name = 'ShowVisual', value = False, value_type = 'bool', interpolation_type = 3),
+        ), is_snapped_to_end = True)
 
 
 def fix_speakers(ab: bg3.dialog_asset_bundle) -> None:
@@ -527,12 +617,19 @@ def restore_shadowheart_ultimatum() -> None:
     speaker_idx_laezel = d.get_speaker_slot_index(bg3.SPEAKER_LAEZEL)
 
     random_inclusion_node_uuid = 'cead1afa-f8fd-8af5-f58d-34a9d1c1148f'
+    jump_node_uuid = '1dfb6fcc-f4d8-4245-a6e3-e682f15463f5'
     karlach_inclusion_node = '5d249b24-8dd7-c728-7559-d848f0914c3f'
     d.delete_child_dialog_node(random_inclusion_node_uuid, karlach_inclusion_node)
+    d.create_jump_dialog_node(jump_node_uuid, '94102576-4065-ab26-2f00-b0ef56b97692', 1)
+    d.add_child_dialog_node(random_inclusion_node_uuid, jump_node_uuid)
+
 
     random_inclusion_node_uuid = 'f41518a1-1353-2b5b-0946-06e7fc5023d1'
+    jump_node_uuid = '1c700e29-ab5f-4e9c-9315-63d7d039bf35'
     karlach_inclusion_node = '9c6ba38c-ab83-f009-08ac-0c47a185d15d'
     d.delete_child_dialog_node(random_inclusion_node_uuid, karlach_inclusion_node)
+    d.create_jump_dialog_node(jump_node_uuid, '4118a0ac-0e7f-4635-5901-9429a19fdb2f', 1)
+    d.add_child_dialog_node(random_inclusion_node_uuid, jump_node_uuid)
 
     # Check Lae'zel tag
     you_re_here_with_a_gith_node_uuid = '6884141c-7fa5-e4be-c9b8-385add4d5320'
@@ -597,4 +694,140 @@ def restore_shadowheart_ultimatum() -> None:
     d.add_child_dialog_node(say_what_you_have_to_say_node_uuid, first_you_need_to_calm_down_node_uuid, index = 0)
 
 
+def patch_recruitment() -> None:
+    #
+    # Shadowheart_Recruitment_Camp
+    #
+    ab = game_assets.get_modded_dialog_asset_bundle('Shadowheart_Recruitment_Camp')
+    d = bg3.dialog_object(ab.dialog)
+
+    speaker_idx_tav = d.get_speaker_slot_index(bg3.SPEAKER_PLAYER)
+    speaker_idx_shadowheart = d.get_speaker_slot_index(bg3.SPEAKER_SHADOWHEART)
+
+    # Remove 'Leave' from the 2nd conversation
+    d.delete_child_dialog_node('d1f6ea32-4064-d59e-a120-4d1660c9239f', '347276b1-4ec4-a628-1b93-b2aa6fb1face')
+
+    shadowheart_joins_the_party_node_uuid = 'ab9a613b-faa1-4adc-aa68-fc9cb1b006b5'
+    shadowheart_joins_the_party_stays_in_camp_node_uuid = '9e8a5a67-36e0-40b1-859a-fd7b8f71e4f6'
+    shadowheart_joins_the_party_active_companion_node_uuid = 'fb4ec776-de01-4f10-9953-5772ea85d827'
+
+    d.create_standard_dialog_node(
+        shadowheart_joins_the_party_node_uuid,
+        bg3.SPEAKER_SHADOWHEART,
+        [shadowheart_joins_the_party_stays_in_camp_node_uuid, shadowheart_joins_the_party_active_companion_node_uuid],
+        None,
+        constructor = bg3.dialog_object.ANSWER)
+    d.create_standard_dialog_node(
+        shadowheart_joins_the_party_stays_in_camp_node_uuid,
+        bg3.SPEAKER_SHADOWHEART,
+        [],
+        None,
+        constructor = bg3.dialog_object.ANSWER,
+        end_node = True,
+        checkflags = (
+            bg3.flag_group('Global', (
+                bg3.flag(bg3.FLAG_GEN_MaxPlayerCountReached, True, None),
+            )),
+        ),
+        setflags = (
+            bg3.flag_group('Global', (
+                bg3.flag(bg3.FLAG_ORI_ShadowHeart_State_IsInParty, True, None),
+            )),
+            bg3.flag_group('Object', (
+                bg3.flag(bg3.FLAG_GLO_ORI_Event_InvitedToCamp_Run, True, speaker_idx_shadowheart),
+            )),
+        ))
+    d.create_standard_dialog_node(
+        shadowheart_joins_the_party_active_companion_node_uuid,
+        bg3.SPEAKER_SHADOWHEART,
+        [],
+        None,
+        constructor = bg3.dialog_object.ANSWER,
+        end_node = True,
+        setflags = (
+            bg3.flag_group('Global', (
+                bg3.flag(bg3.FLAG_ORI_ShadowHeart_State_IsInParty, True, None),
+            )),
+            bg3.flag_group('Object', (
+                bg3.flag(bg3.FLAG_OriginAddToParty, True, speaker_idx_shadowheart),
+            )),
+        ))
+
+    # Let's set off. Time is against us.
+    d.remove_dialog_attribute('19ba0bfa-2649-db35-b10b-167bd988203d', 'endnode')
+    d.set_dialog_flags('19ba0bfa-2649-db35-b10b-167bd988203d', checkflags = (), setflags = ())
+    d.add_child_dialog_node('19ba0bfa-2649-db35-b10b-167bd988203d', shadowheart_joins_the_party_node_uuid)
+
+    # I'm sure things will sort themselves out on the road.
+    d.remove_dialog_attribute('3e77a20d-9419-1516-e415-71d35bd5e4b1', 'endnode')
+    d.set_dialog_flags('3e77a20d-9419-1516-e415-71d35bd5e4b1', checkflags = (), setflags = ())
+    d.add_child_dialog_node('3e77a20d-9419-1516-e415-71d35bd5e4b1', shadowheart_joins_the_party_node_uuid)
+
+    # Yes. Let's get moving.
+    d.remove_dialog_attribute('1fd3ca1f-1bfe-5f20-2bf3-47cdc387177a', 'endnode')
+    d.set_dialog_flags('1fd3ca1f-1bfe-5f20-2bf3-47cdc387177a', checkflags = (), setflags = ())
+    d.add_child_dialog_node('1fd3ca1f-1bfe-5f20-2bf3-47cdc387177a', shadowheart_joins_the_party_node_uuid)
+
+    # You I don't mind, but your... kin is another story.
+    d.set_dialog_flags('d44deba2-ccbb-94bf-0a41-f31f0a6f702b', checkflags = (
+        bg3.flag_group('Global', (
+            bg3.flag(bg3.FLAG_ORI_Laezel_State_IsInParty, True, None),
+        )),
+        bg3.flag_group('Tag', (
+            bg3.flag(bg3.TAG_GITH, True, speaker_idx_tav),
+        )),
+    ))
+
+    # And what does your gith companion have to say about that?
+    d.set_dialog_flags('3d6118bf-88e6-ef1e-008c-b49e835d2e78', checkflags = (
+        bg3.flag_group('Global', (
+            bg3.flag(bg3.FLAG_ORI_Laezel_State_IsInParty, True, None),
+        )),
+    ))
+
+    # Removes "I would, but you have a lot of hangers-on already. Thin your numbers, then we can talk." from the 1st convo
+    d.delete_child_dialog_node('d58fe144-3b01-004a-903a-df8917901e35', 'ddd1b306-74c2-e92b-89be-7d170edf7be0')
+
+    # Removes "I would, but you have a lot of hangers-on already. Thin your numbers, then we can talk." from the 2nd convo
+    d.delete_child_dialog_node('ad996b77-f29e-af4e-ec56-3140fcd5867f', '35337e13-14c9-0d21-5b72-7f775a61469a')
+
+
+    #
+    # Shadowheart_Recruitment_Den
+    #
+    ab = game_assets.get_modded_dialog_asset_bundle('Shadowheart_Recruitment_Den')
+    d = bg3.dialog_object(ab.dialog)
+
+    speaker_idx_tav = d.get_speaker_slot_index(bg3.SPEAKER_PLAYER)
+
+    # Remove "Wonderful. I was beginning to feel a little left out."
+    node = d.find_dialog_node('b3d95318-7ac6-f6cf-0d6c-8f1eb9d528ee')
+    tagged_texts_nodes = node.findall('./children/node[@id="TaggedTexts"]/children/node[@id="TaggedText"]/children/node[@id="TagTexts"]/children')
+    for tagged_texts in tagged_texts_nodes:
+        for tag_text in tagged_texts.findall('./node[@id="TagText"]'):
+            handle = bg3.get_bg3_attribute(tag_text, 'TagText', value_name = 'handle')
+            if handle == 'h620f0723g14dcg4858g80fdg063399ef8b9c':
+                tagged_texts.remove(tag_text)
+                break
+
+    #
+    # Shadowheart_Recruitment
+    #
+    ab = game_assets.get_modded_dialog_asset_bundle('Shadowheart_Recruitment')
+    d = bg3.dialog_object(ab.dialog)
+
+    # Remove "Wonderful. I was beginning to feel a little left out."
+    node = d.find_dialog_node('09a5f386-3e49-9cc4-28f2-74a1702bad18')
+    tagged_texts_nodes = node.findall('./children/node[@id="TaggedTexts"]/children/node[@id="TaggedText"]/children/node[@id="TagTexts"]/children')
+    for tagged_texts in tagged_texts_nodes:
+        for tag_text in tagged_texts.findall('./node[@id="TagText"]'):
+            handle = bg3.get_bg3_attribute(tag_text, 'TagText', value_name = 'handle')
+            if handle == 'h6cdc1333ga846g4a87g85dbg8df814df7a05':
+                tagged_texts.remove(tag_text)
+                break
+
+
+
 bg3.add_build_procedure('restore_shadowheart_ultimatum', restore_shadowheart_ultimatum)
+bg3.add_build_procedure('patch_recruitment', patch_recruitment)
+
