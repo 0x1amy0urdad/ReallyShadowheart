@@ -340,7 +340,8 @@ class bg3_assets:
         self.__files = files
         self.__index = dialog_index(files)
         self.__asset_bundles = dict[str, dialog_asset_bundle]()
-        self.__dialog_bank = self.__files.add_new_file(f'Public/ModNameHere/Content/Assets/Dialogs/[PAK]_{files.mod_name_uuid}/_merged.lsf', is_mod_specific = True)
+        #self.__dialog_bank = self.__files.add_new_file(f'Public/ModNameHere/Content/Assets/Dialogs/[PAK]_{files.mod_name_uuid}/_merged.lsf', is_mod_specific = True)
+        self.__dialog_bank = self.__files.add_new_file(f'Public/ModNameHere/Content/[PAK]_{files.mod_name_uuid}/_merged.lsf', is_mod_specific = True)
         self.__timeline_bank = self.__files.add_new_file(f'Public/ModNameHere/Content/Generated/[PAK]_GeneratedDialogTimelines/_merged.lsf', is_mod_specific = True)
 
         dialog_bank_root_node = self.__dialog_bank.root_node

@@ -431,6 +431,15 @@ class dialog_object:
             result += 1
         return None
 
+    def get_dialog_node_text(self, dialog_node_uuid: str) -> str:
+        dialog_node = self.find_dialog_node(dialog_node_uuid)
+        if dialog_node is None:
+            raise RuntimeError(f"dialog node {dialog_node_uuid} doesn't exist in {self.__file.relative_file_path}")
+        tag_text = dialog_node.find('./children/node[@id="TaggedTexts"]/children/node[@id="TaggedText"]/children/node[@id="TagTexts"]/children/node[@id="TagText"]')
+        if tag_text is None:
+            return f'No voice line in the dialog node {dialog_node_uuid}'
+        return get_required_bg3_attribute(tag_text, 'TagText', value_name = 'handle')
+
     def get_tagged_texts(self, dialog_node_uuid: str) -> list[XmlElement]:
         dialog_node = self.find_dialog_node(dialog_node_uuid)
         if dialog_node is None:

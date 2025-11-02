@@ -3,16 +3,18 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from ._assets import bg3_assets
-from ._common import get_bg3_attribute, get_required_bg3_attribute
+from ._common import get_required_bg3_attribute, new_random_uuid
 from ._files import game_files
 from ._env import bg3_modding_env
-from ._merger import pak_content
+from ._pak_content import pak_content
 from ._tool import bg3_modding_tool
 from ._types import XmlElement
 
 import os
+import traceback
 import xml.etree.ElementTree as et
 
+from typing import Callable
 
 @dataclass
 class mod_info:
@@ -31,6 +33,17 @@ class mod_info:
 class mod_conflict:
     mods: tuple[mod_info, ...]
     dialogs: tuple[str, ...]
+
+    def get_conflict_name(self) -> str:
+        return '/'.join([mod.mod_name for mod in self.mods])
+
+
+@dataclass
+class conflict_resolution_settings:
+    result_mod_name: str
+    result_mod_uuid: str
+    method: str
+    mod_priorities: dict[int, tuple[str, ...]]
 
 
 class mod_manager:
@@ -62,7 +75,12 @@ class mod_manager:
             return self.__mods_index[mod_uuid]
         raise KeyError(f'Unknown mod {mod_uuid}')
 
-    def reload_mods(self) -> None:
+    def reload_mods(self, progress_callback: Callable[[int, int, str], None] | None = None) -> None:
+        self.__mods = list[mod_info]()
+        self.__mods_imm = ()
+        self.__mods_index = dict[str, mod_info]()
+        self.__conflicts = list[mod_conflict]()
+        self.__conflicts_imm = ()
         self.__load_modsettings()
         for f in os.listdir(self.__mods_dir_path):
             pak_path = os.path.join(self.__mods_dir_path, f)
@@ -70,7 +88,7 @@ class mod_manager:
                 self.__add_mod(pak_path)
         self.__mods_imm = tuple(self.__mods)
 
-    def detect_conflicts(self) -> bool:
+    def detect_conflicts(self, progress_callback: Callable[[int, int, str], None] | None = None) -> bool:
         conflicts = dict[str, list[str]]()
         for mod in self.__mods:
             if mod.content is None:
@@ -110,12 +128,6 @@ class mod_manager:
     @property
     def conflicts(self) -> tuple[mod_conflict, ...]:
         return self.__conflicts_imm
-
-    @staticmethod
-    def __normalize_file_name(mod: mod_info, filename: str) -> str:
-        if '/Story/DialogsBinary/' in filename or '/Timeline/Generated/' in filename:
-            return filename.replace(mod.mod_folder, 'ModName').replace('Gustav', 'ModName').replace('GustavDev', 'ModName').replace('GustavX', 'ModName')
-        return filename
 
     @staticmethod
     def __get_mod_version(node: XmlElement) -> tuple[int, int, int, int]:
@@ -163,5 +175,25 @@ class mod_manager:
                         modinfo = mod_info(mod_name, mod_uuid, mod_version, pak_path, mod_files, content, meta_lsx_xml, mod_folder, False)
                         self.__mods_index[mod_uuid] = modinfo
                         self.__mods.append(modinfo)
-                except:
-                    pass
+                except BaseException as exc:
+                    for l in traceback.format_exception(exc):
+                        print(l)
+
+    def resolve_conflicts(
+            self,
+            settings: conflict_resolution_settings,
+            progress_callback: Callable[[int, int, str], None] | None = None
+    ) -> None:
+        # prepare the tools
+        self.__env.cleanup_output()
+        mod_name = settings.result_mod_name
+        if settings.result_mod_uuid:
+            mod_uuid = settings.result_mod_uuid
+        else:
+            mod_uuid = new_random_uuid()
+        bt = bg3_modding_tool(self.__env)
+        bf = game_files(bt, mod_name, mod_uuid)
+        ba = bg3_assets(bf)
+
+        
+

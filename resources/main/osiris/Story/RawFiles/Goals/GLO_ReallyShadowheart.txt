@@ -1592,6 +1592,25 @@ AND
 NOT QRY_ReallyShadowheart_Softened()
 THEN
 PROC_GlobalClearFlagAndCache(Really_Shadowheart_Softened_Version_6435fd62-be1d-4bed-9f00-70c8468c02d4);
+
+//
+// Love Dryad fix
+//
+IF
+FlagSet(WYR_Circus_LoveDryad_Event_PassedLoveTest_10617f2f-11ff-1b2a-c694-d31b429e7735, _Tav, _)
+AND
+DB_Avatars((CHARACTER)_Tav)
+AND
+DB_CompanionCanPartner(_Companion, _, _PartnerFlag, _, _, _, _)
+AND
+GetFlag(_PartnerFlag, _Tav, 1)
+AND
+GetFlag(WYR_Circus_LoveDryad_Event_PickedCompanion_bb8086a2-b96d-3722-72c6-2bbab502fe53, _Companion, 1)
+THEN
+ApplyStatus(_Tav, "WYR_CIRCUS_LOVEDRYAD_BLESSING_AURA", -1.0, 1, S_WYR_Circus_LoveDryad_a8bce35d-17ee-46e3-8d56-1d0d29c4a01e);
+ApplyStatus(_Companion, "WYR_CIRCUS_LOVEDRYAD_BLESSING_AURA", -1.0, 1, S_WYR_Circus_LoveDryad_a8bce35d-17ee-46e3-8d56-1d0d29c4a01e);
+
+
 EXITSECTION
 
 ENDEXITSECTION

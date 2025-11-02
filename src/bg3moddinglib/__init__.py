@@ -29,17 +29,19 @@ from ._flags import (
 )
 from ._gossips import gossips_object
 from ._journal import journal, quest_step
-from ._loca import loca_object
+from ._loca import loca_object, text_bank
 from ._meta_lsx import create_meta_lsx
-from ._merger import (
+from ._mod_tools import (
+    conflict_resolution_settings,
+    mod_conflict,
+    mod_info,
+    mod_manager
+)
+from ._pak_content import (
     content_bundle,
     dialog_timeline_nodes,
     dialog_timeline_phase,
     pak_content, 
-)
-from ._mod_tools import (
-    mod_info,
-    mod_manager
 )
 from ._reactions import reaction_object
 from ._scanner import dialog_scanner

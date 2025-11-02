@@ -63,3 +63,20 @@ class loca_object:
         if node.text is None:
             return ""
         return node.text
+
+class text_bank:
+    __text_bank: dict[str, str]
+
+    def __init__(self, gamefile: game_file) -> None:
+        self.add_texts(gamefile)
+
+    def add_texts(self, gamefile: game_file) -> None:
+        for content in gamefile.xml.getroot():
+            text = content.text
+            handle = content.attrib['contentuid']
+            self.__text_bank[handle] = text
+
+    def get_text(self, handle: str) -> str:
+        if handle in self.__text_bank:
+            return self.__text_bank[handle]
+        return f'Text is not defined for handle {handle}'
