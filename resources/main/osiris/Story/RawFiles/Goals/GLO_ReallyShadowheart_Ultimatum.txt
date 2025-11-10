@@ -11,7 +11,7 @@ PROC
 PROC_ReallyShadowheart_Initialize()
 THEN
 PROC_ReallyShadowheart_ClearTrace();
-PROC_ReallyShadowheart_Trace("ReallyShadowheart_Initialize 2.1.0.9");
+PROC_ReallyShadowheart_Trace("ReallyShadowheart_Initialize 2.1.0.11");
 
 
 // When Shadowheart appears in camp, SHADOWHEARTCOMPANION_09baaab1-c743-44d5-84e4-1915165b9935 is immediately set before she properly joins the party

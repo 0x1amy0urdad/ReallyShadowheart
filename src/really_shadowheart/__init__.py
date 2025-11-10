@@ -30,6 +30,7 @@ from . import improvements
 from . import in_laws
 from . import kiss_animations
 from . import long_rest
+from . import low_hp
 from . import minsc
 from . import minthara
 from . import mizora_aftermath

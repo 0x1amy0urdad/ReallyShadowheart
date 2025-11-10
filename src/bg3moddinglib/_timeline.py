@@ -136,6 +136,10 @@ class timeline_object:
         self.__cameras_uuids = list[str]()
 
     @property
+    def timeline_file(self) -> game_file:
+        return self.__file
+
+    @property
     def filename(self) -> str:
         return self.__file.relative_file_path
 

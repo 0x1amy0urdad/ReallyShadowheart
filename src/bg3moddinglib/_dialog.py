@@ -13,7 +13,7 @@ from ._common import (
     set_bg3_attribute,
     to_compact_string
 )
-from ._constants import SPEAKER_NARRATOR
+from ._constants import REALLY_TAGS, SPEAKER_NARRATOR
 from ._files import game_file
 from ._flags import flag, flag_group
 from ._types import XmlElement
@@ -173,6 +173,10 @@ class dialog_object:
             raise RuntimeError(f"file {gamefile.relative_file_path} doesn't contain a dialog")
         self.__dialog_nodes_parent = n
         self.__dialog_nodes = { get_required_bg3_attribute(n, "UUID") : n for n in self.get_dialog_nodes() }
+
+    @property
+    def dialog_file(self) -> game_file:
+        return self.__file
 
     @property
     def filename(self) -> str:
@@ -487,6 +491,47 @@ class dialog_object:
                 tag_texts_children.append(t.to_xml())
         else:
             raise TypeError(f'expected text_content or Iterable[text_content]; got {type(text)}')
+
+    def replace_text_tag(self, old_tag_uuid: str, new_tag_uuid: str, speaker_override: int | None = None) -> None:
+        nodes = self.get_dialog_nodes()
+        for node in nodes:
+            rules = node.findall('./children/node[@id="TaggedTexts"]/children/node[@id="TaggedText"]/children/node[@id="RuleGroup"]/children/node[@id="Rules"]/children/node[@id="Rule"]')
+            for rule in rules:
+                tags = rule.findall('./children/node[@id="Tags"]/children/node[@id="Tag"]')
+                tag_replaced = False
+                has_really_tag = False
+                for tag in tags:
+                    tag_uuid = get_bg3_attribute(tag, 'Object')
+                    if isinstance(tag_uuid, str):
+                        if tag_uuid in REALLY_TAGS:
+                            has_really_tag = True
+                        if tag_uuid == old_tag_uuid:
+                            set_bg3_attribute(tag, 'Object', new_tag_uuid, attribute_type = 'guid')
+                            tag_replaced = True
+                if tag_replaced and not has_really_tag and speaker_override is not None:
+                    speaker_index = get_bg3_attribute(rule, 'speaker')
+                    if speaker_override != speaker_index:
+                        node_uuid = get_bg3_attribute(node, 'UUID')
+                        print(f'speaker mismatch in node {node_uuid}')
+                        set_bg3_attribute(rule, 'speaker', speaker_override, attribute_type = 'int32')
+
+    def replace_flags(self, group_type: str, old_flag_uuid: str, new_flag_uuid: str, /, setflags: bool = False, speaker_override: int | None = None) -> None:
+        is_global_flag = group_type == 'Global' or group_type == 'Script'
+        if setflags:
+            flags_node_id = 'setflags'
+        else:
+            flags_node_id = 'checkflags'
+        for node in self.get_dialog_nodes():
+            flag_groups = node.findall(f'./children/node[@id="{flags_node_id}"]/children/node[@id="flaggroup"]')
+            for fg in flag_groups:
+                if group_type == get_required_bg3_attribute(fg, 'type'):
+                    flags = fg.findall('./children/node[@id="flag"]')
+                    for f in flags:
+                        flag_uuid = get_required_bg3_attribute(f, 'UUID')
+                        if old_flag_uuid == flag_uuid:
+                            set_bg3_attribute(f, 'UUID', new_flag_uuid)
+                            if not is_global_flag and speaker_override is not None:
+                                set_bg3_attribute(f, 'paramval', speaker_override)
 
     def delete_dialog_node(self, dialog_node_uuid: str) -> None:
         dialog_node = self.find_dialog_node(dialog_node_uuid)

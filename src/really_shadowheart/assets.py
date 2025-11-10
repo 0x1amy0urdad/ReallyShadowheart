@@ -51,12 +51,17 @@ ASSETS : dict[str, dict[str, str]] = {
 
     # Epilogue
     'EPI_Epilogue_Shadowheart': {},
+    'EPI_Epilogue_Minsc': {},
+    'EPI_Epilogue_Halsin': {},
+    'EPI_Epilogue_GodGale': {},
+    'EPI_Epilogue_Astarion_Lord': {},
 
     # Cloister
     'LOW_HouseOfGrief_OM_Shadowheart_COM': {},
     'LOW_SharGrotto_ConfrontViconia_OM_Shadowheart_COM': {},
     'LOW_SharGrotto_ViconiaDefeated_OM_Shadowheart_COM': {},
     'LOW_SharGrotto_ParentsFate_OM_Shadowheart_COM': {},
+    'LOW_SharGrotto_FamiliarFace_OM_Shadowheart_AOM_OOM': {},
 
     # Tutorial
     'TUT_TransformChamber_PodLock': {},
@@ -74,6 +79,7 @@ ASSETS : dict[str, dict[str, str]] = {
     'CAMP_Night2_CRD_Shadowheart': {},
     'CAMP_Night3_CRD_Shadowheart': {},
     'CAMP_Shadowheart_IVB_CFM_LaezelFight': {},
+    'CAMP_Shadowheart_CRD_DefeatedParents': {},
 
     # Grove
     'DEN_Apprentice_Cyanide': {},
@@ -84,9 +90,17 @@ ASSETS : dict[str, dict[str, str]] = {
 
     # World
     'LOW_HouseOfHope_ROM_Incubus': {},
+    'WYR_Circus_LoveDryad': {},
     'WYR_DapperDrow_Intimacy': {},
     'WYR_DapperDrow_SiblingsThreeWay': {},
     'GOB_DrunkGoblin': {},
+
+    # Baldur's Gate
+    'LOW_StormshoreTabernacle_GenericShrine': {},
+    'LOW_StormshoreTabernacle_MystraShrine_OM_Gale_COM': {},
+    'LOW_StormshoreTabernacle_MystraShrine_OM_Gale_AOM_OOM': {},
+    'LOW_CazadorsPalace_Coffin': {},
+    'WYR_KillDirectorGortash_Ceremony': {},
 
     # EA related stuff
     'HAG_GurHunter': {},
@@ -98,9 +112,12 @@ ASSETS : dict[str, dict[str, str]] = {
     # Gale
     'Gale_InParty2_Nested_TopicalGreetings': {},
     'Gale_Recruitment2': {},
+    'Gale_IPRDs2': {},
 
     # Karlach
     'Karlach_InParty_Nested_TopicalGreetings': {},
+    'ORI_Karlach_AvatarTransformsIntoMindflayer': {},
+    'Karlach_InPartyEND': {},
 
     # Lae'zel
     'Laezel_InParty2': {},
@@ -109,6 +126,7 @@ ASSETS : dict[str, dict[str, str]] = {
     # Wyll
     'Wyll_InParty': {},
     'Wyll_InParty2_Nested_TopicalGreetings': {},
+    'CAMP_Wyll_CRD_Act3Romance_ROM': {},
 
     # Minsc
     'Minsc_InParty': {},
@@ -117,6 +135,7 @@ ASSETS : dict[str, dict[str, str]] = {
     # Jaheira
     'Jaheira_InParty': {},
     'Jaheira_InParty_Nested_TopicalGreetings': {},
+    'Jaheira_InParty_Nested_SecretScroll': {},
 
     # Minthara
     'Minthara_InParty': {},
@@ -126,6 +145,14 @@ ASSETS : dict[str, dict[str, str]] = {
  
     # End game
     'END_BrainBattle_CombatOver_Nested_StandardIntro': {},
+    'END_GameFinale_RomanceFates_Wyll': {},
+    'END_GameFinale_RomanceFates_Laezel': {},
+    'END_GameFinale_RomanceFates_Karlach': {},
+    'END_BrainBattle_CombatOver': {},
+    'END_BrainBattle_CombatOver_Nested_WhatNext': {},
+    'END_GameFinale_DeathofKarlach': {},
+    'END_BrainBattle_Intro': {},
+    'END_BrainBattle_CombatOver_Nested_AfterGithLeave': {},
 
     # Creepy stuff
     'CAMP_HalsinsRevenge_CFM': {},
@@ -135,7 +162,31 @@ ASSETS : dict[str, dict[str, str]] = {
     'Halsin_Warning1': {},
     'Halsin_Warning2': {},
     'Halsin_Leaving': {},
+
+    # Creepy banter
     'PB_Halsin_Shadowheart_ROM_Act3_Selune': {},
+
+    # Banters
+    'PB_Shadowheart_Wyll_WaterQueen': {},
+    'PB_Shadowheart_Wyll_UpperTracks': {},
+    'PB_Shadowheart_Laezel_ROM_Act3': {},
+    'PB_Shadowheart_Wyll_BhaalTemple': {},
+    'PB_Shadowheart_Wyll_AbandonedCistern': {},
+    'PB_Karlach_Shadowheart_BaldursMouth': {},
+    'PB_Jaheira_Shadowheart_WyrmSouth': {},
+    'PB_Jaheira_Shadowheart_MorphicPool': {},
+
+    # ADs
+    'EPI_Epilogue_AD_WelcomeShadowheart': {},
+    'EPI_Epilogue_AD_Shadowheart_WineSupply': {},
+    'EPI_Epilogue_AD_IdleShadowheart': {},
+    'EPI_Epilogue_AD_GhostReactionShadowheart': {},
+    'LOW_StormshoreTabernacle_PAD_RespectsToMystra': {},
+    'ORI_Shadowheart_PAD_WoundFlareUp': {},
+    'ORI_Shadowheart_PAD_SeluneReactivity_Misc': {},
+    'ORI_Shadowheart_PAD_SeluneReactivity_Item': {},
+    'ORI_Shadowheart_PAD_SeluneReactivity_Book': {},
+    'ORI_Shadowheart_PAD_SeluneReactivity_Altar': {},
 }
 
 ASSETS_OVERRIDES : dict[str, dict[str, str]] = {
@@ -341,6 +392,7 @@ ASSETS_OVERRIDES : dict[str, dict[str, str]] = {
     # Jaheira
     'Jaheira_InParty': {},
     'Jaheira_InParty_Nested_TopicalGreetings': {},
+    'Jaheira_InParty_Nested_SecretScroll': {},
 
     # Minthara
     'Minthara_InParty': {},

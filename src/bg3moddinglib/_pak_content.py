@@ -159,7 +159,7 @@ class pak_content:
                         else:
                             cb = content_bundles[filename]
                         cb.scene_lsf_file = file_path
-                    else:
+                    elif file_path.endswith('.lsf'):
                         filename = os.path.basename(file_path)[:-4].lower()
                         if filename not in content_bundles:
                             cb = content_bundle(self)
@@ -186,8 +186,12 @@ class pak_content:
                 timeline_res = self.__timeline_bank[fn]
                 cb.timeline_uuid = get_required_bg3_attribute(timeline_res, 'ID')
             else:
-                entry = self.__index.get_entry(fn)
-                cb.timeline_uuid = entry['timeline_uuid']
+                # there could be a renamed dialog in the dialog bank that doesn't have a timeline
+                try:
+                    entry = self.__index.get_entry(fn)
+                    cb.timeline_uuid = entry['timeline_uuid']
+                except:
+                    pass
         self.__content_bundles = dict[str, content_bundle]()
         for fn, cb in content_bundles.items():
             self.__content_bundles[cb.dialog_uuid] = cb
@@ -208,11 +212,11 @@ class pak_content:
     def content_index(self) -> tuple[str, ...]:
         return tuple(self.__content_bundles.keys())
 
-    def get_content_bundle(self, file_name: str) -> content_bundle:
-        file_name = file_name.lower()
-        if file_name in self.__content_bundles:
-            return self.__content_bundles[file_name]
-        raise KeyError(f'file not found: {file_name}')
+    def get_content_bundle(self, dialog_uuid: str) -> content_bundle:
+        dialog_uuid = dialog_uuid.lower()
+        if dialog_uuid in self.__content_bundles:
+            return self.__content_bundles[dialog_uuid]
+        raise KeyError(f'content_bundle not found for dialog uuid: {dialog_uuid}')
 
     def get_dialog_resource(self, dialog_id: str) -> XmlElement:
         dialog_id = dialog_id.lower()
@@ -226,27 +230,30 @@ class pak_content:
             return self.__timeline_bank[timeline_id]
         raise KeyError(f'dialog not found in the bank: {timeline_id}')
 
-    def get_dialog_object(self, file_name: str) -> dialog_object:
-        cb = self.get_content_bundle(file_name)
+    def get_dialog_object(self, dialog_uuid: str) -> dialog_object:
+        cb = self.get_content_bundle(dialog_uuid)
         if cb.dialog_file:
             gf = self.__assets.files.get_file(self.__file_path, cb.dialog_file, exclude_from_build = True)
         else:
-            e = self.__assets.index.get_entry(file_name)
+            dialog_name = self.__assets.index.get_dialog_name(dialog_uuid)
+            e = self.__assets.index.get_entry(dialog_name)
             ori_dialog_lsf_path = e['lsf_path']
             ori_pak = self.__assets.index.get_pak_by_file(ori_dialog_lsf_path)
             gf = self.__assets.files.get_file(ori_pak, ori_dialog_lsf_path, exclude_from_build = True)
         return dialog_object(gf)
 
-    def get_timeline_object(self, file_name: str) -> timeline_object:
-        cb = self.get_content_bundle(file_name)
+    def get_timeline_object(self, dialog_uuid: str) -> timeline_object:
+        cb = self.get_content_bundle(dialog_uuid)
         if cb.timeline_file:
             gf = self.__assets.files.get_file(self.__file_path, cb.timeline_file, exclude_from_build = True)
         else:
-            e = self.__assets.index.get_entry(file_name)
-            ori_timeline_lsf_path = self.__assets.index.get_timeline_file_path(file_name)
+            dialog_name = self.__assets.index.get_dialog_name(dialog_uuid)
+            e = self.__assets.index.get_entry(dialog_name)
+            timeline_uuid = e['timeline_uuid']
+            ori_timeline_lsf_path = self.__assets.index.get_timeline_file_path(timeline_uuid)
             ori_pak = self.__assets.index.get_pak_by_file(ori_timeline_lsf_path)
             gf = self.__assets.files.get_file(ori_pak, ori_timeline_lsf_path, exclude_from_build = True)
-        return timeline_object(gf, self.get_dialog_object(file_name))
+        return timeline_object(gf, self.get_dialog_object(dialog_uuid))
 
     def __read_dialog_bank_lsf(self, lsf_path: str) -> None:
         gf = game_file(self.__tool, lsf_path, pak_name = self.__file_path)

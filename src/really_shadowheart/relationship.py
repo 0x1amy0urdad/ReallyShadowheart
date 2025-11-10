@@ -2269,6 +2269,7 @@ def create_entry_point_to_partnered_dialog() -> None:
         [high_approval_node_uuid, low_approval_node_uuid],
         bg3.text_content('h1e8574a0gb5d2g48abg95a9gbe6264723760', 1),
         constructor = bg3.dialog_object.QUESTION,
+        show_once = True,
         checkflags = (
             bg3.flag_group('Object', (
                 bg3.flag(bg3.FLAG_ORI_State_PartneredWithShadowheart, True, speaker_idx_tav),

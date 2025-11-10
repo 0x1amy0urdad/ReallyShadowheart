@@ -17,6 +17,7 @@ type ElementTree = et.ElementTree[et.Element[str]]
 
 class game_file:
     __tool: bg3_modding_tool
+    __source_pak: str
     __relative_file_path: str
     __unpacked_file_path: str
     __converted_file_path: str | None
@@ -37,9 +38,16 @@ class game_file:
             rename_to: str = ""
     ) -> None:
         self.__tool = tool
+        self.__source_pak = ''
+        self.__relative_file_path = ''
+        self.__unpacked_file_path = ''
+        self.__converted_file_path = None
+        self.__file_format = ''
         self.__mod_specific = mod_specific
         self.__rename_to = rename_to
+        self.__xml = None
         if pak_name is not None:
+            self.__source_pak = pak_name
             self.__relative_file_path = file_path
             self.__unpacked_file_path = tool.unpack(pak_name, file_path)
             if self.__unpacked_file_path.endswith(".lsf"):
@@ -105,12 +113,22 @@ class game_file:
                     self.__xml = et.ElementTree(et.fromstring('<?xml version="1.0" encoding="utf-8"?>\n<contentList>\n</contentList>\n'))
                 else:
                     raise RuntimeError(f"unsupported file type: {file_path}")
+            elif len(file_path) == 0:
+                return
             else:
                 raise ValueError("pak_name should be provided")
 
     @property
+    def is_empty(self) -> bool:
+        return self.__xml is None
+
+    @property
     def tool(self) -> bg3_modding_tool:
         return self.__tool
+
+    @property
+    def source_pak(self) -> str:
+        return self.__source_pak
 
     @property
     def relative_file_path(self) -> str:
@@ -170,6 +188,8 @@ class game_files:
     __mod_uuid: str
     __mod_version: int | None
     __files: dict[str, game_file]
+    __empty_game_file: game_file
+
 
     def __init__(self, tool: bg3_modding_tool, mod_name: str = 'UnnamedMod', mod_uuid: str = '17d21eca-4b0d-45e8-826f-38f82489f36c') -> None:
         self.__tool = tool
@@ -178,6 +198,7 @@ class game_files:
         self.__mod_uuid = mod_uuid
         self.__mod_version = None
         self.__files = dict[str, game_file]()
+        self.__empty_game_file = game_file(tool, '')
 
     @property
     def mod_name(self) -> str:
@@ -216,6 +237,10 @@ class game_files:
     @property
     def tool(self) -> bg3_modding_tool:
         return self.__tool
+
+    @property
+    def empty_game_file(self) -> game_file:
+        return self.__empty_game_file
 
     def mod_destination_dir_path(self, original_relative_path: str) -> str:
         parts = original_relative_path.replace('\\', '/').split('/')

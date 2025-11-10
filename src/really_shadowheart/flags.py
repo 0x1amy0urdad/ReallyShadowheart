@@ -643,3 +643,20 @@ Shadowheart_ReadyForUltimatum = bg3.flag_object(
 Shadowheart_Ultimatum = bg3.flag_object(
     files, 'Shadowheart_Ultimatum', bg3.GLOBAL_FLAG, flag_uuid='debb58ec-6394-4054-832b-6fa1a8c76d29', description='Shadowheart wasnt recruited on the bridge near the goblin camp, she will show up in camp at night and things can get messy.')
 
+Tav_Low_HP_Convo_Available = bg3.flag_object(
+    files, 'Tav_Low_HP_Convo_Available', bg3.OBJECT_FLAG, flag_uuid='f0d65c1d-e6ed-4eb8-8589-3a2c0754e2f0', description='Tavs HP is low, Shadowheart will patch them up')
+
+Shadowheart_Low_HP_Convo_Available = bg3.flag_object(
+    files, 'Shadowheart_Low_HP_Convo_Available', bg3.OBJECT_FLAG, flag_uuid='949c2683-5140-493b-afd0-9ad01d6e25dd', description='Shadowheart HP is low, Tav will patch her up')
+
+
+###############################################################
+# Custom tags
+###############################################################
+
+Really_Shar_Path = bg3.tag_object.create_new(
+    files, '611f0d07-2a84-4d09-9923-af78be7a2eac', 'Really_Shar_Path', 'Shadowheart is on Shar path', ('h2063925fg145dg4b0ega7c5gafccb85af942', 1), ('hc751c93egfc93g4a06g95d2g58b5c50af39d', 1) , ['Dialog', 'Story', 'CharacterSheet'])
+
+Really_Selune_Path = bg3.tag_object.create_new(
+    files, '37493702-169f-49c4-b6f1-0b27e47c580e', 'Really_Selune_Path', 'Shadowheart is on Selune path', ('h5f5683edgb88ag4aebga179gd7ef6f7e2ae9', 1), ('h4d4f3604g877dg48d3gb88dgf2eed76304db', 1) , ['Dialog', 'Story', 'CharacterSheet'])
+

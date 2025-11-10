@@ -117,6 +117,16 @@ THEN
 ClearTag(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, DARK_JUSTICIAR_4e4e26e8-9bbf-4913-93c7-c55972a6d051);
 
 PROC
+PROC_Shadowheart_TurnedAwayFromShar()
+AND
+IsTagged(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, (TAG)Really_Selune_Path_37493702-169f-49c4-b6f1-0b27e47c580e, 0)
+THEN
+ClearTag(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, (TAG)Really_Shar_Path_611f0d07-2a84-4d09-9923-af78be7a2eac);
+SetTag(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, (TAG)Really_Selune_Path_37493702-169f-49c4-b6f1-0b27e47c580e);
+PROC_ReallyShadowheart_Trace("Really_Shar_Path tag cleared");
+PROC_ReallyShadowheart_Trace("Really_Selune_Path tag set");
+
+PROC
 PROC_Shadowheart_CompletedShadowfell()
 AND
 NOT DB_GlobalFlag((FLAG)Shadowheart_After_Shadowfell_fb309297-8faf-4216-9425-f729c2c8dc7a)
@@ -292,11 +302,15 @@ IF
 FlagSet(ORI_Shadowheart_State_SharPath_bf9ae334-ff6a-458d-b898-3074bca0bdfb, _, _)
 THEN
 PROC_Shadowheart_CompletedShadowfell();
+SetTag(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, (TAG)Really_Shar_Path_611f0d07-2a84-4d09-9923-af78be7a2eac);
+PROC_ReallyShadowheart_Trace("Really_Shar_Path tag set [1]");
 
 IF
 TagSet(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, (TAG)SHADOWHEART_SHARPATH_9624a3fe-bb9e-47c5-b9ab-417e6da6f84b)
 THEN
 PROC_Shadowheart_CompletedShadowfell();
+SetTag(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, (TAG)Really_Shar_Path_611f0d07-2a84-4d09-9923-af78be7a2eac);
+PROC_ReallyShadowheart_Trace("Really_Shar_Path tag set [2]");
 
 IF
 FlagSet(ORI_Shadowheart_State_Shar_SavedParents_8a0fad17-1615-4a0d-a045-21661d9a2aa0, _, _)
@@ -344,6 +358,17 @@ AND
 IsTagged(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, SHADOWHEART_SHARPATH_9624a3fe-bb9e-47c5-b9ab-417e6da6f84b, 1)
 THEN
 PROC_Shadowheart_CompletedShadowfell();
+
+PROC
+PROC_ReallyShadowheart_GameStarted()
+AND
+GetFlag(ORI_Shadowheart_State_Shar_SavedParents_8a0fad17-1615-4a0d-a045-21661d9a2aa0, NULL_00000000-0000-0000-0000-000000000000, 0)
+AND
+IsTagged(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, SHADOWHEART_SHARPATH_9624a3fe-bb9e-47c5-b9ab-417e6da6f84b, 1)
+THEN
+SetTag(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, (TAG)Really_Shar_Path_611f0d07-2a84-4d09-9923-af78be7a2eac);
+PROC_ReallyShadowheart_Trace("Really_Shar_Path tag set [3]");
+
 
 // On late redemption path, trigger the post-DJ romance conversation after the daughter's tears cutscene
 IF

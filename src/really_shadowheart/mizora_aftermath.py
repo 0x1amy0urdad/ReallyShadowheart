@@ -17,6 +17,10 @@ def patch_mizora_aftermath_scene() -> None:
     # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Camp/Campfire_Moments/CAMP_MizoraMorningAfter_CFM_ROM.lsf'))
     # t = bg3.timeline_object(files.get_file('Gustav', 'Public/GustavDev/Timeline/Generated/CAMP_MizoraMorningAfter_CFM_ROM.lsf'), d)
 
+    """
+    "h4d724a24g29eeg4ecagb2e2g8d006b026ec9 / 3": "Whatever Mizora has in store for you, I doubt it's anything good.<br>",
+    """
+
     ab = game_assets.get_modded_dialog_asset_bundle('CAMP_MizoraMorningAfter_CFM_ROM')
     d = bg3.dialog_object(ab.dialog)
     t = bg3.timeline_object(ab.timeline, d)

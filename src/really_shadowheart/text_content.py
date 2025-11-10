@@ -333,13 +333,20 @@ def create_text_content() -> None:
         "h18ffbc26g6b50g4068g8b32g273ff82086a0": (1,  "Yes. I ... love you."),
         "h8aa24494g5c0dg400dg810bg94afbed5b8fd": (1, "Did the noblestalk help you recall anything from your past?"),
         "hd23c4788gb0c8g4facg9e05gc0c3d502e3f4": (1, "Game Over"),
+        "hf02c49c2g16e9g4941ga0dcgbba1f22c2879": (1, "Gods' favourite princess will end your playthrough."),
         "haf81aa5cg9a4cg4d59ga2dega391c7c6f212": (1, "I've spent years studying martial arts and even longer in meditation. I can harm you or help you. Your choice."),
         "hc0ac1647g6a79g4596gab70g55a73961e74b": (1, "I've devoted years to martial arts and even more to meditation. I can be your enemy or your ally. You decide."),
         "h89819073g94d3g482ag9217g6a03d68c3d38": (1, "First, you need to calm down. That would be a great start."),
+        "h7e6519d2g2f1fg42a6g9678g46227c56a2d1": (1, "Zethino blessed your union. You and your partner gain +1 to &lt;LSTag Tooltip=\"ArmourClass\"&gt;Armour Class&lt;/LSTag&gt;."),
+        "h2063925fg145dg4b0ega7c5gafccb85af942": (1, "Shar Path"),
+        "hc751c93egfc93g4a06g95d2g58b5c50af39d": (1, "Shar Path"),
+        "h5f5683edgb88ag4aebga179gd7ef6f7e2ae9": (1, "Selûne Path"),
+        "h4d4f3604g877dg48d3gb88dgf2eed76304db": (1, "Selûne Path"),
+        "h2a651adeg8c32g4c1bgbd58g098d3c7ffe84": (1, "You look poorly.")
     }
     loca = bg3.loca_object(files.add_new_file(files.get_loca_relative_path()))
     loca.add_lines(content)
-
+# v3ed74f063c6042dc83f6f034cb47c679_h8b2e38ebge27bg4aebg9aedge8773d675733.wem.wav
 def create_string_keys() -> None:
     strings = bg3.string_keys.create_new(files, 'Misc')
 

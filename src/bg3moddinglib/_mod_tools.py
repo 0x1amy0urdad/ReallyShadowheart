@@ -3,10 +3,12 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from ._assets import bg3_assets
+from ._dialog import dialog_object
 from ._common import get_required_bg3_attribute, new_random_uuid
 from ._files import game_files
 from ._env import bg3_modding_env
 from ._pak_content import pak_content
+from ._timeline import timeline_object
 from ._tool import bg3_modding_tool
 from ._types import XmlElement
 
@@ -183,7 +185,12 @@ class mod_manager:
             self,
             settings: conflict_resolution_settings,
             progress_callback: Callable[[int, int, str], None] | None = None
-    ) -> None:
+    ) -> tuple[bool, str]:
+        if settings.method == 'merge':
+            return (False, 'Merging mods is not supported.')
+        elif settings.method != 'patch':
+            return (False, f'Unsupported resolution strategy: {settings.method}.')
+
         # prepare the tools
         self.__env.cleanup_output()
         mod_name = settings.result_mod_name
@@ -194,6 +201,32 @@ class mod_manager:
         bt = bg3_modding_tool(self.__env)
         bf = game_files(bt, mod_name, mod_uuid)
         ba = bg3_assets(bf)
+    
+        for conflict_index, mod_priorities in settings.mod_priorities.items():
+            conflict = self.conflicts[conflict_index]
+            mods = tuple([(self.get_mod_info(m), pak_content(self.__assets, self.get_mod_info(m).pak_path)) for m in mod_priorities])
+            for dialog_uuid in conflict.dialogs:
+                if not mod_manager.resolve_dialog_conflict(ba, dialog_uuid, mods):
+                    return (False, f'Failed to resolve conflicts for dialog {self.__assets.index.get_dialog_name(dialog_uuid)}')
 
-        
+        return (True, 'Success')
+
+    @staticmethod
+    def resolve_dialog_conflict(ba: bg3_assets, dialog_uuid: str, mods: tuple[tuple[mod_info, pak_content], ...]) -> bool:
+        # Copy the dialog from the vanilla game
+        dialog_name = ba.index.get_dialog_name(dialog_uuid)
+        ab = ba.copy_dialog_to_mod(dialog_name)
+
+        # 
+        d: dialog_object | None = None
+        t: timeline_object | None = None
+        for _, pc in mods:
+            cb = pc.get_content_bundle(dialog_uuid)
+            if cb.dialog_file:
+                d = pc.get_dialog_object(dialog_uuid)
+            if cb.timeline_file:
+                t = pc.get_timeline_object(dialog_uuid)
+            
+
+        return True
 
