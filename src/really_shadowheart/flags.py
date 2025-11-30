@@ -28,18 +28,32 @@ Emmeline_Blessed_Tav = bg3.flag_object(
 # Kisses
 ORI_ShadowheartKiss_StartRandom = bg3.flag_object(
     files, 'ORI_ShadowheartKiss_StartRandom', bg3.OBJECT_FLAG, flag_uuid='7495e78c-9e70-4ea9-95eb-17fde7f94b7c', description='Shadowheart random kiss start')
+
+# Simple kiss
 ORI_ShadowheartKiss_VersionA = bg3.flag_object(
     files, 'ORI_ShadowheartKiss_VersionA', bg3.OBJECT_FLAG, flag_uuid='f2781286-e51c-443f-b1a3-cea4ba95ccf9', description='Shadowheart kiss variant A')
+
+# Selunite shy kiss
 ORI_ShadowheartKiss_VersionB = bg3.flag_object(
     files, 'ORI_ShadowheartKiss_VersionB', bg3.OBJECT_FLAG, flag_uuid='815a0406-7c85-4107-b704-439320fb7f0b', description='Shadowheart kiss variant B')
+
+# Selunite shoulder kiss
 ORI_ShadowheartKiss_VersionC = bg3.flag_object(
     files, 'ORI_ShadowheartKiss_VersionC', bg3.OBJECT_FLAG, flag_uuid='c07bfea6-3d37-48f3-aefc-6eb1749b117f', description='Shadowheart kiss variant C')
+
+# Selunite non-shy kiss
 ORI_ShadowheartKiss_VersionD = bg3.flag_object(
     files, 'ORI_ShadowheartKiss_VersionD', bg3.OBJECT_FLAG, flag_uuid='db362653-5649-4f1d-bc43-32b85fd42c0e', description='Shadowheart kiss variant D')
+
+# Sharran kiss
 ORI_ShadowheartKiss_VersionE = bg3.flag_object(
     files, 'ORI_ShadowheartKiss_VersionE', bg3.OBJECT_FLAG, flag_uuid='ec79178f-2c18-4a71-b147-7b254439e5b2', description='Shadowheart kiss variant E')
+
+# Sharran shoulder kiss
 ORI_ShadowheartKiss_VersionF = bg3.flag_object(
     files, 'ORI_ShadowheartKiss_VersionF', bg3.OBJECT_FLAG, flag_uuid='321d447c-5298-4a5c-82de-f884ba4757d4', description='Shadowheart kiss variant F')
+
+# Forehead kiss
 ORI_ShadowheartKiss_LoveYou = bg3.flag_object(
     files, 'ORI_ShadowheartKiss_LoveYou', bg3.OBJECT_FLAG, flag_uuid='9e69e807-7153-45ab-8821-c5ece0716df7', description='Shadowheart kiss love you')
 
@@ -642,6 +656,15 @@ Shadowheart_ReadyForUltimatum = bg3.flag_object(
 
 Shadowheart_Ultimatum = bg3.flag_object(
     files, 'Shadowheart_Ultimatum', bg3.GLOBAL_FLAG, flag_uuid='debb58ec-6394-4054-832b-6fa1a8c76d29', description='Shadowheart wasnt recruited on the bridge near the goblin camp, she will show up in camp at night and things can get messy.')
+
+Tav_Has_Night_Orchids = bg3.flag_object(
+    files, 'Tav_Has_Night_Orchids', bg3.OBJECT_FLAG, flag_uuid='a5bfae6f-7f96-4d9c-9c4d-e1e3c71fe32b', description='Tav has night orchids and can gift them to Shadowheart.')
+
+Night_Orchid_Gift = bg3.flag_object(
+    files, 'Night_Orchid_Gift', bg3.OBJECT_FLAG, flag_uuid='fe57e05c-b577-4c2e-83ca-a9e4138a45a7', description='Tav gifted a Night Orchid to Shadowheart.')
+
+Nightsong_Fate_Tav_Does_Not_Interfere = bg3.flag_object(
+    files, 'Nightsong_Fate_Tav_Does_Not_Interfere', bg3.OBJECT_FLAG, flag_uuid='c9e7bee6-7a38-44b0-bfd2-adbdb40f36d4', description='Tav decided to not interfere in Shadowhearts big decision in Shadowfell.')
 
 Tav_Low_HP_Convo_Available = bg3.flag_object(
     files, 'Tav_Low_HP_Convo_Available', bg3.OBJECT_FLAG, flag_uuid='f0d65c1d-e6ed-4eb8-8589-3a2c0754e2f0', description='Tavs HP is low, Shadowheart will patch them up')

@@ -28,7 +28,7 @@ class context:
         if not os.path.isfile(os.path.join(self.__root_path, '.mod.root')):
             raise RuntimeError(f"Wrong root_path: {self.__root_path}. Please update it such that it points to a directory containing this notebook.")
 
-        self.__env = bg3_modding_env(os.path.join(self.__root_path, release_env), bg3_data_path = bg3_data_path, skip_config = skip_config)
+        self.__env = bg3_modding_env(os.path.join(self.__root_path, "env", release_env), bg3_data_path = bg3_data_path, skip_config = skip_config)
         self.__tool = bg3_modding_tool(self.__env)
         self.__files = game_files(self.__tool, mod_name, mod_uuid)
         self.__assets = bg3_assets(self.__files)

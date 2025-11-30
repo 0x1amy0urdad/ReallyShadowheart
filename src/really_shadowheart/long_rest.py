@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import bg3moddinglib as bg3
 
-from .assets import ASSETS
-from .context import game_assets, files
+
+from .context import game_assets
 from .flags import *
 
 def create_act3_sleep_cutscene_cine_node(

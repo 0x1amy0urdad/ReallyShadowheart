@@ -79,6 +79,7 @@ def create_mod_author_note() -> None:
         ('h82afae29g158bg47c3g84d1g61088c55493a', 1),
         is_story_item = True)
 
+    # this root template does not exist in the base game thus it will cause a crash if an item exists and mod was uninstalled
     legacy_template_uuid = 'ff8a16ab-ad4c-43d3-b832-b9105a4eec94'
     create_new_book_root_template(
         legacy_template_uuid,

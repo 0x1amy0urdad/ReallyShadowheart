@@ -20,6 +20,8 @@ SPEAKER_GALE        = 'ad9af97d-75da-406a-ae13-7071c563f604'
 SPEAKER_WYLL        = 'c774d764-4a17-48dc-b470-32ace9ce447d'
 SPEAKER_ASTARION    = 'c7c13742-bacd-460a-8f65-f864fe41f255'
 SPEAKER_DURGE       = 'e6b3c2c4-e88d-e9e6-ffa1-d49cdfadd411'
+SPEAKER_NIGHTSONG   = '6c55edb0-901b-4ba4-b9e8-3475a8392d9b'
+SPEAKER_ISOBEL      = '263bfbfc-6160-46f4-a9e1-1089cdb5c211'
 SPEAKER_BOO         = 'd49e3b49-a089-4465-b453-28dc79e82bb3'
 SPEAKER_MIZORA      = '491a7686-3081-405b-983c-289ec8781e0a'
 SPEAKER_VICONIA     = 'b1ea974d-96fb-47ca-b6d9-9c85fcb69313'
@@ -33,7 +35,6 @@ SPEAKER_ZEVLOR      = '475200ee-cc3c-4dbe-84b1-1820c02ea26a'
 SPEAKER_ARADIN      = '82d1b843-9e8c-48a5-9d87-caddea5c193c'
 SPEAKER_HAARLEP     = '1867db0b-748c-94ae-c4f0-69cfd306c180'
 SPEAKER_SCELERITAS  = 'f3486165-268f-4e41-9e0c-51485dfdff10'
-
 SPEAKER_PLAYER      = 'e0d1ff71-04a8-4340-ae64-9684d846eb83'
 SPEAKER_NARRATOR    = 'a346318f-15b3-49ad-ab97-ddf8283dc339'
 
@@ -53,6 +54,8 @@ SPEAKER_NAME = {
     SPEAKER_WYLL        : 'Wyll',
     SPEAKER_ASTARION    : 'Astarion',
     SPEAKER_DURGE       : 'Durge',
+    SPEAKER_NIGHTSONG   : 'Nightsong',
+    SPEAKER_ISOBEL      : 'Isobel',
     SPEAKER_BOO         : 'Boo',
     SPEAKER_MIZORA      : 'Mizora',
     SPEAKER_VICONIA     : 'Viconia DeVir',

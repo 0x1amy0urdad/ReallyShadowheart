@@ -1,0 +1,54 @@
+Version 1
+SubGoalCombiner SGC_AND
+INITSECTION
+NOT DB_ReallyShadowheart_SentNotes((CHARACTER)Noone_00000000-0000-0000-0000-000000000000, (GUIDSTRING)NULL_00000000-0000-0000-0000-000000000000);
+NOT DB_ReallyShadowheart_StopSendingNotes(0);
+NOT DB_ReallyShadowheart_NoNotesNotification(0);
+KBSECTION
+IF
+SavegameLoaded()
+THEN
+TimerLaunch("ReallyShadowheart_NoNotes", 6000);
+TimerLaunch("ReallyShadowheart_Notification", 10000);
+
+
+IF
+TimerFinished("ReallyShadowheart_NoNotes")
+AND
+DB_Avatars(_Tav)
+AND
+DB_ReallyShadowheart_SentNotes((CHARACTER)_Tav, _Note)
+THEN
+RequestDelete((ITEM)_Note);
+
+
+IF
+TimerFinished("ReallyShadowheart_Notification")
+AND
+NOT DB_ReallyShadowheart_NoNotesNotification(1)
+AND
+DB_Avatars(_)
+AND
+GetHostCharacter(_Character)
+THEN
+OpenMessageBox(_Character, "'A note from ReallyShadowheart mod author' has been removed from your inventory");
+DB_ReallyShadowheart_NoNotesNotification(1);
+
+
+QRY
+QRY_ReallyShadowheart_DontSendTheNote()
+THEN
+DB_ReallyShadowheart_StopSendingNotes(1);
+
+
+IF
+DB_ReallyShadowheart_StopSendingNotes(1)
+AND
+DB_Avatars(_Tav)
+AND
+DB_ReallyShadowheart_SentNotes((CHARACTER)_Tav, _Note)
+THEN
+RequestDelete((ITEM)_Note);
+EXITSECTION
+
+ENDEXITSECTION

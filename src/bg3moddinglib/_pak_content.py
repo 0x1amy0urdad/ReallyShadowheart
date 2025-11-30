@@ -179,19 +179,16 @@ class pak_content:
             if fn in self.__dialog_bank:
                 dialog_res = self.__dialog_bank[fn]
                 cb.dialog_uuid = get_required_bg3_attribute(dialog_res, 'ID')
-            else:
+            elif self.__index.has_entry(fn):
                 entry = self.__index.get_entry(fn)
                 cb.dialog_uuid = entry['dialog_uuid']
             if fn in self.__timeline_bank:
                 timeline_res = self.__timeline_bank[fn]
                 cb.timeline_uuid = get_required_bg3_attribute(timeline_res, 'ID')
-            else:
+            elif self.__index.has_entry(fn):
                 # there could be a renamed dialog in the dialog bank that doesn't have a timeline
-                try:
-                    entry = self.__index.get_entry(fn)
-                    cb.timeline_uuid = entry['timeline_uuid']
-                except:
-                    pass
+                entry = self.__index.get_entry(fn)
+                cb.timeline_uuid = entry['timeline_uuid']
         self.__content_bundles = dict[str, content_bundle]()
         for fn, cb in content_bundles.items():
             self.__content_bundles[cb.dialog_uuid] = cb

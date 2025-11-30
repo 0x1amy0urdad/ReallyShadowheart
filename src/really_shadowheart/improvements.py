@@ -2353,6 +2353,8 @@ def patch_noblestalk_line() -> None:
 
 
 
+
+
 bg3.add_build_procedure('grove_squirell_encounter_wound_flare', grove_squirell_encounter_wound_flare)
 bg3.add_build_procedure('mean_greetings', mean_greetings)
 bg3.add_build_procedure('shadowheart_laezel_fight', shadowheart_laezel_fight)

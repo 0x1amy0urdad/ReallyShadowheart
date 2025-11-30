@@ -253,7 +253,7 @@ class timeline_object:
                 if existing_start_time > effective_start_time:
                     self.__phases_start_times[effective_phase_index] = effective_start_time
                 if existing_end_time < end_time:
-                    self.__phases_durations[effective_phase_index] = end_time
+                    self.__phases_end_times[effective_phase_index] = end_time
             if timeline_duration < end_time:
                 timeline_duration = end_time
         self.__duration = timeline_duration

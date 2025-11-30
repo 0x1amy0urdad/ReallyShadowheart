@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import bg3moddinglib as bg3
 
+from . import assets
+
 from . import act1_romance
 from . import act2_romance
 from . import act3_romance

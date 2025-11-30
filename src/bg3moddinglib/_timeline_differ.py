@@ -3,7 +3,7 @@ from __future__ import annotations
 import xml.etree.ElementTree as et
 
 from ._assets import bg3_assets, dialog_index
-from ._common import attrs_to_str, get_bg3_attribute, get_required_bg3_attribute, decimal_from_str, DECIMAL_ZERO, set_bg3_attribute
+from ._common import attrs_to_str, delete_bg3_attribute, get_bg3_attribute, get_required_bg3_attribute, decimal_from_str, DECIMAL_ZERO, set_bg3_attribute
 from ._timeline import timeline_object
 
 from ._types import XmlElement
@@ -134,6 +134,8 @@ class timeline_differ:
         for ntp in result.phases:
             for tl_node in ntp.effects:
                 start_time, end_time = timeline_differ.get_start_end_times(tl_node)
+                if start_time > DECIMAL_ZERO:
+                    delete_bg3_attribute(tl_node, 'StartTime')
                 start_time -= ntp.phase_start
                 end_time -= ntp.phase_start
                 if start_time > DECIMAL_ZERO:

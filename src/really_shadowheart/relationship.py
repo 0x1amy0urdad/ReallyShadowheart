@@ -511,8 +511,25 @@ def patch_relationship_conversations() -> None:
     confession_v1_node_uuid = 'b12ca2d7-59b4-4f9d-a03e-189f37f6f1ee'
     confession_v2_node_uuid = 'ce74c73b-d2b6-4b47-9187-92729ac3dd9b'
     confession_durge_node_uuid = 'ec205b47-a89b-43f6-8928-77d824e940df'
+    confession_astarion_node_uuid = 'e199d29f-83e3-42b2-857c-91faf31958ce'
+    confession_gale_node_uuid = '5faebb3d-ad65-4ef7-b0bc-8d92f63b79c7'
+    confession_karlach_node_uuid = '716001b2-4aa5-4b08-81f5-3acffb692af1'
+    confession_laezel_node_uuid = '18ea2010-0672-464c-9839-b43f10defc0b'
+    confession_wyll_node_uuid = 'd00a878f-3ce8-4551-b0b2-5a8edb2e1363'
     confession_bard_node_uuid = '06acc6da-bf3f-43f0-8637-1ee1f672b593'
     confession_rogue_node_uuid = '753aaf81-6b74-48c7-a86b-d597f36c9cd0'
+    confession_monk_node_uuid = '9e3a6b60-9f07-414a-96d8-488e72cd70f8'
+    confession_fighter_node_uuid = "790555dc-cfa6-4355-830d-64d4a2a00c44"
+    confession_barb_node_uuid = "25d38e7a-cff0-41d7-a270-0581505592d9"
+    confession_ranger_node_uuid = "d8f147e5-63f1-4145-b647-c98a1f692734"
+    confession_druid_node_uuid = '7664bac3-2390-41c5-9911-5ad17af2f4c2'
+    confession_cleric_node_uuid = '12951583-d213-4bc1-8f95-d726f6eadd30'
+    confession_warlock_node_uuid = '14c1595a-4c6c-4bc3-83f4-3bee85ad7ab3'
+    confession_wizard_node_uuid = '812f7e24-202b-4a4e-9d1c-82b89b123e4f'
+    confession_sorcerer_node_uuid = 'a4a9a027-10dd-4f99-9635-ab64132c2599'
+    confession_paladin_node_uuid = 'f256ddb7-b8f8-480f-9233-94de649416d7'
+    confession_oathbreaker_node_uuid = '0629070c-83d0-49d0-9f47-1a3ddf84b18e'
+
     happiest_man_alive_node_uuid = '8f4933c3-a292-4be5-91dd-13b777bd6197'
     happiest_woman_alive_node_uuid = 'b9888f30-2618-46d9-b755-6f86a5cfb1df'
     i_love_you_node_uuid = '5c8b5016-86ae-4a69-af9c-036f091c5a8b'
@@ -533,7 +550,7 @@ def patch_relationship_conversations() -> None:
     d.add_child_dialog_node(of_course_node_uuid, happiest_woman_alive_node_uuid, 0)
     d.add_child_dialog_node(of_course_node_uuid, i_love_you_node_uuid, 0)
 
-    # There's something I wanted to tell you. Something that was on my mind since I met you.
+    # There's something I wanted to tell you. Something that was on my mind for a long time.
     d.create_standard_dialog_node(
         i_wanted_to_tell_something_node_uuid,
         bg3.SPEAKER_PLAYER,
@@ -562,7 +579,7 @@ def patch_relationship_conversations() -> None:
             )),
         ))
 
-    # There's something I wanted to tell you. Something that was on my mind since I met you.
+    # There's something I wanted to tell you. Something that was on my mind for a long time.
     d.create_standard_dialog_node(
         i_wanted_to_tell_something_durge_node_uuid,
         bg3.SPEAKER_PLAYER,
@@ -598,8 +615,24 @@ def patch_relationship_conversations() -> None:
         bg3.SPEAKER_SHADOWHEART,
         [
             confession_durge_node_uuid,
+            confession_astarion_node_uuid,
+            confession_gale_node_uuid,
+            confession_karlach_node_uuid,
+            confession_laezel_node_uuid,
+            confession_wyll_node_uuid,
             confession_bard_node_uuid,
             confession_rogue_node_uuid,
+            confession_monk_node_uuid,
+            confession_fighter_node_uuid,
+            confession_barb_node_uuid,
+            confession_ranger_node_uuid,
+            confession_druid_node_uuid,
+            confession_cleric_node_uuid,
+            confession_warlock_node_uuid,
+            confession_wizard_node_uuid,
+            confession_sorcerer_node_uuid,
+            confession_paladin_node_uuid,
+            confession_oathbreaker_node_uuid,
             confession_v1_node_uuid,
             confession_v2_node_uuid
         ],
@@ -618,7 +651,7 @@ def patch_relationship_conversations() -> None:
     confession_approval = bg3.reaction_object.create_new(files, { bg3.SPEAKER_SHADOWHEART : 10 }, uuid = 'bb28ec6c-502a-4fad-902a-7fbe200bf64a')
     love_you_too_approval = bg3.reaction_object.create_new(files, { bg3.SPEAKER_SHADOWHEART : 10 }, uuid = 'd5b42139-675f-4048-b418-54cb7865cf97')
 
-    # Since the time I first saw you in that pod... I changed... no, you changed me. My life has a new meaning: you.
+    # The moment I saw you in that pod, something shifted inside me. You didn't just change my path — you became it. My life has new meaning now: you.
     d.create_standard_dialog_node(
         confession_v1_node_uuid,
         bg3.SPEAKER_PLAYER,
@@ -631,7 +664,7 @@ def patch_relationship_conversations() -> None:
         ),
         constructor = bg3.dialog_object.QUESTION)
 
-    # We are thrown together by dire circumstances, yet the brief time we shared was more precious than all my years.
+    # We met by chance, bound by circumstance... but somewhere between then and now, you became my reason for everything.
     d.create_standard_dialog_node(
         confession_v2_node_uuid,
         bg3.SPEAKER_PLAYER,
@@ -639,7 +672,7 @@ def patch_relationship_conversations() -> None:
         bg3.text_content('h4d23cd12ga6fdg4485ga129g9ffda516643f', 1),
         constructor = bg3.dialog_object.QUESTION)
 
-    # I can't remember much of myself, and what I remember is like a crimson mist. Until I met you. I am no Bhaal's Chosen anymore. I am yours.
+    # I can't remember much of myself, and what I remember is a crimson mist... until you. You saved me. I am no Bhaal's Chosen. I am yours.
     d.create_standard_dialog_node(
         confession_durge_node_uuid,
         bg3.SPEAKER_PLAYER,
@@ -652,7 +685,72 @@ def patch_relationship_conversations() -> None:
             )),
         ))
 
-    # Read a long, emotional, and sad love poem that you wrote for her.
+    # Two centuries of darkness taught me that nothing lasts, nothing matters. Then you proved me wrong. You're the dawn I never thought I'd see.
+    d.create_standard_dialog_node(
+        confession_astarion_node_uuid,
+        bg3.SPEAKER_PLAYER,
+        [i_know_node_uuid, first_confession_reaction_node_uuid],
+        bg3.text_content('h8f848027g10b4g479bg9fc0g2e649e2c2859', 1),
+        constructor = bg3.dialog_object.QUESTION,
+        checkflags = (
+            bg3.flag_group('Tag', (
+                bg3.flag(bg3.TAG_REALLY_ASTARION, True, slot_idx_tav),
+            )),
+        ))
+
+    # I thought I knew magic — studied it, lived it, loved it. But standing here with you, I finally understand what true magic is.
+    d.create_standard_dialog_node(
+        confession_gale_node_uuid,
+        bg3.SPEAKER_PLAYER,
+        [i_know_node_uuid, first_confession_reaction_node_uuid],
+        bg3.text_content('h7ae551c7ga287g4d3fg9cc1gd7b09cff3fd2', 1),
+        constructor = bg3.dialog_object.QUESTION,
+        checkflags = (
+            bg3.flag_group('Tag', (
+                bg3.flag(bg3.TAG_REALLY_GALE, True, slot_idx_tav),
+            )),
+        ))
+
+    # My engine burns hot enough to melt steel, but it's nothing compared to what I feel when I look at you. You make me want to fight for a future I thought I'd lost.
+    d.create_standard_dialog_node(
+        confession_karlach_node_uuid,
+        bg3.SPEAKER_PLAYER,
+        [i_know_node_uuid, first_confession_reaction_node_uuid],
+        bg3.text_content('hef21d1c3g48b4g4250gb209g38f3babbd6d0', 1),
+        constructor = bg3.dialog_object.QUESTION,
+        checkflags = (
+            bg3.flag_group('Tag', (
+                bg3.flag(bg3.TAG_REALLY_KARLACH, True, slot_idx_tav),
+            )),
+        ))
+
+    # I was taught that attachment is weakness, that only conquest matters. You shattered that teaching. Claiming your heart means more than any victory on the battlefield.
+    d.create_standard_dialog_node(
+        confession_laezel_node_uuid,
+        bg3.SPEAKER_PLAYER,
+        [i_know_node_uuid, first_confession_reaction_node_uuid],
+        bg3.text_content('h37500a7egc92fg45dfgb105g7e91ffd07d17', 1),
+        constructor = bg3.dialog_object.QUESTION,
+        checkflags = (
+            bg3.flag_group('Tag', (
+                bg3.flag(bg3.TAG_REALLY_LAEZEL, True, slot_idx_tav),
+            )),
+        ))
+
+    # I made a pact that cost me everything — my home, my father's love, my very soul. Yet if walking that path led me to you, I'd sign it again without hesitation.
+    d.create_standard_dialog_node(
+        confession_wyll_node_uuid,
+        bg3.SPEAKER_PLAYER,
+        [i_know_node_uuid, first_confession_reaction_node_uuid],
+        bg3.text_content('he7bf7000g03eeg4b8egbf72g244e7e81b25d', 1),
+        constructor = bg3.dialog_object.QUESTION,
+        checkflags = (
+            bg3.flag_group('Tag', (
+                bg3.flag(bg3.TAG_REALLY_WYLL, True, slot_idx_tav),
+            )),
+        ))
+
+    # Recite a heartfelt ballad you composed in her honor, your voice trembling with emotion as you lay bare your soul through verse.
     d.create_standard_dialog_node(
         confession_bard_node_uuid,
         bg3.SPEAKER_PLAYER,
@@ -665,7 +763,7 @@ def patch_relationship_conversations() -> None:
             )),
         ))
 
-    # I sneaked into the most protected vaults, stole countless treasures... only to find that my heart is stolen too. By you.
+    # I've slipped into the most guarded vaults, claimed treasures beyond counting... but somewhere along the way, you stole something I didn't know I could lose: my heart.
     d.create_standard_dialog_node(
         confession_rogue_node_uuid,
         bg3.SPEAKER_PLAYER,
@@ -675,6 +773,152 @@ def patch_relationship_conversations() -> None:
         checkflags = (
             bg3.flag_group('Tag', (
                 bg3.flag(bg3.TAG_ROGUE, True, slot_idx_tav),
+            )),
+        ))
+
+    
+    # I learned to sense the energy that flows through all living things. But nothing compares to what I feel flowing between us.
+    d.create_standard_dialog_node(
+        confession_monk_node_uuid,
+        bg3.SPEAKER_PLAYER,
+        [i_know_node_uuid, first_confession_reaction_node_uuid],
+        bg3.text_content('h08013880g2d9eg46d3g84b8g89bf9d79736c', 1),
+        constructor = bg3.dialog_object.QUESTION,
+        checkflags = (
+            bg3.flag_group('Tag', (
+                bg3.flag(bg3.TAG_MONK, True, slot_idx_tav),
+            )),
+        ))
+
+    # I fought countless battles, thought conflicts were unavoidable. Then you showed me a different path — one I want to walk beside you.
+    d.create_standard_dialog_node(
+        confession_fighter_node_uuid,
+        bg3.SPEAKER_PLAYER,
+        [i_know_node_uuid, first_confession_reaction_node_uuid],
+        bg3.text_content('h166e1379g7186g4bb4ga1adg03aadbd982c7', 1),
+        constructor = bg3.dialog_object.QUESTION,
+        checkflags = (
+            bg3.flag_group('Tag', (
+                bg3.flag(bg3.TAG_FIGHTER, True, slot_idx_tav),
+            )),
+        ))
+
+    # I thought strength meant never showing weakness. Then you made me realize the bravest thing I can do is tell you: I love you.
+    d.create_standard_dialog_node(
+        confession_barb_node_uuid,
+        bg3.SPEAKER_PLAYER,
+        [i_know_node_uuid, first_confession_reaction_node_uuid],
+        bg3.text_content('h87c80401gf5d7g436agac0cgfb5e603a8350', 1),
+        constructor = bg3.dialog_object.QUESTION,
+        checkflags = (
+            bg3.flag_group('Tag', (
+                bg3.flag(bg3.TAG_BARBARIAN, True, slot_idx_tav),
+            )),
+        ))
+
+    # I've lived under open skies, never wanted walls or a hearth to call my own. Then I found you, and now I want to build a home that we could call ours.
+    d.create_standard_dialog_node(
+        confession_ranger_node_uuid,
+        bg3.SPEAKER_PLAYER,
+        [i_know_node_uuid, first_confession_reaction_node_uuid],
+        bg3.text_content('h60a30424g27a8g4e3cg8790gd7411dc219e0', 1),
+        constructor = bg3.dialog_object.QUESTION,
+        checkflags = (
+            bg3.flag_group('Tag', (
+                bg3.flag(bg3.TAG_RANGER, True, slot_idx_tav),
+            )),
+        ))
+
+    # Wolves mate for life, loyal to the end. I used to admire that from afar. Now I live it. You're mine, and I'm yours, forever.
+    d.create_standard_dialog_node(
+        confession_druid_node_uuid,
+        bg3.SPEAKER_PLAYER,
+        [i_know_node_uuid, first_confession_reaction_node_uuid],
+        bg3.text_content('hb886dd39ga219g4673g812dg588c3dac7312', 1),
+        constructor = bg3.dialog_object.QUESTION,
+        checkflags = (
+            bg3.flag_group('Tag', (
+                bg3.flag(bg3.TAG_DRUID, True, slot_idx_tav),
+            )),
+        ))
+
+    # I prayed for years, seeking purpose beyond ritual and doctrine. The gods were silent — until they sent you.
+    d.create_standard_dialog_node(
+        confession_cleric_node_uuid,
+        bg3.SPEAKER_PLAYER,
+        [i_know_node_uuid, first_confession_reaction_node_uuid],
+        bg3.text_content('hcb323c18gcf0eg4052gbfe4g6bb54450fa67', 1),
+        constructor = bg3.dialog_object.QUESTION,
+        checkflags = (
+            bg3.flag_group('Tag', (
+                bg3.flag(bg3.TAG_CLERIC, True, slot_idx_tav),
+            )),
+        ))
+
+    # My pact owns me, my patron commands me. But my heart is mine to give, and I give it to you.
+    d.create_standard_dialog_node(
+        confession_warlock_node_uuid,
+        bg3.SPEAKER_PLAYER,
+        [i_know_node_uuid, first_confession_reaction_node_uuid],
+        bg3.text_content('h7fd55516gb161g404cgaa12g55686ba7cb8e', 1),
+        constructor = bg3.dialog_object.QUESTION,
+        checkflags = (
+            bg3.flag_group('Tag', (
+                bg3.flag(bg3.TAG_WARLOCK, True, slot_idx_tav),
+            )),
+        ))
+
+    # They say love is the greatest magic. I dismissed it as sentiment. Then you proved them right. What I feel for you is beyond magic. It's real, it's overwhelming, and it's entirely yours.
+    d.create_standard_dialog_node(
+        confession_wizard_node_uuid,
+        bg3.SPEAKER_PLAYER,
+        [i_know_node_uuid, first_confession_reaction_node_uuid],
+        bg3.text_content('h1dab80fbg2de8g474dg8472g05d336747a75', 1),
+        constructor = bg3.dialog_object.QUESTION,
+        checkflags = (
+            bg3.flag_group('Tag', (
+                bg3.flag(bg3.TAG_WIZARD, True, slot_idx_tav),
+            )),
+        ))
+
+    # I was born with magic in my blood, thought that defined my destiny. Then I met you, and understood — you're my true destiny.
+    d.create_standard_dialog_node(
+        confession_sorcerer_node_uuid,
+        bg3.SPEAKER_PLAYER,
+        [i_know_node_uuid, first_confession_reaction_node_uuid],
+        bg3.text_content('ha7096a10g9801g417fg80f1g3855c354dcda', 1),
+        constructor = bg3.dialog_object.QUESTION,
+        checkflags = (
+            bg3.flag_group('Tag', (
+                bg3.flag(bg3.TAG_SORCERER, True, slot_idx_tav),
+            )),
+        ))
+
+    # My oath has shaped my life, bound me to duty and honor. But the vow I want to speak now comes from my heart alone: I am yours, now and always.
+    d.create_standard_dialog_node(
+        confession_paladin_node_uuid,
+        bg3.SPEAKER_PLAYER,
+        [i_know_node_uuid, first_confession_reaction_node_uuid],
+        bg3.text_content('h4291ea0dgc554g483aga229g56ebc7aaeac2', 1),
+        constructor = bg3.dialog_object.QUESTION,
+        checkflags = (
+            bg3.flag_group('Tag', (
+                bg3.flag(bg3.TAG_PALADIN, True, slot_idx_tav),
+                bg3.flag(bg3.TAG_OATHBREAKER, False, slot_idx_tav),
+            )),
+        ))
+
+    # I broke my oath, lost my way completely. Then you came into my life and became my direction, my destination, my love, the only path I want to follow.
+    d.create_standard_dialog_node(
+        confession_oathbreaker_node_uuid,
+        bg3.SPEAKER_PLAYER,
+        [i_know_node_uuid, first_confession_reaction_node_uuid],
+        bg3.text_content('h4a768e3egb3cdg495cg97b8g38bb9f80f239', 1),
+        constructor = bg3.dialog_object.QUESTION,
+        checkflags = (
+            bg3.flag_group('Tag', (
+                bg3.flag(bg3.TAG_PALADIN, True, slot_idx_tav),
+                bg3.flag(bg3.TAG_OATHBREAKER, True, slot_idx_tav),
             )),
         ))
 
@@ -3682,13 +3926,103 @@ def create_intimate_followups() -> None:
     d = bg3.dialog_object(ab.dialog)
     t = bg3.timeline_object(ab.timeline, d)
 
+    slot_idx_shadowheart = d.get_speaker_slot_index(bg3.SPEAKER_SHADOWHEART)
+    slot_idx_tav = d.get_speaker_slot_index(bg3.SPEAKER_PLAYER)
+
+    i_did_want_to_talk_to_you_about_that_node_uuid = 'f2370705-fc53-4b55-8b6b-2d2bd84dbee3' # existing node
+    im_not_sure_we_should_do_that_again_node_uuid = 'f340ef8f-42c9-47bd-9613-93d18a692ba4'  # existing node
+    i_think_it_mightve_been_a_mistake_node_uuid = '337e0839-651b-4364-a0d4-fa26f301ffbb'    # existing node
+    perhaps_well_do_this_again_node_uuid = 'b2c22c96-8272-4793-9cb5-9e6eb97ac978'           # existing node
+    let_them_think_whatever_they_like_node_uuid = '7e9c736b-8fba-4320-9db7-fa733621874d'    # existing node
+    we_snuck_away_to_make_sand_castles_node_uuid = '20e7daab-9901-4496-a44f-8a692af16f2a'   # existing node
+
+    make_sand_castles_node_uuid = '08c8b4f5-79df-4b9b-9e11-2e2c0cf06a3d'                    # existing node
+    alias_make_sand_castles_node_uuid = '23793ec5-4624-4beb-a13a-d8ebb276fe6e'
+
+    # But of course they will. I hope we'll have more opportunities to slip away... and make sand castles.
+    d.add_dialog_flags(make_sand_castles_node_uuid, setflags = (
+        bg3.flag_group('Object', (
+            bg3.flag(Shadowheart_More_Sandcastles.uuid, True, slot_idx_shadowheart),
+            bg3.flag(Snuck_Away_To_Make_Sandcastles.uuid, True, slot_idx_shadowheart),
+            bg3.flag(Shadowheart_LongRest_Before_More_Sandcastles.uuid, False, slot_idx_shadowheart),
+        )),
+    ))
+    d.create_alias_dialog_node(
+        alias_make_sand_castles_node_uuid,
+        make_sand_castles_node_uuid,
+        [],
+        end_node = True,
+        checkflags = (
+            bg3.flag_group('Object', (
+                bg3.flag(Shadowheart_More_Sandcastles.uuid, True, slot_idx_shadowheart),
+            )),
+        ))
+    d.add_child_dialog_node(we_snuck_away_to_make_sand_castles_node_uuid, alias_make_sand_castles_node_uuid, 0)
+
+    im_glad_we_have_each_other_node_uuid = '277288c2-302f-4e53-9e3d-02974e7ac352' # existing node
+    alias_im_glad_we_have_each_other_node_uuid = '31fcc31f-32b3-44c7-8d32-f6a8f56845c4'
+
+    # I suppose it doesn't. I'm glad we have each other. And I hope we'll have more opportunities to slip away.
+    d.add_dialog_flags(im_glad_we_have_each_other_node_uuid, setflags = (
+        bg3.flag_group('Object', (
+            bg3.flag(Shadowheart_More_Sandcastles.uuid, True, slot_idx_shadowheart),
+            bg3.flag(Shadowheart_LongRest_Before_More_Sandcastles.uuid, False, slot_idx_shadowheart),
+        )),
+    ))
+    d.create_alias_dialog_node(
+        alias_im_glad_we_have_each_other_node_uuid,
+        im_glad_we_have_each_other_node_uuid,
+        [],
+        end_node = True,
+        checkflags = (
+            bg3.flag_group('Object', (
+                bg3.flag(Shadowheart_More_Sandcastles.uuid, True, slot_idx_shadowheart),
+            )),
+        ))
+    d.add_child_dialog_node(let_them_think_whatever_they_like_node_uuid, alias_im_glad_we_have_each_other_node_uuid, 0)
+
+    perhaps_well_see_node_uuid = 'a02476cc-535b-4ffc-8b19-986fb9464842' # existing node
+    im_sorry_you_feel_that_way_node_uuid = 'ce072faa-0aa6-404a-aeaa-27fb3d226b5d' # existing node
+    alias_perhaps_well_see_node_uuid = '0ed5178e-7dfd-40ae-9fb9-95da1b35cb4c'
+
+    # Perhaps. We'll see.
+    d.add_dialog_flags(perhaps_well_see_node_uuid, setflags = (
+        bg3.flag_group('Object', (
+            bg3.flag(Shadowheart_More_Sandcastles.uuid, True, slot_idx_shadowheart),
+            bg3.flag(Shadowheart_LongRest_Before_More_Sandcastles.uuid, False, slot_idx_shadowheart),
+        )),
+    ))
+    d.create_alias_dialog_node(
+        alias_perhaps_well_see_node_uuid,
+        perhaps_well_see_node_uuid,
+        [],
+        end_node = True,
+        checkflags = (
+            bg3.flag_group('Object', (
+                bg3.flag(Shadowheart_More_Sandcastles.uuid, True, slot_idx_shadowheart),
+            )),
+        ))
+    d.add_child_dialog_node(perhaps_well_do_this_again_node_uuid, alias_perhaps_well_see_node_uuid, 0)
+
+
+    # Oh. I'm sorry you feel that way... I don't.
+    d.add_dialog_flags(im_sorry_you_feel_that_way_node_uuid, setflags = (
+        bg3.flag_group('Object', (
+            bg3.flag(Shadowheart_Has_Doubts_About_Tav.uuid, True, slot_idx_tav),
+        )),
+    ))
+
+    #
+    # Post-skinny-dipping discussion
+    #
+
     # Reaction -10 if Tav says they didn't like the night they spent with her
     reaction_minus_10 = bg3.reaction_object.create_new(game_assets.files, { bg3.SPEAKER_SHADOWHEART: -10 }, uuid = '7c381bd5-0ea7-4832-a175-8898313f6715')
 
-    im_not_sure_we_should_do_that_again_node_uuid = 'f340ef8f-42c9-47bd-9613-93d18a692ba4' # existing node
-    i_think_it_mightve_been_a_mistake_node_uuid = '337e0839-651b-4364-a0d4-fa26f301ffbb'   # existing node
 
     alls_well_i_hope_node_uuid = '03e84b46-bb3c-49da-9525-f7f8e29c0a9b'
+
+    d.set_dialog_flags(i_did_want_to_talk_to_you_about_that_node_uuid, setflags = (), checkflags = ())
 
     # This hides an option to tell her it was a mistake if they discussed this matter previously
     # and adds -10 disapproval
@@ -3698,6 +4032,11 @@ def create_intimate_followups() -> None:
             bg3.flag_group('Global', (
                 bg3.flag(bg3.FLAG_ORI_Shadowheart_State_PostSkinnydipping_Discussed, False, None),
             )),
+        ),
+        setflags = (
+            bg3.flag_group('Global', (
+                bg3.flag(bg3.FLAG_ORI_Shadowheart_State_PostSkinnydipping_Discussed, True, None),
+            )),
         ))
     d.set_dialog_attribute(im_not_sure_we_should_do_that_again_node_uuid, 'ApprovalRatingID', reaction_minus_10.uuid, attribute_type = 'guid')
     d.add_dialog_flags(
@@ -3706,8 +4045,23 @@ def create_intimate_followups() -> None:
             bg3.flag_group('Global', (
                 bg3.flag(bg3.FLAG_ORI_Shadowheart_State_PostSkinnydipping_Discussed, False, None),
             )),
+        ),
+        setflags = (
+            bg3.flag_group('Global', (
+                bg3.flag(bg3.FLAG_ORI_Shadowheart_State_PostSkinnydipping_Discussed, True, None),
+            )),
         ))
     d.set_dialog_attribute(i_think_it_mightve_been_a_mistake_node_uuid, 'ApprovalRatingID', reaction_minus_10.uuid, attribute_type = 'guid')
+
+    for dialog_node_uuid in (perhaps_well_do_this_again_node_uuid, let_them_think_whatever_they_like_node_uuid, we_snuck_away_to_make_sand_castles_node_uuid):
+        d.add_dialog_flags(
+            dialog_node_uuid,
+            setflags = (
+                bg3.flag_group('Global', (
+                    bg3.flag(bg3.FLAG_ORI_Shadowheart_State_PostSkinnydipping_Discussed, True, None),
+                )),
+            ))
+
 
     i_really_needed_that_node_uuid = '56891e48-ff30-4b99-91aa-3aebbbcb8a12'
     im_glad_i_feel_the_same_way_node_uuid = '605d9bc5-253e-4cfd-badf-2a677c33101e' # existing node
@@ -3718,8 +4072,6 @@ def create_intimate_followups() -> None:
     you_dont_waste_time_node_uuid = 'de00b84f-bb16-4e75-bfd4-a355c1c620cc'
     perhaps_well_see_node_uuid = 'a02476cc-535b-4ffc-8b19-986fb9464842' # existing node
 
-    # h8a068db5gfd71g4b2dg91f5g959e9654c0b7
-    # You don't waste time, do you?
 
     # All's well I hope...?
     d.create_standard_dialog_node(
@@ -3769,6 +4121,11 @@ def create_intimate_followups() -> None:
         bg3.SPEAKER_PLAYER,
         [you_dont_waste_time_node_uuid],
         bg3.text_content('h2a7a961bg5a07g4adbgbab8g56db98e84814', 1),
+        checkflags = (
+            bg3.flag_group('Global', (
+                bg3.flag(bg3.FLAG_ORI_Shadowheart_State_PostSkinnydipping_Discussed, True, None),
+            )),            
+        ),
         constructor = bg3.dialog_object.QUESTION)
 
     # You don't waste time, do you?
@@ -4138,9 +4495,164 @@ def patch_post_shadowfell_conversation() -> None:
     t.create_tl_actor_node(bg3.timeline_object.ATTITUDE, bg3.SPEAKER_PLAYER, '0.0', tl_phase.duration, (
         t.create_attitude_key('0.5', bg3.ATTITUDE_DIAG_Pose_Stand_R_Forward_01, bg3.ATTITUDE_DIAG_T_Pose),
     ))
-    
 
     d.add_child_dialog_node(now_and_always_node_uuid, i_love_you_node_uuid, 0)
+
+
+def create_night_orchid_scene() -> None:
+    ab = game_assets.get_modded_dialog_asset_bundle('ShadowHeart_InParty')
+    d = bg3.dialog_object(ab.dialog)
+    t = bg3.timeline_object(ab.timeline, d)
+
+    speaker_idx_shadowheart = d.get_speaker_slot_index(bg3.SPEAKER_SHADOWHEART)
+    speaker_idx_tav = d.get_speaker_slot_index(bg3.SPEAKER_PLAYER)
+
+    you_like_night_orchids_node_uuid = 'dc26a651-e980-4f86-9288-4750f168ac39'
+    thank_you_its_beautiful_node_uuid = 'ca9ce15b-2da7-493f-addc-4ad1c0aa723e'
+    kiss_nested_node_uuid = '8c91e62d-e2dd-4969-af3d-40a366dd2dbd'
+    jump_back_node_uuid = '2cc8a737-69df-4a78-9b24-0faa8169ee74'
+
+    kiss_nested_dialog_uuid = game_assets.index.get_entry('ShadowHeart_InParty2_Nested_ShadowheartKiss')['dialog_uuid']
+
+    # You like night orchids, don't you? I've got one for you. Here, take it.
+    d.create_standard_dialog_node(
+        you_like_night_orchids_node_uuid,
+        bg3.SPEAKER_PLAYER,
+        [thank_you_its_beautiful_node_uuid],
+        bg3.text_content('h2000e55bgdf1ag4915gbca3g271285815cbf', 1),
+        constructor = bg3.dialog_object.QUESTION,
+        checkflags = (
+            bg3.flag_group('Global', (
+                bg3.flag(bg3.FLAG_ORI_Shadowheart_State_NightsongPoint_GaveNightOrchid, True, None),
+            )),
+            bg3.flag_group('Object', (
+                bg3.flag(Tav_Has_Night_Orchids.uuid, True, speaker_idx_tav),
+                bg3.flag(Night_Orchid_Gift.uuid, False, speaker_idx_tav),
+            )),
+        ))
+
+    # d76eaab3-040b-4871-9c1d-4a8624f37cd2 SH  -> SH
+    # 0e8837db-4344-48d0-9175-12262c73806b SH  -> SH
+    # 8942c483-83c9-4974-9f47-87cd1dd10828 Tav -> SH
+    # b188e5c9-4ec1-456f-8408-b4a5da405cc5 Tab -> SH
+    # 2b1dd4ed-5f01-46a2-a244-ac074d0feff0 Tav -> Tav
+    # 95a53513-08ce-4d80-ae74-e306b51db565 Tav -> Tav
+    # cde43894-62c3-4f23-8ea7-b772f9357697 Tav -> Tav
+    # fd96b957-6a74-4f97-a035-eb9641c48242 SH  -> Tav
+
+    # You... you thought of me? Thank you, it's beautiful.
+    d.create_standard_dialog_node(
+        thank_you_its_beautiful_node_uuid,
+        bg3.SPEAKER_SHADOWHEART,
+        [kiss_nested_node_uuid],
+        bg3.text_content('h6e490525g7174g4ff1g98dagd0f6b4165d1f', 1),
+        setflags = (
+            bg3.flag_group('Object', (
+                bg3.flag(Night_Orchid_Gift.uuid, True, speaker_idx_tav),
+                bg3.flag(Shadowheart_Kiss_Event.uuid, True, speaker_idx_shadowheart),
+                # bg3.flag(ORI_ShadowheartKiss_VersionA.uuid, True, speaker_idx_shadowheart),
+                bg3.flag(ORI_ShadowheartKiss_VersionB.uuid, True, speaker_idx_shadowheart),
+                # bg3.flag(ORI_ShadowheartKiss_VersionC.uuid, True, speaker_idx_shadowheart),
+                # bg3.flag(ORI_ShadowheartKiss_VersionD.uuid, True, speaker_idx_shadowheart),
+                # bg3.flag(ORI_ShadowheartKiss_VersionE.uuid, True, speaker_idx_shadowheart),
+                # bg3.flag(ORI_ShadowheartKiss_VersionF.uuid, True, speaker_idx_shadowheart),
+            )),
+        ))
+    t.create_simple_dialog_answer_phase(
+        bg3.SPEAKER_SHADOWHEART,
+        '7.4',
+        thank_you_its_beautiful_node_uuid,
+        (('2.7', '0e8837db-4344-48d0-9175-12262c73806b'), ('4.2', 'fd96b957-6a74-4f97-a035-eb9641c48242'), (None, 'd76eaab3-040b-4871-9c1d-4a8624f37cd2')),
+        emotions = {
+            bg3.SPEAKER_SHADOWHEART: ((0.0, 16, None), (4.14, 64, None), (6.38, 2, 1)),
+            bg3.SPEAKER_PLAYER: ((0.0, 64, 2), (7.0, 2, None))
+        })
+
+    d.create_nested_dialog_node(
+        kiss_nested_node_uuid,
+        kiss_nested_dialog_uuid,
+        [jump_back_node_uuid],
+        speaker_count = 2)
+    d.create_jump_dialog_node(jump_back_node_uuid, bg3.SHADOWHEART_QUESTION_BANK_ROOT_NODE_UUID, 2)
+
+    d.add_child_dialog_node(bg3.SHADOWHEART_QUESTION_BANK_ROOT_NODE_UUID, you_like_night_orchids_node_uuid, 0)
+
+    night_orchid_root_template_override = bg3.et.fromstring("""
+<node id="GameObjects">
+    <attribute id="CanShootThrough" type="bool" value="False" />
+    <attribute id="CoverAmount" type="uint8" value="1" />
+    <attribute id="Description" type="TranslatedString" handle="ls::TranslatedStringRepository::s_HandleUnknown" version="0" />
+    <attribute id="DisplayName" type="TranslatedString" handle="h970408a3ge994g42feg8552gd8617f371c11" version="1" />
+    <attribute id="DropSound" type="FixedString" value="3dc2c142-a314-a2aa-7b71-fcfa94786daf" />
+    <attribute id="ExamineRotation" type="fvec3" value="0 0 0" />
+    <attribute id="Icon" type="FixedString" value="Item_ALCH_Ingredient_Herb_NightOrchid" />
+    <attribute id="InventoryMoveSound" type="FixedString" value="3dc2c142-a314-a2aa-7b71-fcfa94786daf" />
+    <attribute id="IsInspector" type="bool" value="True" />
+    <attribute id="LevelName" type="FixedString" value="" />
+    <attribute id="LevelOverride" type="int32" value="0" />
+    <attribute id="MapKey" type="FixedString" value="11f6de17-4682-419c-808f-8a328d2cce15" />
+    <attribute id="Name" type="LSString" value="ALCH_Ingredient_Herb_NightOrchid" />
+    <attribute id="ParentTemplateId" type="FixedString" value="79f10d3b-b390-4662-9193-d2f4395d136a" />
+    <attribute id="PhysicsTemplate" type="FixedString" value="f1b04f89-d981-48d2-ce30-cec9a71bdc6e" />
+    <attribute id="PickupSound" type="FixedString" value="ddd68e66-0b40-aa2b-e380-df36bfe72d96" />
+    <attribute id="Stats" type="FixedString" value="ALCH_Ingredient_Herb_NightOrchid" />
+    <attribute id="Tooltip" type="uint8" value="2" />
+    <attribute id="Type" type="FixedString" value="item" />
+    <attribute id="VisualTemplate" type="FixedString" value="1bb04d6f-f77d-8a5f-2922-83ccb8272383" />
+    <attribute id="WalkThrough" type="bool" value="True" />
+    <attribute id="maxStackAmount" type="int32" value="1" />
+    <attribute id="_OriginalFileVersion_" type="int64" value="144115207403209021" />
+    <children>
+        <node id="Bounds">
+            <children>
+                <node id="Bound">
+                    <attribute id="Height" type="float" value="0.6682534" />
+                    <attribute id="Max" type="fvec3" value="0.21766359 0.46805015 0.14959508" />
+                    <attribute id="Min" type="fvec3" value="-0.116181016 -0.0007520318 -0.110287845" />
+                    <attribute id="Radius" type="float" value="0.6655344" />
+                    <attribute id="Shape" type="uint8" value="1" />
+                    <attribute id="Type" type="uint8" value="0" />
+                </node>
+                <node id="Bound">
+                    <attribute id="Height" type="float" value="0.6682534" />
+                    <attribute id="Max" type="fvec3" value="0.21766359 0.46805015 0.14959508" />
+                    <attribute id="Min" type="fvec3" value="-0.116181016 -0.0007520318 -0.110287845" />
+                    <attribute id="Radius" type="float" value="0.6655344" />
+                    <attribute id="Shape" type="uint8" value="1" />
+                    <attribute id="Type" type="uint8" value="1" />
+                </node>
+                <node id="Bound">
+                    <attribute id="Height" type="float" value="0.6682534" />
+                    <attribute id="Max" type="fvec3" value="0.21766359 0.46805015 0.14959508" />
+                    <attribute id="Min" type="fvec3" value="-0.116181016 -0.0007520318 -0.110287845" />
+                    <attribute id="Radius" type="float" value="0.6655344" />
+                    <attribute id="Shape" type="uint8" value="1" />
+                    <attribute id="Type" type="uint8" value="2" />
+                </node>
+            </children>
+        </node>
+        <node id="Scripts">
+            <children>
+                <node id="Script">
+                    <attribute id="UUID" type="FixedString" value="403d19b4-b8dc-4481-b853-c010384a6411" />
+                    <children>
+                        <node id="Parameters">
+                            <children>
+                                <node id="Parameter">
+                                    <attribute id="MapKey" type="FixedString" value="HardcoreOnly" />
+                                    <attribute id="Type" type="int32" value="1" />
+                                    <attribute id="Value" type="LSString" value="0" />
+                                </node>
+                            </children>
+                        </node>
+                    </children>
+                </node>
+            </children>
+        </node>
+    </children>
+</node>
+""")
+    files.add_new_root_template('11f6de17-4682-419c-808f-8a328d2cce15', night_orchid_root_template_override)
 
 
 bg3.add_build_procedure('patch_relationship_conversations', patch_relationship_conversations)
@@ -4153,3 +4665,4 @@ bg3.add_build_procedure('create_post_incubus_breakup', create_post_incubus_break
 bg3.add_build_procedure('create_intimate_followups', create_intimate_followups)
 bg3.add_build_procedure('create_post_dj_romance_conversation', create_post_dj_romance_conversation)
 bg3.add_build_procedure('patch_post_shadowfell_conversation', patch_post_shadowfell_conversation)
+bg3.add_build_procedure('create_night_orchid_scene', create_night_orchid_scene)

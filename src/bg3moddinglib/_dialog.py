@@ -1127,4 +1127,8 @@ class dialog_object:
     def set_approval_rating(self, dialog_node_uuid: str, approval_rating_uuid: str) -> None:
         node = self.find_dialog_node(dialog_node_uuid)
         set_bg3_attribute(node, 'ApprovalRatingID', approval_rating_uuid, attribute_type = 'guid')
-        
+
+    def remove_approval_rating(self, dialog_node_uuid: str) -> None:
+        node = self.find_dialog_node(dialog_node_uuid)
+        delete_bg3_attribute(node, 'ApprovalRatingID')
+

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import bg3moddinglib as bg3
 
-from .context import game_assets
+from .context import game_assets, files
 from .flags import *
 
 def fix_nightsong_choice_dialog() -> None:
@@ -18,14 +18,96 @@ def fix_nightsong_choice_dialog() -> None:
     d = bg3.dialog_object(ab.dialog)
 
     speaker_idx_shadowheart = d.get_speaker_slot_index(bg3.SPEAKER_SHADOWHEART)
+    speaker_idx_tav = d.get_speaker_slot_index(bg3.SPEAKER_PLAYER)
+
+    trust_shadowheart_do_not_interfere_node_uuid = '47a52989-7b3e-ec9f-0780-8498c528eef0' # existing node
+    i_sense_more_in_you_than_you_know_node_uuid = 'df57b11c-03df-93df-65b6-c2cc8a4fe02a' # existing node
 
     what_should_i_do_enough_points_node_uuid = 'c742bd23-9e60-a37d-d120-b93ce5367014' # existing node
     roll_she_knows_something_about_you_node_uuid = '700be25e-710f-d3fe-ccee-d46283a14cd8' # existing node, approval < 40
     roll_dont_do_it_node_uuid = 'fa32d463-6547-e866-1624-f513bf01c4c3' # existing node, approval < 20
 
+    whatever_you_think_node_uuid = '917ee67f-720d-299d-65b8-db261d8b428b' # existing node
+    spear_throwaway_alias_first_node_uuid = '9781870a-b05f-6f1b-4331-b04ddf5d493a' # existing node
+    spear_throwaway_alias_second_node_uuid = '11bb766f-f81e-a08d-06ad-8fbca76caab9' # existing node
+    spear_throwaway_high_approval_node_uuid = '9774808d-43be-c733-90d9-ea6695ce25de' # existing node
+    jump_to_decision_node_uuid = 'f48c4366-12f8-47c5-c8e8-91cfa9db0ca5' # existing node
+    shadowheart_throws_the_spear_away_node_uuid = '8a910082-021c-412b-885f-ab5eb765f728'
+    jump_to_spear_throwaway_high_approval_node_uuid = 'f7bef787-4a94-4859-bde1-3c51d73af6ee'
+    shadowheart_hesitates_node_uuid = 'a54d5c74-a5de-4df5-885c-156bd5a35ddc'
+    jump_to_spear_throwaway_node_uuid = '167c8bb3-0861-49f4-99b7-52c042efb7dc'
+    alias_whatever_you_think_dont_interfere_node_uuid = 'dbd6f20f-81c3-4f08-a57e-2c840b594ad8'
+
     alias_she_knows_something_about_you_node_uuid = 'ba492f66-1884-4cf2-9ddd-9ad930d40f2e'
     alias_dont_do_it_node_uuid = '580ab6cd-f3a1-4414-9ada-55720c986746'
 
+    # If Tav decided to not interfere, set the flag to use it down the line.
+    # <i>Trust Shadowheart - do not interfere.</i>
+    d.set_dialog_flags(trust_shadowheart_do_not_interfere_node_uuid, setflags = (
+        bg3.flag_group('Object', (
+            bg3.flag(Nightsong_Fate_Tav_Does_Not_Interfere.uuid, True, speaker_idx_tav),
+        )),
+    ))
+
+    # The following adds a new branch:
+    # if approval is 40+,
+    # Shadowheart and Tav are dating,
+    # Shadowheart read the DJ plea book,
+    # Shadowheart read the Unclaimed book,
+    # and Shadowheart had the faith crisis,
+    # she throws the spear away before Nightsong tells her about the wolves
+    d.create_standard_dialog_node(
+        shadowheart_throws_the_spear_away_node_uuid,
+        bg3.SPEAKER_SHADOWHEART,
+        [jump_to_spear_throwaway_high_approval_node_uuid],
+        None,
+        checkflags = (
+            bg3.flag_group('Global', (
+                bg3.flag(bg3.FLAG_ORI_Shadowheart_State_NightsongPoint_HasEnoughPoints, True, None),
+            )),
+            bg3.flag_group('Object', (
+                bg3.flag(Tav_Gave_DJ_Book_To_Shadowheart.uuid, True, speaker_idx_shadowheart),
+                bg3.flag(Tav_Gave_Unclaimed_Book_To_Shadowheart.uuid, True, speaker_idx_shadowheart),
+                bg3.flag(bg3.FLAG_Approval_AtLeast_40_For_Sp3, True, speaker_idx_shadowheart),
+                bg3.flag(bg3.FLAG_ORI_State_DatingShadowheart, True, speaker_idx_tav)
+            )),
+        ))
+    d.create_jump_dialog_node(jump_to_spear_throwaway_high_approval_node_uuid, spear_throwaway_high_approval_node_uuid, 1)
+
+    d.create_standard_dialog_node(
+        shadowheart_hesitates_node_uuid,
+        bg3.SPEAKER_SHADOWHEART,
+        [jump_to_decision_node_uuid],
+        None)
+
+    d.add_child_dialog_node(trust_shadowheart_do_not_interfere_node_uuid, shadowheart_hesitates_node_uuid, 0)
+    d.add_child_dialog_node(trust_shadowheart_do_not_interfere_node_uuid, shadowheart_throws_the_spear_away_node_uuid, 0)
+    d.delete_child_dialog_node(trust_shadowheart_do_not_interfere_node_uuid, jump_to_decision_node_uuid) # remove unnecessary jump node
+
+    # Remove flag SHA_NightsongPrison_State_HasSpear_08b1de4b-9f5c-41aa-93ec-9bf4376754b6
+    # from animations (Shadowheart throws the spear away)
+    # It is way too late to check that flag there
+    d.set_dialog_flags(spear_throwaway_alias_first_node_uuid, checkflags = ())
+    d.set_dialog_flags(spear_throwaway_alias_second_node_uuid, checkflags = ())
+
+    # The following alias bypasses "I... what do you think? What should I do?"
+    # Shadowheart spares Nightsong on her own if Tav decided to not interfere
+
+    # Whatever you think you know of me won't matter, once I become whom I'm meant to be.
+    d.create_alias_dialog_node(
+        alias_whatever_you_think_dont_interfere_node_uuid,
+        whatever_you_think_node_uuid,
+        [jump_to_spear_throwaway_node_uuid],
+        checkflags = (
+            bg3.flag_group('Object', (
+                bg3.flag(bg3.FLAG_Approval_AtLeast_40_For_Sp3, True, speaker_idx_shadowheart),
+                bg3.flag(Nightsong_Fate_Tav_Does_Not_Interfere.uuid, True, speaker_idx_tav),
+            )),
+        ))
+    d.create_jump_dialog_node(jump_to_spear_throwaway_node_uuid, spear_throwaway_alias_first_node_uuid, 1)
+    d.add_child_dialog_node(i_sense_more_in_you_than_you_know_node_uuid, alias_whatever_you_think_dont_interfere_node_uuid, 0)
+
+    # She knows something about you. Spare her, and see what she has to say.
     d.create_alias_dialog_node(
         alias_she_knows_something_about_you_node_uuid,
         roll_she_knows_something_about_you_node_uuid,
@@ -36,6 +118,7 @@ def fix_nightsong_choice_dialog() -> None:
             )),
         ))
 
+    # Don't do it, Shadowheart. Don't kill her - you'll regret it.
     d.create_alias_dialog_node(
         alias_dont_do_it_node_uuid,
         roll_dont_do_it_node_uuid,
@@ -48,7 +131,6 @@ def fix_nightsong_choice_dialog() -> None:
 
     d.add_child_dialog_node(what_should_i_do_enough_points_node_uuid, alias_dont_do_it_node_uuid, 1)
     d.add_child_dialog_node(what_should_i_do_enough_points_node_uuid, alias_she_knows_something_about_you_node_uuid, 1)
-    'fe4e2f3c-30f6-84b2-fbdd-bda36f6dbc71'
 
 
 def fix_skinny_dipping_crd() -> None:
@@ -402,18 +484,272 @@ def fix_all_that_happened_raider_victory() -> None:
 
 
 def fix_topical_greetings() -> None:
+    ################################################################################################
+    # Dialog: Shadowheart_InParty_Nested_TopicalGreetings.lsf
+    ################################################################################################
+
     ab = game_assets.get_modded_dialog_asset_bundle('Shadowheart_InParty_Nested_TopicalGreetings')
     d = bg3.dialog_object(ab.dialog)
 
     speaker_idx_shadowheart = d.get_speaker_slot_index(bg3.SPEAKER_SHADOWHEART)
 
+    it_feels_like_my_entire_world_has_been_upended_node_uuid = '5cae008d-231e-4668-abf5-3d81c9f8e5ab'
+    d.set_dialog_flags(
+        it_feels_like_my_entire_world_has_been_upended_node_uuid,
+        checkflags = (
+            bg3.flag_group('Object', (
+                # TG_ORI_Shadowheart_NightsongMeeting_b5281f81-60b9-4dea-87ed-f3b8b95e4364
+                bg3.flag('b5281f81-60b9-4dea-87ed-f3b8b95e4364', True, speaker_idx_shadowheart),
+            )),
+            bg3.flag_group('Global', (
+                # NIGHT_NightsongShadowheartVisit_5cf06d9e-44ce-4431-a1c6-839bfdad5f79
+                bg3.flag('5cf06d9e-44ce-4431-a1c6-839bfdad5f79', False, None),
+            )),
+        ),
+        setflags = (
+            bg3.flag_group('Object', (
+                # TG_ORI_Shadowheart_NightsongMeeting_b5281f81-60b9-4dea-87ed-f3b8b95e4364
+                bg3.flag('b5281f81-60b9-4dea-87ed-f3b8b95e4364', False, speaker_idx_shadowheart),
+            )),
+        ))
+
     # remove Shadowheart_InParty_State_EndDialog_83c61046-f6c7-4d0b-a012-37fdce36d957
     # keep only TG_ORI_Astarion_KidnappedByGurHunter_d2df26ef-545e-43c4-99e1-cfe0f4e1ac06
+    # I'll miss Astarion... though perhaps my neck won't.
     d.set_dialog_flags('2bda6e84-9c72-43ed-b2a3-f53fed3c431a', setflags = (
         bg3.flag_group('Object', (
             bg3.flag('d2df26ef-545e-43c4-99e1-cfe0f4e1ac06', False, speaker_idx_shadowheart),
         )),
     ))
+
+    ################################################################################################
+    # Dialog: SHA_TempleLeave_OM_Shadowheart_COM.lsf
+    ################################################################################################
+
+    ab = game_assets.get_modded_dialog_asset_bundle('SHA_TempleLeave_OM_Shadowheart_COM')
+    d = bg3.dialog_object(ab.dialog)
+
+    speaker_idx_shadowheart = d.get_speaker_slot_index(bg3.SPEAKER_SHADOWHEART)
+    speaker_idx_tav = d.get_speaker_slot_index(bg3.SPEAKER_PLAYER)
+
+    # Sets the topical greetings when Shadowheart leaves the party after Tav didn't take her to the Nightsong
+    you_would_be_wise_to_forget_me_node_uuid = '5c6911ac-4fa1-4d0d-8ef1-41e9e6b7cf3b'
+    d.set_dialog_flags(you_would_be_wise_to_forget_me_node_uuid, setflags = (
+        bg3.flag_group('Object', (
+            bg3.flag(bg3.FLAG_Companion_Leaves_Party, True, speaker_idx_shadowheart),
+            # TG_ORI_Shadowheart_TempleLeftParty_e5a8262e-26bc-4349-ac30-1ecb45733642
+            bg3.flag('e5a8262e-26bc-4349-ac30-1ecb45733642', True, speaker_idx_tav),
+        )),
+    ))
+
+
+def fix_nightsong_meeting() -> None:
+    ################################################################################################
+    # Dialog: CAMP_NightsongShadowheartVisit_CFM.lsf
+    ################################################################################################
+
+    ab = game_assets.get_modded_dialog_asset_bundle('CAMP_NightsongShadowheartVisit_CFM')
+    d = bg3.dialog_object(ab.dialog)
+    t = bg3.timeline_object(ab.timeline, d)
+
+    reaction_plus_5 = bg3.reaction_object.create_new(files, { bg3.SPEAKER_SHADOWHEART: 5 })
+    reaction_minus_10_1 = bg3.reaction_object.create_new(files, { bg3.SPEAKER_SHADOWHEART: -10 })
+    reaction_minus_10_2 = bg3.reaction_object.create_new(files, { bg3.SPEAKER_SHADOWHEART: -10 })
+
+    my_parents_i_need_to_save_them_node_uuid = 'c0bc8c5a-b4ca-d0c4-b373-481911aadd66' # existing node
+    your_parents_are_with_your_abductors_node_uuid = '33740734-0d3e-17f4-7e9a-fb8fdfc06a1c' # existing node
+    ill_help_node_uuid = '36870dc1-0ba7-c2ed-4dbc-d64231b82f1e' # existing node
+    perhaps_this_isnt_a_good_idea_node_uuid = '6d78331c-796b-1868-7e91-2d998d51c683' # existing node
+    getting_your_parents_back_sounds_dangerous_node_uuid = '1ef8872b-da28-f740-0bae-4e6432d7e32e' # existing node
+    weve_got_other_concerns_node_uuid = '2f64eb7c-12af-9fbf-2513-7948547ac6b7' # existing node
+    we_have_other_concerns_node_uuid = 'c9942c9c-be95-dc8b-8d53-afc23931c27a' # existing node
+    there_are_always_other_concerns_node_uuid = '66885154-4691-2d40-43f5-95553bbca7c3' # existing node
+    your_parents_both_followed_the_moonmaiden_node_uuid = 'cfff47bc-2b5e-9f84-81c2-b0081acd532d' # existing node
+    you_were_to_receive_selunes_guidance_node_uuid = '72ec2b40-383a-fe28-eadc-5725158ab4f3' # existing node
+    it_is_a_tragedy_node_uuid = 'd354193b-f271-967d-dcff-62ef7056d774' # existing node
+
+    post_isobel_questions_node_uuid = 'bed4fc40-6bfc-4f4c-8dfb-c61d6b7edb29' # new node
+    jump_to_post_isobel_questions_node_uuid = '84856100-8792-458b-ba96-1f38470becdc' # new node
+    say_nothing_node_uuid = 'f96efc7c-db8e-41a0-bb6f-037833cf322b' # new node
+
+    # Responses to Shadowheart's "My parents. I need to save them."
+
+    # I'll help.
+    d.set_approval_rating(ill_help_node_uuid, reaction_plus_5.uuid)
+
+
+    # Perhaps this isn't a good idea.
+    d.set_approval_rating(perhaps_this_isnt_a_good_idea_node_uuid, reaction_minus_10_1.uuid)
+    d.set_approval_rating(getting_your_parents_back_sounds_dangerous_node_uuid, reaction_minus_10_1.uuid)
+
+    # We've got other concerns.
+    d.set_approval_rating(weve_got_other_concerns_node_uuid, reaction_minus_10_2.uuid)
+    d.set_approval_rating(we_have_other_concerns_node_uuid, reaction_minus_10_2.uuid)
+
+    # Remove negative reactions from these two nodes beacuse they are replaced by -10
+    d.remove_approval_rating(your_parents_are_with_your_abductors_node_uuid)
+    d.remove_approval_rating(there_are_always_other_concerns_node_uuid)
+
+    # Say nothing.
+    d.create_standard_dialog_node(
+        say_nothing_node_uuid,
+        bg3.SPEAKER_PLAYER,
+        [your_parents_are_with_your_abductors_node_uuid],
+        bg3.text_content('h0a252ff5g9784g4fd1ga881g34a06ef65b84', 1),
+        constructor = bg3.dialog_object.QUESTION)
+
+    d.add_child_dialog_node(my_parents_i_need_to_save_them_node_uuid, say_nothing_node_uuid)
+
+    # Isobel's line "It is a tragedy that the Moonmaiden's rite was perverted by Shar. Your future was stolen from you."
+
+    d.delete_child_dialog_node(your_parents_both_followed_the_moonmaiden_node_uuid, it_is_a_tragedy_node_uuid)
+    d.set_dialog_flags(you_were_to_receive_selunes_guidance_node_uuid, checkflags = ())
+    d.delete_all_children_dialog_nodes(you_were_to_receive_selunes_guidance_node_uuid)
+    d.delete_all_children_dialog_nodes(it_is_a_tragedy_node_uuid)
+    d.add_child_dialog_node(you_were_to_receive_selunes_guidance_node_uuid, it_is_a_tragedy_node_uuid)
+    d.add_child_dialog_node(you_were_to_receive_selunes_guidance_node_uuid, post_isobel_questions_node_uuid)
+    d.add_child_dialog_node(it_is_a_tragedy_node_uuid, jump_to_post_isobel_questions_node_uuid)
+
+    d.create_standard_dialog_node(
+        post_isobel_questions_node_uuid,
+        bg3.SPEAKER_NIGHTSONG,
+        [
+            ill_help_node_uuid,
+            getting_your_parents_back_sounds_dangerous_node_uuid,
+            we_have_other_concerns_node_uuid,
+            say_nothing_node_uuid
+        ],
+        None,
+        checkflags = (
+            bg3.flag_group('Script', (
+                # GEN_IsSpeakerPresent_4_7fd98b6e-11d5-28e0-bc67-bb0925834fa3
+                bg3.flag('7fd98b6e-11d5-28e0-bc67-bb0925834fa3', False, None),
+            )),
+        ))
+    d.create_jump_dialog_node(jump_to_post_isobel_questions_node_uuid, post_isobel_questions_node_uuid, 2)
+
+    # Fix Isobel's camera
+
+    # Phase 15, dialog node 72ec2b40-383a-fe28-eadc-5725158ab4f3
+    # Nightsong: You were to receive Selune's guidance in those woods. You were to come of age. Instead, Shar's followers snatched you. They must have been watching you for a long time.
+    tl_phase = t.use_existing_phase(15)
+    t.remove_effect_component('eab347ee-138e-4387-a41c-42ba8a4573b3') # TLShot 116.85506 to 127.87506
+    t.remove_effect_component('09fc0251-0084-4ed8-98c3-e27c7aadc355') # TLShot 127.87506 to 128.18506
+    t.create_tl_shot('d16ba983-3fcc-4c9f-9f91-50086372f49a', '0.0', tl_phase.duration, is_snapped_to_end = True)
+
+    # Phase 27, dialog node d354193b-f271-967d-dcff-62ef7056d774
+    # Isobel: It is a tragedy that the Moonmaiden's rite was perverted by Shar. Your future was stolen from you.
+    isobel_cam1 = 'f81968dd-219e-46be-9adc-05d13b4df47b'
+    isobel_cam2 = '6a8fc012-6956-4d18-8ecb-48ca6888c66d'
+    tl_phase = t.use_existing_phase(27)
+    t.remove_effect_component('3f279f59-3547-4d78-8659-5af185546a31') # TLShot 206.72334 to 213.61334
+    t.remove_effect_component('cffd2ea5-fd23-4d4d-a125-8a86830ed08b') # TLShot 213.61334 to 214.23334
+    time_delta = bg3.decimal_from_str('0.7')
+    t.create_tl_actor_node(bg3.timeline_object.SHOW_VISUAL, bg3.SPEAKER_ISOBEL, '0.0', tl_phase.duration, (
+        t.create_value_key(time = '0.0', interpolation_type = 3, value_name = 'ShowVisual', value = True),
+    ))
+    t.create_tl_shot(isobel_cam1, '0.0', tl_phase.duration - time_delta)
+    t.create_tl_shot('bbc70139-a7c3-4fe1-9015-1a8fa5ddc302', tl_phase.duration - time_delta, tl_phase.duration, is_snapped_to_end = True)
+
+    ################################################################################################
+    # Dialog: Shadowheart_InParty.lsf
+    ################################################################################################
+
+    # The following adds a temporary greeting:
+    # It feels like my entire world has been upended.
+
+    ab = game_assets.get_modded_dialog_asset_bundle('Shadowheart_InParty')
+    d = bg3.dialog_object(ab.dialog)
+    t = bg3.timeline_object(ab.timeline, d)
+
+    speaker_idx_tav = d.get_speaker_slot_index(bg3.SPEAKER_PLAYER)
+
+    nightsong_discussion_entry_node_uuid = '6315b369-c63a-1fbe-3b09-c9c0b4b2a834' # existing node
+    it_feels_like_my_entire_world_has_been_upended_node_uuid = 'c8080ecb-2c3c-434e-88ed-dd1f5c83cec9' # new node
+    i_wanted_to_ask_you_about_node_uuid = '98cc5f86-d136-4132-a564-7bbe0bd45bf7' # new node
+    i_think_you_need_some_time_alone_node_uuid = '3ee737a1-14c7-4f19-b96c-ee88b8b2fffd' # new node
+    im_sorry_it_might_be_best_kept_until_later_node_uuid = 'f8ff71d9-f1ff-4220-a60e-33c5c300d97d' # new node
+    thank_you_we_can_talk_again_soon_node_uuid = 'beddf0f4-f37f-42d2-840b-9ef2dfbf0e75' # new node
+
+    # It feels like my entire world has been upended.
+    d.create_standard_dialog_node(
+        it_feels_like_my_entire_world_has_been_upended_node_uuid,
+        bg3.SPEAKER_SHADOWHEART,
+        [i_wanted_to_ask_you_about_node_uuid, i_think_you_need_some_time_alone_node_uuid],
+        bg3.text_content('h3a502df3g6868g4454g9ea2ga732fe01434f', 2),
+        checkflags = (
+            bg3.flag_group("Dialog", (
+                # Shadowheart_InParty_State_DiscussedNightsongMeeting_2a470bae-37a3-4ca4-937c-be2b7c90ab44
+                bg3.flag('2a470bae-37a3-4ca4-937c-be2b7c90ab44', False, speaker_idx_tav),
+            )),
+            bg3.flag_group("Global", (
+                bg3.flag(bg3.FLAG_CAMP_Shadowheart_State_HadNightsongMeeting, True, None),
+            )),
+        ))
+    t.create_simple_dialog_answer_phase(
+        bg3.SPEAKER_SHADOWHEART,
+        '3.2',
+        it_feels_like_my_entire_world_has_been_upended_node_uuid,
+        ((None, '8942c483-83c9-4974-9f47-87cd1dd10828'),),
+        emotions = {
+            bg3.SPEAKER_SHADOWHEART: ((0.0, 64, 2), (1.31, 32, None)),
+            bg3.SPEAKER_PLAYER: ((0.0, 2048, None),)
+        })
+
+    # I wanted to ask you about what Nightsong said.
+    d.create_standard_dialog_node(
+        i_wanted_to_ask_you_about_node_uuid,
+        bg3.SPEAKER_PLAYER,
+        [im_sorry_it_might_be_best_kept_until_later_node_uuid],
+        bg3.text_content('h913ca6e1g36f2g44d4g9bcdg3606070423ac', 1),
+        constructor = bg3.dialog_object.QUESTION)
+
+    # I'm sorry, I think you need some time alone. Let's talk later.
+    d.create_standard_dialog_node(
+        i_think_you_need_some_time_alone_node_uuid,
+        bg3.SPEAKER_PLAYER,
+        [thank_you_we_can_talk_again_soon_node_uuid],
+        bg3.text_content('he395601bg05fcg416agabc4gdf8ee6ce70c1', 1),
+        constructor = bg3.dialog_object.QUESTION)
+
+    # I'm sorry. It might be best kept until later. I'd be a poor counsel and worse company just now.
+    d.create_standard_dialog_node(
+        im_sorry_it_might_be_best_kept_until_later_node_uuid,
+        bg3.SPEAKER_SHADOWHEART,
+        [],
+        bg3.text_content('hd4953918g2c68g4e38g8d97g59f78056fddf', 1),
+        end_node = True)
+    t.create_simple_dialog_answer_phase(
+        bg3.SPEAKER_SHADOWHEART,
+        '11.2',
+        im_sorry_it_might_be_best_kept_until_later_node_uuid,
+        ((None, '0e8837db-4344-48d0-9175-12262c73806b'),),
+        emotions = {
+            bg3.SPEAKER_SHADOWHEART: ((0.0, 2048, None), (6.45, 32, None)),
+            bg3.SPEAKER_PLAYER: ((0.0, 2048, None),)
+        })
+
+    # Thank you. We can talk again soon.
+    d.create_standard_dialog_node(
+        thank_you_we_can_talk_again_soon_node_uuid,
+        bg3.SPEAKER_SHADOWHEART,
+        [],
+        bg3.text_content('h7e834aecg306ag4955g91f4g864e101655d1', 1),
+        end_node = True)
+    t.create_simple_dialog_answer_phase(
+        bg3.SPEAKER_SHADOWHEART,
+        '3.011',
+        thank_you_we_can_talk_again_soon_node_uuid,
+        ((None, '0e8837db-4344-48d0-9175-12262c73806b'),),
+        emotions = {
+            bg3.SPEAKER_SHADOWHEART: ((0.0, 64, 2), (1.95, 64, None), (2.77, 32, None)),
+            bg3.SPEAKER_PLAYER: ((0.0, 64, 2),)
+        })
+
+
+    d.add_root_node_after(nightsong_discussion_entry_node_uuid, it_feels_like_my_entire_world_has_been_upended_node_uuid)
+
+
 
 
 def fix_shadowheart_pod_opening_scene() -> None:
@@ -700,115 +1036,6 @@ def patch_shadowheart_path_tags() -> None:
     ))
 
 
-    ################################################################################################
-    # Dialog: Shadowheart_InParty_Nested_TopicalGreetings.lsf
-    ################################################################################################
-
-    # 937f0b41-7f51-3e01-fa3b-34cf8ec155e9
-    # Lady Shar's power will soon fade from these lands, but it is a price that had to be paid, so that the traitor Ketheric Thorm could face justice at last.
-    # The shadows are losing their grip on these lands - Shar can indeed be thwarted. Comforting to know.
-
-    # 812d420d-f84a-0114-f92a-9551af1bbd23
-    # So, you're free from your hunger, free from any lingering fear of the sun... but all those lives you sacrificed, Astarion. I'm not sure I'll forget their final screams any time soon.
-    # 'Vampire Ascendant'. A fine prize, Astarion, paid for with a sea of blood. I'm glad to know I have an ally who understands the value of sacrifice - congratulations.
-
-    # 23387c5a-03fb-1952-9a47-538886f537ef
-    # Jaheira's adept at keeping secrets - and for good reason. She was wise to try and keep her family safe... I just wish I could've done the same.
-    # Jaheira's adept at keeping secrets - to conceal a family is no mean feat. Perhaps her skills lean more towards the Dark Lady than she realises...
-
-    # 4c65dd02-f2a6-ba42-6f43-a5695ff29431
-    # Be careful, consuming shadow magic. The darkness tends to take more than it gives. I would know.
-    # You couldn't resist the allure of the shadows, Gale? I don't blame you - it's the only power that truly counts.
-
-    # 58851469-2818-dce7-6339-ff63524ba1b4
-    # A goddess abandoning you needn't be the end, Gale. Trust me, I know.
-    # I'm sorry, Gale. To be abandoned by your goddess... I cannot imagine how that must feel. May the Dark Lady comfort you.
-
-    # c01040e4-ee7a-77c8-f676-dcc71bc24b51
-    # Shar's power still grips this land. A shame we could not banish it - it would have felt good to spite her.
-    # This land remains cloaked by Lady Shar's power - good. A shame it cost us Halsin as a travelling companion though. He may have been misguided, but I liked looking at him.
-
-    # 5199a136-f3d9-8135-56b8-a066e302b9ac
-    # Karlach has offered to take on the duty. She doesn't have much time left, so there's a certain logic in leaving this to her. A somewhat callous logic, mind you.
-    # Karlach has offered to take on the duty. She doesn't have much time left, so there's a certain logic in leaving this to her. The Dark Lady would approve, I'm sure.
-
-    # 45de2fe4-d193-2fd2-4d02-a6e699c77d2c
-    # It seems you have made up with Mystra, Gale. Congratulations - though I don't see any such reconciliation between myself and Shar any time soon...
-    # It seems you have made up with Mystra, Gale. Congratulations. Lady Shar has no love for your goddess... but I am glad you have someone to turn to.
-
-    # 224a654e-57f1-e17a-0f3b-a6df1d9a2a17
-    # I'm sorry, Gale. You tried. Mystra was wrong to turn on you, no matter what mistakes you made in the past.
-    # Mystra was never worthy of your devotion, Gale. She will rue the day she turned on you, I am sure.
-
-    # 1b497a37-45bb-541c-25eb-6da065b835a3
-    # It seems Gale has made amends with Mystra. Good for him - though I don't see any such reconciliation between myself and Shar any time soon...
-    # It seems Gale has made amends with Mystra. Good for him - though his choice of goddesses leaves something to be desired...
-
-    # abb342d5-a0fd-356c-e450-d874bfef0b82
-    # Defying a goddess, Gale? Well, they do say imitation is a form of flattery. I just hope you know what you're doing.
-    # Defying a goddess, Gale? Bold, but Mystra was never worthy of your love.
-
-    # 0213dd07-7f84-9367-c37c-13d71330ebc0
-    # Mystra has forsaken Gale entirely. A crushing blow... but he is strong enough to persevere, I think.
-    # Mystra has forsaken Gale entirely. Imagine how he must be feeling... I doubt I could go on, if Lady Shar turned on me.
-
-    # 82b19bf3-e349-ec87-6b0a-01336865b6c7
-    # Gale defied Mystra herself. Good - not every goddess is deserving of such love. I would know.
-    # Gale defied Mystra herself. I hope he does not come to regret it.
-
-    # 56aff281-4118-4ffd-a07c-f2b74e3e2305
-    # It seems Viconia sought a greater purpose than Lady Shar had decided for her.
-    # Shar did not come to Viconia's defence. All who bow to her are disposable pawns, in the end.
-
-    # e998d502-080b-3bae-0868-fe7dd0a83377
-    # I thought perhaps you'd be tempted to seize Cazador's prize in his stead... but you didn't. Perhaps that makes you the better man - I'm sure all those people you spared would agree.
-    # I thought perhaps you'd be tempted to seize Cazador's prize in his stead... but you didn't. Pity - a vampire lord would have been a fine ally... but no matter. It's done.
-
-    # 9fee8202-3a05-9838-62eb-59c6e3cd0d5b
-    # You sacrificed your own father, Wyll? Not a step that many could take, but the Nightsinger would appreciate your resolve, I think.
-    # You... you sacrificed your own father? I hope freedom from the pact was worth it.
-
-    # 661ad9fd-918b-0198-3e42-4e1a114fe6a3
-    # Your father won't be around forever, Wyll. But the pact? That's a different matter. I hope you won't live to regret being sentimental.
-    # It can't have been easy, to resign yourself to keeping the pact. But I'm glad you choose your father.
-
-    # c0433db6-5425-424f-98e1-3d187ff4ffb1
-    # Tag SHADOWHEART_SHARPATH_9624a3fe-bb9e-47c5-b9ab-417e6da6f84b
-
-    # d77be7c6-00af-4463-a091-d7e19eb84fd6
-    # Tag SHADOWHEART_SHARPATH_9624a3fe-bb9e-47c5-b9ab-417e6da6f84b
-
-    ################################################################################################
-    # Dialog: Jaheira_InParty_Nested_SecretScroll.lsf
-    ################################################################################################
-
-    # Selune path:
-    # Shadowheart line
-    # I wallowed in darkness for too long. If I could extend the time I have left in the light, I think I'd take it.
-    # h07e1eddbgd749g4be9ga9e1g3dc1312bb101
-    # TLVoice c2fec939-7511-4080-92f9-9030b936e795
-    # timeline phase 16
-    #
-    # Jaheira line
-    # And use it to do more than fight, I'd hope. Shar and Selune have already claimed more than their share of your years, I think.
-    # h14df7cd7g6f36g45b9gb6a9g9af1e390ffa9
-    # TLVoice b81a2a84-5212-40b6-8868-b20eaa9ab3e9
-    # timeline phase 7
-
-    # Shar path:
-    # Shadowheart line
-    # The darkness will prevail in the end, Jaheira. You're clinging on just to wage an unwinnable war.
-    # h236a244ag72b5g49d1gb05bgae38ecdd9cb8
-    # TLVoice a7e12ba8-5003-4958-8572-e0acfd2355cb
-    # timeline phase 60
-    #
-    # Jaheira line
-    # Perhaps. But if the darkness is really going to swallow everything, as you Sharrans say, it should at least have to work for its supper.
-    # h58de1cd4g10b2g43bbg962fg6f2253c92286
-    # 
-
-
-
 bg3.add_build_procedure('fix_nightsong_choice_dialog', fix_nightsong_choice_dialog)
 bg3.add_build_procedure('fix_skinny_dipping_crd', fix_skinny_dipping_crd)
 bg3.add_build_procedure('fix_waterfall_date_invitation', fix_waterfall_date_invitation)
@@ -820,3 +1047,4 @@ bg3.add_build_procedure('fix_shadowheart_pod_opening_scene', fix_shadowheart_pod
 bg3.add_build_procedure('fix_act3_romance_conversation', fix_act3_romance_conversation)
 bg3.add_build_procedure('fix_jaheira_greetings', fix_jaheira_greetings)
 bg3.add_build_procedure('patch_shadowheart_path_tags', patch_shadowheart_path_tags)
+bg3.add_build_procedure('fix_nightsong_meeting', fix_nightsong_meeting)

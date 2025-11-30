@@ -170,6 +170,7 @@ FLAG_LOW_SharGrotto_State_UnlockedFriendDialog = 'dd67ca1e-b36d-49d1-8822-6bb47e
 FLAG_CAMP_Shadowheart_State_HadNightsongMeeting = '10b74e80-a963-420f-8c2a-d518b6aae143' # Global flag
 FLAG_ORI_Shadowheart_Romance1_AfterCelebration_State_QueueInvitation = '2d7e1f5e-fee1-4732-a0a2-f1337cc5466c' # Global flag. Invitation to the waterfall romance cutscene
 FLAG_CAMP_GoblinHuntCelebration_SD_ROM_NightWithShadowheart_State_Happened = '96508d74-26f3-c8a1-da78-b17c10a5ef11' # Global flag. Waterfall date has happened
+FLAG_ORI_Shadowheart_State_NightsongPoint_GaveNightOrchid = 'cd01256d-93df-4d80-8d94-1233fe16ddf6' # Global flag
 FLAG_ORI_Shadowheart_State_NightsongPoint_HasEnoughPoints = '82893505-534a-461a-8dd5-0f4677dad6ce' # Global flag
 FLAG_ORI_Shadowheart_State_IrregularBehaviour = 'a1e4a324-4c58-48fb-b08e-d538fec45af8' # Global flag. Shadowheart is behaving oddly in camp.
 FLAG_ORI_Shadowheart_State_EnemyOfSharPath = '055bbe0f-05f5-444b-a7e2-0f66edd2178c' # Global flag. Shadowheart rejected Shar
@@ -271,6 +272,7 @@ FLAG_ORI_State_HandledBreakupWithMinthara = '6a880802-bf76-4ece-816e-82cf90fa97b
 FLAG_ORI_State_ChosePartnerOverMinthara = '25202f13-55d3-4d13-b0c2-1245a90d99f2'
 
 # Karlach states
+FLAG_GLO_ForgingOfTheHeart_State_KarlachUpgraded = 'a818e2f5-9e0c-4ab3-8c1e-00765d3b892f'
 FLAG_GLO_ForgingOfTheHeart_State_KarlachSecondUpgrade = 'f6dc0de4-1089-43c0-b392-306a9a44387c' # Dammon updates Karlach for the second time.
 FLAG_ORI_State_DatingKarlach = 'f24c3f3e-7287-4908-84bf-ba314921f5ee'
 FLAG_ORI_State_PartneredWithKarlach = 'd9ff60fa-0af9-45d7-99b4-bd7c3f80ed12'
@@ -380,7 +382,7 @@ FLAG_GLO_Jaheira_State_PermaDefeated = '932fb5a1-00ba-4621-b7ae-877d40d7ddcd' # 
 FLAG_GLO_Origin_PartOfTheTeam_Jaheira = 'd7d29efe-70bb-47c2-9db3-bc8a10347bc6' # Set when Jaheira is part of the team, meaning recruited, regardless of whether in camp or in party
 FLAG_GLO_Origin_PartOfTheTeam_Minsc = '3510cd49-7ff6-475c-829b-d4d68a07b085' # Set when Minsc is part of the team, meaning recruited, regardless of whether in camp or in party
 
-GLO_Companion_LeaveBlocked = '4386e3a1-b16e-4331-92ec-29edbc359d51' #Companion is blocked from leaving the party - cannot be dismissed or leave through low approval" />
+GLO_Companion_LeaveBlocked = '4386e3a1-b16e-4331-92ec-29edbc359d51' # Companion is blocked from leaving the party - cannot be dismissed or leave through low approval" />
 
 FLAG_LOW_CountingHouse_State_RobbersEscaped = '16197488-9cc2-48e2-94ae-36225025d4d8' # Global flag
 FLAG_Jaheira_InParty_SpokeOfDoppelgangerJaheira = 'e8c6623a-32fc-4cfa-97e1-31803ab4158b' # Global flag
@@ -404,6 +406,8 @@ FLAG_Shadowheart_InParty_Event_NightfallQuestionStart = 'c8fd0751-450d-4fb2-b1c5
 
 FLAG_ORI_Shadowheart_Event_SkinnyDippingRomanceScene = '3437a073-b92a-4999-b6b9-e7745865a0c2' # Starts the skinny dipping romance scene
 
+FLAG_CAMP_Shadowheart_State_HadNightsongMeeting = '10b74e80-a963-420f-8c2a-d518b6aae143' # Global flag. Nightsong spoke to Shadowheart in camp (set immediately)
+FLAG_NIGHT_NightsongShadowheartVisit = '5cf06d9e-44ce-4431-a1c6-839bfdad5f79' # Global flag. Nightsong spoke to Shadowheart in camp (night happened, set after LR).
 FLAG_NIGHT_Shadowheart_DaughterTears = 'f9b1fa94-deef-4927-ad7d-3e1b0c393c13' # Global flag. Daughter's Tears scene has happened.
 
 FLAG_NIGHT_Shadowheart_Skinnydipping = '9f583304-0a1a-498c-acf9-3c8dcc30ee3d' # Global flag. Skinny dipping has happened.

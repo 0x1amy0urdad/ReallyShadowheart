@@ -1,0 +1,565 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<save>
+	<version major="4" minor="5" revision="0" build="0"
+		lslib_meta="v1,bswap_guids,lsf_keys_adjacency" />
+	<region id="TimelineContent">
+		<node id="TimelineContent">
+			<attribute id="CompilationTimeStamp" type="int64" value="1700743222" />
+			<children>
+				<node id="Effect">
+					<attribute id="Duration" type="float" value="110.58" />
+					<children>
+						<node id="Phases">
+							<children>
+							</children>
+						</node>
+						<node id="Inputs" />
+						<node id="EffectComponents">
+							<children>
+							</children>
+						</node>
+					</children>
+				</node>
+				<node id="TimelineSpeakers">
+					<children>
+						<node id="Object" key="MapKey">
+							<attribute id="MapKey" type="int32" value="0" />
+							<attribute id="MapValue" type="guid"
+								value="c15775d6-4f49-53bb-17b7-ee5e158912a8" />
+						</node>
+						<node id="Object" key="MapKey">
+							<attribute id="MapKey" type="int32" value="1" />
+							<attribute id="MapValue" type="guid"
+								value="b717e523-f24b-bffe-ee75-2fad9047324e" />
+						</node>
+					</children>
+				</node>
+				<node id="TimelineActorData">
+					<children>
+						<node id="TimelineActorData">
+							<children>
+								<node id="Object" key="MapKey">
+									<attribute id="MapKey" type="guid"
+										value="c15775d6-4f49-53bb-17b7-ee5e158912a8" />
+									<children>
+										<node id="Value">
+											<attribute id="Speaker" type="int32" value="0" />
+											<attribute id="ActorTypeId" type="FixedString"
+												value="character" />
+											<attribute id="ActorType" type="uint8" value="0" />
+											<attribute id="DefaultStepOutDelay" type="float"
+												value="0.41390425" />
+											<attribute id="AudienceSlot" type="uint8" value="16" />
+											<attribute id="SceneActorType" type="uint8" value="8" />
+											<attribute id="SceneActorIndex" type="int32" value="0" />
+											<children>
+												<node id="CompiledNodeSnapshots">
+													<children>
+														<node id="ComponentMap" />
+													</children>
+												</node>
+											</children>
+										</node>
+									</children>
+								</node>
+								<node id="Object" key="MapKey">
+									<attribute id="MapKey" type="guid"
+										value="b717e523-f24b-bffe-ee75-2fad9047324e" />
+									<children>
+										<node id="Value">
+											<attribute id="Speaker" type="int32" value="1" />
+											<attribute id="ActorTypeId" type="FixedString"
+												value="character" />
+											<attribute id="ActorType" type="uint8" value="0" />
+											<attribute id="IsPlayer" type="bool" value="True" />
+											<attribute id="DefaultStepOutDelay" type="float"
+												value="0.7802972" />
+											<attribute id="AudienceSlot" type="uint8" value="16" />
+											<attribute id="SceneActorType" type="uint8" value="2" />
+											<attribute id="SceneActorIndex" type="int32" value="0" />
+											<children>
+												<node id="CompiledNodeSnapshots">
+													<children>
+														<node id="ComponentMap" />
+													</children>
+												</node>
+											</children>
+										</node>
+									</children>
+								</node>
+								<node id="Object" key="MapKey">
+									<attribute id="MapKey" type="guid"
+										value="ffb92f34-97f6-4d13-91ee-b58cf5666f89" />
+									<children>
+										<node id="Value">
+											<attribute id="ActorTypeId" type="FixedString"
+												value="peanut" />
+											<attribute id="ActorType" type="uint8" value="0" />
+											<attribute id="DefaultStepOutDelay" type="float"
+												value="0.7649892" />
+											<attribute id="AudienceSlot" type="uint8" value="8" />
+											<attribute id="SceneActorType" type="uint8" value="4" />
+											<children>
+												<node id="CompiledNodeSnapshots">
+													<children>
+														<node id="ComponentMap" />
+													</children>
+												</node>
+											</children>
+										</node>
+									</children>
+								</node>
+								<node id="Object" key="MapKey">
+									<attribute id="MapKey" type="guid"
+										value="71fed988-d148-45c4-9365-9e5dee784a50" />
+									<children>
+										<node id="Value">
+											<attribute id="ActorTypeId" type="FixedString"
+												value="peanut" />
+											<attribute id="ActorType" type="uint8" value="0" />
+											<attribute id="DefaultStepOutDelay" type="float"
+												value="0.3366558" />
+											<attribute id="AudienceSlot" type="uint8" value="8" />
+											<attribute id="SceneActorType" type="uint8" value="4" />
+											<children>
+												<node id="CompiledNodeSnapshots">
+													<children>
+														<node id="ComponentMap" />
+													</children>
+												</node>
+											</children>
+										</node>
+									</children>
+								</node>
+								<node id="Object" key="MapKey">
+									<attribute id="MapKey" type="guid"
+										value="7cebc0bf-0074-4647-a9fe-3b576fa622d6" />
+									<children>
+										<node id="Value">
+											<attribute id="ActorTypeId" type="FixedString"
+												value="peanut" />
+											<attribute id="ActorType" type="uint8" value="0" />
+											<attribute id="DefaultStepOutDelay" type="float"
+												value="0.33816952" />
+											<attribute id="AudienceSlot" type="uint8" value="8" />
+											<attribute id="SceneActorType" type="uint8" value="4" />
+											<children>
+												<node id="CompiledNodeSnapshots">
+													<children>
+														<node id="ComponentMap" />
+													</children>
+												</node>
+											</children>
+										</node>
+									</children>
+								</node>
+								<node id="Object" key="MapKey">
+									<attribute id="MapKey" type="guid"
+										value="fb91b3e2-b1b9-47d5-8478-659cececad9b" />
+									<children>
+										<node id="Value">
+											<attribute id="ActorTypeId" type="FixedString"
+												value="scenecam" />
+											<attribute id="ActorType" type="uint8" value="1" />
+											<attribute id="Camera" type="guid"
+												value="ddfb863d-2376-4882-8d26-6a7f95eed0ca" />
+											<attribute id="AttachTo" type="guid"
+												value="c15775d6-4f49-53bb-17b7-ee5e158912a8" />
+											<attribute id="LookAt" type="guid"
+												value="b717e523-f24b-bffe-ee75-2fad9047324e" />
+											<attribute id="DefaultStepOutDelay" type="float"
+												value="0.25235146" />
+											<children>
+												<node id="CompiledNodeSnapshots">
+													<children>
+														<node id="ComponentMap" />
+													</children>
+												</node>
+											</children>
+										</node>
+									</children>
+								</node>
+								<node id="Object" key="MapKey">
+									<attribute id="MapKey" type="guid"
+										value="befcdee8-6352-4be6-b2ea-23c2ac0dfe60" />
+									<children>
+										<node id="Value">
+											<attribute id="ActorTypeId" type="FixedString"
+												value="scenecam" />
+											<attribute id="ActorType" type="uint8" value="1" />
+											<attribute id="Camera" type="guid"
+												value="ff9136ca-e96e-4709-8d3c-f4a6d0de5690" />
+											<attribute id="AttachTo" type="guid"
+												value="c15775d6-4f49-53bb-17b7-ee5e158912a8" />
+											<attribute id="LookAt" type="guid"
+												value="b717e523-f24b-bffe-ee75-2fad9047324e" />
+											<attribute id="DefaultStepOutDelay" type="float"
+												value="0.14861293" />
+											<children>
+												<node id="CompiledNodeSnapshots">
+													<children>
+														<node id="ComponentMap" />
+													</children>
+												</node>
+											</children>
+										</node>
+									</children>
+								</node>
+								<node id="Object" key="MapKey">
+									<attribute id="MapKey" type="guid"
+										value="89eeac49-0759-420d-8f99-3b76a8b2b7e8" />
+									<children>
+										<node id="Value">
+											<attribute id="ActorTypeId" type="FixedString"
+												value="scenecam" />
+											<attribute id="ActorType" type="uint8" value="1" />
+											<attribute id="Camera" type="guid"
+												value="8fc02530-77b1-40ea-9d28-13f21aab35db" />
+											<attribute id="AttachTo" type="guid"
+												value="b717e523-f24b-bffe-ee75-2fad9047324e" />
+											<attribute id="LookAt" type="guid"
+												value="c15775d6-4f49-53bb-17b7-ee5e158912a8" />
+											<attribute id="DefaultStepOutDelay" type="float"
+												value="0.55861086" />
+											<children>
+												<node id="CompiledNodeSnapshots">
+													<children>
+														<node id="ComponentMap" />
+													</children>
+												</node>
+											</children>
+										</node>
+									</children>
+								</node>
+								<node id="Object" key="MapKey">
+									<attribute id="MapKey" type="guid"
+										value="18c5bd4f-c066-4c52-8cdb-d8bbe1d8034e" />
+									<children>
+										<node id="Value">
+											<attribute id="ActorTypeId" type="FixedString"
+												value="scenecam" />
+											<attribute id="ActorType" type="uint8" value="1" />
+											<attribute id="Camera" type="guid"
+												value="2fad736c-047d-4964-a8d6-0f1d8fb085b1" />
+											<attribute id="AttachTo" type="guid"
+												value="b717e523-f24b-bffe-ee75-2fad9047324e" />
+											<attribute id="LookAt" type="guid"
+												value="c15775d6-4f49-53bb-17b7-ee5e158912a8" />
+											<attribute id="DefaultStepOutDelay" type="float"
+												value="0.7865474" />
+											<children>
+												<node id="CompiledNodeSnapshots">
+													<children>
+														<node id="ComponentMap" />
+													</children>
+												</node>
+											</children>
+										</node>
+									</children>
+								</node>
+								<node id="Object" key="MapKey">
+									<attribute id="MapKey" type="guid"
+										value="cb95fcb5-efd7-48f4-9352-5eaeb3e44274" />
+									<children>
+										<node id="Value">
+											<attribute id="ActorTypeId" type="FixedString"
+												value="scenecam" />
+											<attribute id="ActorType" type="uint8" value="1" />
+											<attribute id="Camera" type="guid"
+												value="a7578f69-00a4-49fe-b8fa-b2cceb145f53" />
+											<attribute id="AttachTo" type="guid"
+												value="b717e523-f24b-bffe-ee75-2fad9047324e" />
+											<attribute id="LookAt" type="guid"
+												value="b717e523-f24b-bffe-ee75-2fad9047324e" />
+											<attribute id="DefaultStepOutDelay" type="float"
+												value="0.46610308" />
+											<children>
+												<node id="CompiledNodeSnapshots">
+													<children>
+														<node id="ComponentMap" />
+													</children>
+												</node>
+											</children>
+										</node>
+									</children>
+								</node>
+								<node id="Object" key="MapKey">
+									<attribute id="MapKey" type="guid"
+										value="64edf86f-1d72-47fd-b908-a444cadb2fc3" />
+									<children>
+										<node id="Value">
+											<attribute id="ActorTypeId" type="FixedString"
+												value="scenecam" />
+											<attribute id="ActorType" type="uint8" value="1" />
+											<attribute id="Camera" type="guid"
+												value="1685fcac-4da6-4cb6-a262-6ffe752e21bc" />
+											<attribute id="AttachTo" type="guid"
+												value="b717e523-f24b-bffe-ee75-2fad9047324e" />
+											<attribute id="LookAt" type="guid"
+												value="b717e523-f24b-bffe-ee75-2fad9047324e" />
+											<attribute id="DefaultStepOutDelay" type="float"
+												value="0.12610249" />
+											<children>
+												<node id="CompiledNodeSnapshots">
+													<children>
+														<node id="ComponentMap" />
+													</children>
+												</node>
+											</children>
+										</node>
+									</children>
+								</node>
+								<node id="Object" key="MapKey">
+									<attribute id="MapKey" type="guid"
+										value="450b4f98-d7bf-4d73-9844-6d2832d4a026" />
+									<children>
+										<node id="Value">
+											<attribute id="ActorTypeId" type="FixedString"
+												value="scenecam" />
+											<attribute id="ActorType" type="uint8" value="1" />
+											<attribute id="Camera" type="guid"
+												value="95071488-ae52-49e8-b1ab-91824de2f48e" />
+											<attribute id="AttachTo" type="guid"
+												value="c15775d6-4f49-53bb-17b7-ee5e158912a8" />
+											<attribute id="LookAt" type="guid"
+												value="b717e523-f24b-bffe-ee75-2fad9047324e" />
+											<attribute id="DefaultStepOutDelay" type="float"
+												value="0.48397475" />
+											<children>
+												<node id="CompiledNodeSnapshots">
+													<children>
+														<node id="ComponentMap" />
+													</children>
+												</node>
+											</children>
+										</node>
+									</children>
+								</node>
+								<node id="Object" key="MapKey">
+									<attribute id="MapKey" type="guid"
+										value="cc421647-a27f-4860-b524-9370db1b711d" />
+									<children>
+										<node id="Value">
+											<attribute id="ActorTypeId" type="FixedString"
+												value="scenecam" />
+											<attribute id="ActorType" type="uint8" value="1" />
+											<attribute id="Camera" type="guid"
+												value="a443a2ab-e4f4-4682-9a3e-a43fb356224f" />
+											<attribute id="AttachTo" type="guid"
+												value="b717e523-f24b-bffe-ee75-2fad9047324e" />
+											<attribute id="LookAt" type="guid"
+												value="c15775d6-4f49-53bb-17b7-ee5e158912a8" />
+											<attribute id="DefaultStepOutDelay" type="float"
+												value="0.29473555" />
+											<children>
+												<node id="CompiledNodeSnapshots">
+													<children>
+														<node id="ComponentMap" />
+													</children>
+												</node>
+											</children>
+										</node>
+									</children>
+								</node>
+								<node id="Object" key="MapKey">
+									<attribute id="MapKey" type="guid"
+										value="99480a46-e5ff-4101-ab73-d0ce43403c57" />
+									<children>
+										<node id="Value">
+											<attribute id="ActorTypeId" type="FixedString"
+												value="scenecam" />
+											<attribute id="ActorType" type="uint8" value="1" />
+											<attribute id="Camera" type="guid"
+												value="79aefc5a-42e2-45ca-9617-798b77e9601d" />
+											<attribute id="AttachTo" type="guid"
+												value="b717e523-f24b-bffe-ee75-2fad9047324e" />
+											<attribute id="LookAt" type="guid"
+												value="c15775d6-4f49-53bb-17b7-ee5e158912a8" />
+											<attribute id="DefaultStepOutDelay" type="float"
+												value="0.31519517" />
+											<children>
+												<node id="CompiledNodeSnapshots">
+													<children>
+														<node id="ComponentMap" />
+													</children>
+												</node>
+											</children>
+										</node>
+									</children>
+								</node>
+								<node id="Object" key="MapKey">
+									<attribute id="MapKey" type="guid"
+										value="a43f207a-ed78-4acf-9815-9103e41577d0" />
+									<children>
+										<node id="Value">
+											<attribute id="ActorTypeId" type="FixedString"
+												value="scenecam" />
+											<attribute id="ActorType" type="uint8" value="1" />
+											<attribute id="Camera" type="guid"
+												value="788e3996-fcf7-4113-9dc0-e4b971935c06" />
+											<attribute id="AttachTo" type="guid"
+												value="c15775d6-4f49-53bb-17b7-ee5e158912a8" />
+											<attribute id="LookAt" type="guid"
+												value="b717e523-f24b-bffe-ee75-2fad9047324e" />
+											<attribute id="DefaultStepOutDelay" type="float"
+												value="0.77800226" />
+											<children>
+												<node id="CompiledNodeSnapshots">
+													<children>
+														<node id="ComponentMap" />
+													</children>
+												</node>
+											</children>
+										</node>
+									</children>
+								</node>
+							</children>
+						</node>
+					</children>
+				</node>
+				<node id="TimelinePhases">
+					<children>
+						<node id="Object">
+							<children>
+
+							</children>
+						</node>
+					</children>
+				</node>
+				<node id="PeanutSlotIdMap">
+					<children>
+						<node id="Object">
+							<children>
+								<node id="Object" key="MapKey">
+									<attribute id="MapKey" type="guid"
+										value="ffb92f34-97f6-4d13-91ee-b58cf5666f89" />
+									<attribute id="MapValue" type="int32" value="0" />
+								</node>
+								<node id="Object" key="MapKey">
+									<attribute id="MapKey" type="guid"
+										value="71fed988-d148-45c4-9365-9e5dee784a50" />
+									<attribute id="MapValue" type="int32" value="1" />
+								</node>
+								<node id="Object" key="MapKey">
+									<attribute id="MapKey" type="guid"
+										value="7cebc0bf-0074-4647-a9fe-3b576fa622d6" />
+									<attribute id="MapValue" type="int32" value="2" />
+								</node>
+							</children>
+						</node>
+					</children>
+				</node>
+				<node id="TimelineSettings">
+					<attribute id="BodyPartForMocap" type="int32" value="1" />
+					<children>
+						<node id="FoleySettings" />
+						<node id="ExposureSettings" />
+						<node id="QuestionHoldAutomation">
+							<attribute id="IsEnabled" type="bool" value="False" />
+							<attribute id="CycleSpeed" type="float" value="0" />
+						</node>
+					</children>
+				</node>
+				<node id="AdditionalLocations" />
+				<node id="RequiredCinematicLevelTemplateIds" />
+				<node id="MaterialGroupLookup">
+					<children>
+						<node id="Object" />
+					</children>
+				</node>
+				<node id="CombatTimelineHandlers">
+					<children>
+						<node id="CombatTimelineHandler">
+							<attribute id="Priority" type="int32" value="0" />
+						</node>
+						<node id="CombatTimelineHandler">
+							<attribute id="Priority" type="int32" value="0" />
+						</node>
+						<node id="CombatTimelineHandler">
+							<attribute id="Priority" type="int32" value="0" />
+						</node>
+						<node id="CombatTimelineHandler">
+							<attribute id="Priority" type="int32" value="0" />
+						</node>
+						<node id="CombatTimelineHandler">
+							<attribute id="Priority" type="int32" value="0" />
+						</node>
+						<node id="CombatTimelineHandler">
+							<attribute id="Priority" type="int32" value="0" />
+						</node>
+						<node id="CombatTimelineHandler">
+							<attribute id="Priority" type="int32" value="0" />
+						</node>
+						<node id="CombatTimelineHandler">
+							<attribute id="Priority" type="int32" value="0" />
+						</node>
+						<node id="CombatTimelineHandler">
+							<attribute id="Priority" type="int32" value="0" />
+						</node>
+						<node id="CombatTimelineHandler">
+							<attribute id="Priority" type="int32" value="0" />
+						</node>
+						<node id="CombatTimelineHandler">
+							<attribute id="Priority" type="int32" value="0" />
+						</node>
+						<node id="CombatTimelineHandler">
+							<attribute id="Priority" type="int32" value="0" />
+						</node>
+						<node id="CombatTimelineHandler">
+							<attribute id="Priority" type="int32" value="0" />
+						</node>
+						<node id="CombatTimelineHandler">
+							<attribute id="Priority" type="int32" value="0" />
+						</node>
+						<node id="CombatTimelineHandler">
+							<attribute id="Priority" type="int32" value="0" />
+						</node>
+						<node id="CombatTimelineHandler">
+							<attribute id="Priority" type="int32" value="0" />
+						</node>
+					</children>
+				</node>
+				<node id="WorldTimeline">
+					<children>
+						<node id="ActorEndStates">
+							<children>
+								<node id="ActorEndState" />
+							</children>
+						</node>
+						<node id="ActorIdleOverrides">
+							<children>
+								<node id="ActorIdleOverride" />
+							</children>
+						</node>
+						<node id="BehaviourActorStartConditions">
+							<children>
+								<node id="BehaviourActorStartCondition" />
+							</children>
+						</node>
+					</children>
+				</node>
+				<node id="RootCompiledNodeSnapshots" />
+			</children>
+		</node>
+	</region>
+	<region id="EnterPhaseSoundEvents">
+		<node id="EnterPhaseSoundEvents">
+			<children>
+				<node id="SoundEventMap" />
+			</children>
+		</node>
+	</region>
+	<region id="ExitPhaseSoundEvents">
+		<node id="ExitPhaseSoundEvents">
+			<children>
+				<node id="SoundEventMap" />
+			</children>
+		</node>
+	</region>
+	<region id="EnterSoundEvents">
+		<node id="EnterSoundEvents" />
+	</region>
+	<region id="ExitSoundEvents">
+		<node id="ExitSoundEvents" />
+	</region>
+</save>

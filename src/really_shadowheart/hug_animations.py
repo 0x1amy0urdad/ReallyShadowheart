@@ -133,7 +133,7 @@ def add_hugs_to_the_story() -> None:
 
 def create_hugs_dialogs() -> None:
 
-    dialog_src_lsx = os.path.join(root_path, 'resources', 'main', 'templates', 'Dialog_ShadowHeart_InParty2_Nested_ShadowheartHug_Empty.lsf.lsx')
+    dialog_src_lsx = os.path.join(root_path, 'resources', 'really_shadowheart', 'templates', 'Dialog_ShadowHeart_InParty2_Nested_ShadowheartHug_Empty.lsf.lsx')
     dialog_file = bg3.game_file(game_assets.tool, "", source_file_path = dialog_src_lsx)
     ab = game_assets.get_modded_dialog_asset_bundle('ShadowHeart_InParty2_Nested_ShadowheartHug')
     dialog_node = dialog_file.xml.find('./region[@id="dialog"]/node[@id="dialog"]')
@@ -360,7 +360,7 @@ def create_hugs_timeline() -> None:
     # d = bg3.dialog_object(files.get_file(None, 'Mods/GustavDev/Story/DialogsBinary/Companions/ShadowHeart_InParty2_Nested_ShadowheartHug.lsf'))
     # t = bg3.timeline_object(files.get_file(None, 'Public/GustavDev/Timeline/Generated/ShadowHeart_InParty2_Nested_ShadowheartHug.lsf'), d)
 
-    timeline_src_lsx = os.path.join(root_path, 'resources', 'main', 'templates', 'Timeline_ShadowHeart_InParty2_Nested_ShadowheartHug_Empty.lsf.lsx')
+    timeline_src_lsx = os.path.join(root_path, 'resources', 'really_shadowheart', 'templates', 'Timeline_ShadowHeart_InParty2_Nested_ShadowheartHug_Empty.lsf.lsx')
     timeline_file = bg3.game_file(game_assets.tool, "", source_file_path = timeline_src_lsx)
     ab = game_assets.get_modded_dialog_asset_bundle('ShadowHeart_InParty2_Nested_ShadowheartHug')
     ab.timeline.replace_xml(timeline_file.xml)
@@ -1579,7 +1579,7 @@ def create_hugs_timeline() -> None:
         '4.31',
         hug_first_reaction_node_uuid,
         ((None, '99480a46-e5ff-4101-ab73-d0ce43403c57'),),
-        phase_duration = '4.5',
+        #phase_duration = '4.5',
         emotions = {
             bg3.SPEAKER_SHADOWHEART: ((0, 64, None), (1.36, 2, None)),
         }
@@ -1587,43 +1587,43 @@ def create_hugs_timeline() -> None:
 
     t.create_simple_dialog_answer_phase(
         bg3.SPEAKER_SHADOWHEART,
-        '2.13',
+        '2.12',
         hug_reaction_partnered_node_uuid,
         ((None, '99480a46-e5ff-4101-ab73-d0ce43403c57'),),
-        phase_duration = '2.3',
+        #phase_duration = '2.3',
         emotions = {
             bg3.SPEAKER_SHADOWHEART: ((0, 2, None),),
         }
     )
     t.create_simple_dialog_answer_phase(
         bg3.SPEAKER_SHADOWHEART,
-        '3.3',
+        '3.28',
         hug_reaction_partnered_node_uuid,
         ((None, '99480a46-e5ff-4101-ab73-d0ce43403c57'),),
         line_index = 1,
-        phase_duration = '3.4',
+        #phase_duration = '3.4',
         emotions = {
             bg3.SPEAKER_SHADOWHEART: ((0, 2, 2), (1.4, 2, None)),
         }
     )
     t.create_simple_dialog_answer_phase(
         bg3.SPEAKER_SHADOWHEART,
-        '4.28',
+        '4.26',
         hug_reaction_partnered_node_uuid,
         ((None, '99480a46-e5ff-4101-ab73-d0ce43403c57'),),
         line_index = 2,
-        phase_duration = '4.4',
+        #phase_duration = '4.4',
         emotions = {
             bg3.SPEAKER_SHADOWHEART: ((0, 2, 1), (1.73, 2, None)),
         }
     )
     t.create_simple_dialog_answer_phase(
         bg3.SPEAKER_SHADOWHEART,
-        '3.12',
+        '3.10',
         hug_reaction_partnered_node_uuid,
         ((None, '99480a46-e5ff-4101-ab73-d0ce43403c57'),),
         line_index = 3,
-        phase_duration = '3.3',
+        #phase_duration = '3.3',
         emotions = {
             bg3.SPEAKER_SHADOWHEART: ((0, 2, None), (0.93, 2, 2)),
         }
