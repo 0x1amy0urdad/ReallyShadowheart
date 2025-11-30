@@ -224,86 +224,88 @@ def patch_act3_romance_conversations() -> None:
 
     # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Companions/ShadowHeart_InParty2_Nested_Romance.lsf'))
 
-    ab = game_assets.get_modded_dialog_asset_bundle('ShadowHeart_InParty2_Nested_Romance')
-    d = bg3.dialog_object(ab.dialog)
+    # # The following was moved to relationship.py, create_intimate_followups()
 
-    slot_idx_shadowheart = d.get_speaker_slot_index(bg3.SPEAKER_SHADOWHEART)
-    slot_idx_tav = d.get_speaker_slot_index(bg3.SPEAKER_PLAYER)
+    # ab = game_assets.get_modded_dialog_asset_bundle('ShadowHeart_InParty2_Nested_Romance')
+    # d = bg3.dialog_object(ab.dialog)
 
-    make_sand_castles_node_uuid = '08c8b4f5-79df-4b9b-9e11-2e2c0cf06a3d' # existing node
-    alias_make_sand_castles_node_uuid = '23793ec5-4624-4beb-a13a-d8ebb276fe6e'
+    # slot_idx_shadowheart = d.get_speaker_slot_index(bg3.SPEAKER_SHADOWHEART)
+    # slot_idx_tav = d.get_speaker_slot_index(bg3.SPEAKER_PLAYER)
 
-    # But of course they will. I hope we'll have more opportunities to slip away... and make sand castles.
-    d.add_dialog_flags(make_sand_castles_node_uuid, setflags = (
-        bg3.flag_group('Object', (
-            bg3.flag(Shadowheart_More_Sandcastles.uuid, True, slot_idx_shadowheart),
-            bg3.flag(Snuck_Away_To_Make_Sandcastles.uuid, True, slot_idx_shadowheart),
-            bg3.flag(Shadowheart_LongRest_Before_More_Sandcastles.uuid, False, slot_idx_shadowheart),
-        )),
-    ))
-    d.create_alias_dialog_node(
-        alias_make_sand_castles_node_uuid,
-        make_sand_castles_node_uuid,
-        [],
-        end_node = True,
-        checkflags = (
-            bg3.flag_group('Object', (
-                bg3.flag(Shadowheart_More_Sandcastles.uuid, True, slot_idx_shadowheart),
-            )),
-        ))
-    d.add_child_dialog_node('20e7daab-9901-4496-a44f-8a692af16f2a', alias_make_sand_castles_node_uuid, 0)
+    # make_sand_castles_node_uuid = '08c8b4f5-79df-4b9b-9e11-2e2c0cf06a3d' # existing node
+    # alias_make_sand_castles_node_uuid = '23793ec5-4624-4beb-a13a-d8ebb276fe6e'
 
-    im_glad_we_have_each_other_node_uuid = '277288c2-302f-4e53-9e3d-02974e7ac352' # existing node
-    alias_im_glad_we_have_each_other_node_uuid = '31fcc31f-32b3-44c7-8d32-f6a8f56845c4'
+    # # But of course they will. I hope we'll have more opportunities to slip away... and make sand castles.
+    # d.add_dialog_flags(make_sand_castles_node_uuid, setflags = (
+    #     bg3.flag_group('Object', (
+    #         bg3.flag(Shadowheart_More_Sandcastles.uuid, True, slot_idx_shadowheart),
+    #         bg3.flag(Snuck_Away_To_Make_Sandcastles.uuid, True, slot_idx_shadowheart),
+    #         bg3.flag(Shadowheart_LongRest_Before_More_Sandcastles.uuid, False, slot_idx_shadowheart),
+    #     )),
+    # ))
+    # d.create_alias_dialog_node(
+    #     alias_make_sand_castles_node_uuid,
+    #     make_sand_castles_node_uuid,
+    #     [],
+    #     end_node = True,
+    #     checkflags = (
+    #         bg3.flag_group('Object', (
+    #             bg3.flag(Shadowheart_More_Sandcastles.uuid, True, slot_idx_shadowheart),
+    #         )),
+    #     ))
+    # d.add_child_dialog_node('20e7daab-9901-4496-a44f-8a692af16f2a', alias_make_sand_castles_node_uuid, 0)
 
-    # I suppose it doesn't. I'm glad we have each other. And I hope we'll have more opportunities to slip away.
-    d.add_dialog_flags(im_glad_we_have_each_other_node_uuid, setflags = (
-        bg3.flag_group('Object', (
-            bg3.flag(Shadowheart_More_Sandcastles.uuid, True, slot_idx_shadowheart),
-            bg3.flag(Shadowheart_LongRest_Before_More_Sandcastles.uuid, False, slot_idx_shadowheart),
-        )),
-    ))
-    d.create_alias_dialog_node(
-        alias_im_glad_we_have_each_other_node_uuid,
-        im_glad_we_have_each_other_node_uuid,
-        [],
-        end_node = True,
-        checkflags = (
-            bg3.flag_group('Object', (
-                bg3.flag(Shadowheart_More_Sandcastles.uuid, True, slot_idx_shadowheart),
-            )),
-        ))
-    d.add_child_dialog_node('7e9c736b-8fba-4320-9db7-fa733621874d', alias_im_glad_we_have_each_other_node_uuid, 0)
+    # im_glad_we_have_each_other_node_uuid = '277288c2-302f-4e53-9e3d-02974e7ac352' # existing node
+    # alias_im_glad_we_have_each_other_node_uuid = '31fcc31f-32b3-44c7-8d32-f6a8f56845c4'
 
-    perhaps_well_see_node_uuid = 'a02476cc-535b-4ffc-8b19-986fb9464842' # existing node
-    alias_perhaps_well_see_node_uuid = '0ed5178e-7dfd-40ae-9fb9-95da1b35cb4c'
+    # # I suppose it doesn't. I'm glad we have each other. And I hope we'll have more opportunities to slip away.
+    # d.add_dialog_flags(im_glad_we_have_each_other_node_uuid, setflags = (
+    #     bg3.flag_group('Object', (
+    #         bg3.flag(Shadowheart_More_Sandcastles.uuid, True, slot_idx_shadowheart),
+    #         bg3.flag(Shadowheart_LongRest_Before_More_Sandcastles.uuid, False, slot_idx_shadowheart),
+    #     )),
+    # ))
+    # d.create_alias_dialog_node(
+    #     alias_im_glad_we_have_each_other_node_uuid,
+    #     im_glad_we_have_each_other_node_uuid,
+    #     [],
+    #     end_node = True,
+    #     checkflags = (
+    #         bg3.flag_group('Object', (
+    #             bg3.flag(Shadowheart_More_Sandcastles.uuid, True, slot_idx_shadowheart),
+    #         )),
+    #     ))
+    # d.add_child_dialog_node('7e9c736b-8fba-4320-9db7-fa733621874d', alias_im_glad_we_have_each_other_node_uuid, 0)
 
-    # Perhaps. We'll see.
-    d.add_dialog_flags(perhaps_well_see_node_uuid, setflags = (
-        bg3.flag_group('Object', (
-            bg3.flag(Shadowheart_More_Sandcastles.uuid, True, slot_idx_shadowheart),
-            bg3.flag(Shadowheart_LongRest_Before_More_Sandcastles.uuid, False, slot_idx_shadowheart),
-        )),
-    ))
-    d.create_alias_dialog_node(
-        alias_perhaps_well_see_node_uuid,
-        perhaps_well_see_node_uuid,
-        [],
-        end_node = True,
-        checkflags = (
-            bg3.flag_group('Object', (
-                bg3.flag(Shadowheart_More_Sandcastles.uuid, True, slot_idx_shadowheart),
-            )),
-        ))
-    d.add_child_dialog_node('b2c22c96-8272-4793-9cb5-9e6eb97ac978', alias_perhaps_well_see_node_uuid, 0)
+    # perhaps_well_see_node_uuid = 'a02476cc-535b-4ffc-8b19-986fb9464842' # existing node
+    # alias_perhaps_well_see_node_uuid = '0ed5178e-7dfd-40ae-9fb9-95da1b35cb4c'
+
+    # # Perhaps. We'll see.
+    # d.add_dialog_flags(perhaps_well_see_node_uuid, setflags = (
+    #     bg3.flag_group('Object', (
+    #         bg3.flag(Shadowheart_More_Sandcastles.uuid, True, slot_idx_shadowheart),
+    #         bg3.flag(Shadowheart_LongRest_Before_More_Sandcastles.uuid, False, slot_idx_shadowheart),
+    #     )),
+    # ))
+    # d.create_alias_dialog_node(
+    #     alias_perhaps_well_see_node_uuid,
+    #     perhaps_well_see_node_uuid,
+    #     [],
+    #     end_node = True,
+    #     checkflags = (
+    #         bg3.flag_group('Object', (
+    #             bg3.flag(Shadowheart_More_Sandcastles.uuid, True, slot_idx_shadowheart),
+    #         )),
+    #     ))
+    # d.add_child_dialog_node('b2c22c96-8272-4793-9cb5-9e6eb97ac978', alias_perhaps_well_see_node_uuid, 0)
 
 
-    # Oh. I'm sorry you feel that way... I don't.
-    d.add_dialog_flags('ce072faa-0aa6-404a-aeaa-27fb3d226b5d', setflags = (
-        bg3.flag_group('Object', (
-            bg3.flag(Shadowheart_Has_Doubts_About_Tav.uuid, True, slot_idx_tav),
-        )),
-    ))
+    # # Oh. I'm sorry you feel that way... I don't.
+    # d.add_dialog_flags('ce072faa-0aa6-404a-aeaa-27fb3d226b5d', setflags = (
+    #     bg3.flag_group('Object', (
+    #         bg3.flag(Shadowheart_Has_Doubts_About_Tav.uuid, True, slot_idx_tav),
+    #     )),
+    # ))
 
 
 def patch_skinny_dipping_scene() -> None:
@@ -3989,8 +3991,10 @@ def allow_character_customizations_in_skinny_dipping_cutscene() -> None:
     d = bg3.dialog_object(ab.dialog)
     t = bg3.timeline_object(ab.timeline, d)
 
-    for effect_component in t.find_effect_components(effect_component_types = 'TLShapeShift', actor = bg3.SPEAKER_SHADOWHEART):
-        t.remove_effect_component(effect_component)
+    for effect_component_uuid in ('31e525a9-8dad-45f1-804f-9ab04a6c99bb', '4ed49412-ce53-481e-9339-7eb6912af52c', 'f9428423-e34f-45e1-949f-bf629be100ea'):
+        t.remove_effect_component(effect_component_uuid)
+    # for effect_component in t.find_effect_components(effect_component_types = 'TLShapeShift', actor = bg3.SPEAKER_SHADOWHEART):
+    #     t.remove_effect_component(effect_component)
 
 
 bg3.add_build_procedure('patch_act3_romance_conversations', patch_act3_romance_conversations)

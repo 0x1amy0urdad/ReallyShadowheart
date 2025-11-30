@@ -299,6 +299,25 @@ class game_files:
         self.__files[relative_path] = gf
         return gf
 
+    def add_new_root_template(self, root_template_uuid: str, root_template: et.Element[str]) -> game_file:
+        gf = self.add_new_file(f'Public/ModNameHere/RootTemplates/{root_template_uuid}.lsf', is_mod_specific = True)
+        if gf.xml is None:
+            raise RuntimeError('Failed to create a new root template')
+        gf.xml.getroot().append(et.fromstring('<version major="4" minor="8" revision="0" build="10" lslib_meta="v1,bswap_guids,lsf_keys_adjacency" />'))
+        gf.xml.getroot().append(et.fromstring(f"""
+<region id="Templates">
+    <node id="Templates">
+        <children>
+        </children>
+    </node>
+</region>
+"""))
+        c = gf.xml.getroot().find('./region/node/children')
+        if c is None:
+            raise RuntimeError('Failed to create a new root template')
+        c.append(root_template)
+        return gf
+
     def add_external_file(self, source_file_path: str, relative_path: str, is_mod_specific = False) -> game_file:
         gf = game_file(self.__tool, relative_path, source_file_path = source_file_path, mod_specific = is_mod_specific)
         self.__files[relative_path] = gf
@@ -341,6 +360,20 @@ class game_files:
                 raise FileNotFoundError(f"{file_path} is not found in provided path {source_path}")
         elif os.path.isfile(source_path):
             shutil.copy(source_path, os.path.join(mod_dir_path, "mod_publish_logo.png"))
+        else:
+            raise FileNotFoundError(f"mod_publish_logo.png is not found in provided path {source_path}")
+
+    def copy_memento_file(self, source_path: str, file_name: str) -> None:
+        os.makedirs(self.output_dir_path, exist_ok = True)
+        mod_dir_path = os.path.join(self.output_dir_path, "Mods", self.__mod_name)
+        if os.path.isdir(source_path):
+            file_path = os.path.join(source_path, file_name)
+            if os.path.isfile(file_path):
+                shutil.copy(file_path, os.path.join(mod_dir_path, file_name))
+            else:
+                raise FileNotFoundError(f"{file_path} is not found in provided path {source_path}")
+        elif os.path.isfile(source_path):
+            shutil.copy(source_path, os.path.join(mod_dir_path, file_name))
         else:
             raise FileNotFoundError(f"mod_publish_logo.png is not found in provided path {source_path}")
 

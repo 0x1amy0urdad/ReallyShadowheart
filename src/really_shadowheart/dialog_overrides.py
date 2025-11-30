@@ -14,7 +14,7 @@ def create_overrides_lookup_map() -> dict[str, str]:
     for dialog_name, new_uuids in ASSETS_OVERRIDES.items():
         if 'dialog_uuid' in new_uuids:
             entry = index.get_entry(dialog_name)
-            result[entry['dialog_uuid']] = new_uuids['dialog_uuid']
+            result[entry['dialog_uuid']] = new_uuids['dialog_uuid']            
     return result
 
 

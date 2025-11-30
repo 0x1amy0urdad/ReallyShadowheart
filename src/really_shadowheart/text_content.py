@@ -247,12 +247,30 @@ def create_text_content() -> None:
         "hff321ee7g55dfg47a7g8ca3ga842eb015d0e": (1, "I can do better. I just need to know what I did wrong."),
         "hd5cd72bcg5c33g48adgbce9gec28e4c84b0f": (1, "Well, you can always find someone else who is not that different."),
 
-        "h862a65d3g8f8fg46b7gb8afga7dc2ad11479": (1, "There's something I wanted to tell you. Something that was on my mind since I met you."),
-        "h82e6c111g7e35g4b7fgba0egec25bbbe117a": (1, "Since the time I first saw you in that pod, I changed... no, you changed me. My life has a new meaning: you."),
-        "h4d23cd12ga6fdg4485ga129g9ffda516643f": (1, "We are thrown together by dire circumstances, yet the brief time we shared was more precious than all my years."),
-        "hd386265bgaf96g421bga57eg8d9ffdeeb899": (1, "I can't remember much of myself, and what I remember is a crimson mist... until you. You saved me. I am no Bhaal's Chosen. I am yours."),
-        "h7ecf542bgf7c8g410dga109gb838c82a324e": (1, "I sneaked into the most protected vaults, stole countless treasures... only to find that my heart is stolen too. By you."),
-        "h2058154fgca15g4c4dg81a9g331986e63a86": (1, "&lt;i&gt;Read a long, emotional, and sad love poem that you wrote for her.&lt;/i&gt;"),
+        "h862a65d3g8f8fg46b7gb8afga7dc2ad11479": (1, "There's something I wanted to tell you. Something that was on my mind for a long time."),
+        "h82e6c111g7e35g4b7fgba0egec25bbbe117a": (1, "The moment I saw you in that pod, something shifted inside me. You didn't just change my path — you became it. My life has new meaning now: you."),
+        "h4d23cd12ga6fdg4485ga129g9ffda516643f": (1, "We met by chance, bound by circumstance... but somewhere between then and now, you became my reason for everything."),
+        "hd386265bgaf96g421bga57eg8d9ffdeeb899": (1, "I can't remember much of myself, and what I remember is a crimson mist... until you. You saved me.<br> I am no Bhaal's Chosen. I am yours."),
+        "h8f848027g10b4g479bg9fc0g2e649e2c2859": (1, "Two centuries of darkness taught me that nothing lasts, nothing matters. Then you proved me wrong. You're the dawn I never thought I'd see."),
+        "h7ae551c7ga287g4d3fg9cc1gd7b09cff3fd2": (1, "I thought I knew magic — studied it, lived it, loved it. But standing here with you, I finally understand what true magic is."),
+        "hef21d1c3g48b4g4250gb209g38f3babbd6d0": (1, "My engine burns hot enough to melt steel, but it's nothing compared to what I feel when I look at you. You make me want to fight for a future I thought I'd lost."),
+        "h37500a7egc92fg45dfgb105g7e91ffd07d17": (1, "I was taught that attachment is weakness, that only conquest matters. You shattered that teaching. Claiming your heart means more than any victory on the battlefield."),
+        "he7bf7000g03eeg4b8egbf72g244e7e81b25d": (1, "I made a pact that cost me everything — my home, my father's love, my very soul. Yet if walking that path led me to you, I'd sign it again without hesitation."),
+
+        "h7ecf542bgf7c8g410dga109gb838c82a324e": (1, "I've slipped into the most guarded vaults, claimed treasures beyond counting... but somewhere along the way, you stole something I didn't know I could lose: my heart."),
+        "h2058154fgca15g4c4dg81a9g331986e63a86": (1, "&lt;i&gt;Recite a heartfelt ballad you composed in her honor, your voice trembling with emotion as you lay bare your soul through verse.&lt;/i&gt;"),
+        "h08013880g2d9eg46d3g84b8g89bf9d79736c": (1, "I learned to sense the energy that flows through all living things. But nothing compares to what I feel flowing between us."),
+        "h166e1379g7186g4bb4ga1adg03aadbd982c7": (1, "I fought countless battles, thought conflicts were unavoidable. Then you showed me a different path — one I want to walk beside you."),
+        "h87c80401gf5d7g436agac0cgfb5e603a8350": (1, "I thought strength meant never showing weakness. Then you made me realize the bravest thing I can do is tell you: I love you."),
+        "h60a30424g27a8g4e3cg8790gd7411dc219e0": (1, "I've lived under open skies, never wanted walls or a hearth to call my own. Then I found you, and now I want to build a home that we could call ours."),
+        "hb886dd39ga219g4673g812dg588c3dac7312": (1, "Wolves mate for life, loyal to the end. I used to admire that from afar. Now I live it. You're mine, and I'm yours, forever."),
+        "hcb323c18gcf0eg4052gbfe4g6bb54450fa67": (1, "I prayed for years, seeking purpose beyond ritual and doctrine. The gods were silent — until they sent you."),
+        "h7fd55516gb161g404cgaa12g55686ba7cb8e": (1, "My pact owns me, my patron commands me. But my heart is mine to give, and I give it to you."),
+        "h1dab80fbg2de8g474dg8472g05d336747a75": (1, "They say love is the greatest magic. I dismissed it as sentiment. Then you proved them right. What I feel for you is beyond magic. It's real, it's overwhelming, and it's entirely yours."),
+        "ha7096a10g9801g417fg80f1g3855c354dcda": (1, "I was born with magic in my blood, thought that defined my destiny. Then I met you, and understood — you're my true destiny."),
+        "h4291ea0dgc554g483aga229g56ebc7aaeac2": (1, "My oath has shaped my life, bound me to duty and honor. But the vow I want to speak now comes from my heart alone: I am yours, now and always."),
+        "h4a768e3egb3cdg495cg97b8g38bb9f80f239": (1, "I broke my oath, lost my way completely. Then you came into my life and became my direction, my destination, my love, the only path I want to follow."),
+
         "h2c35be55g4742g47abgbdccg534dfa831e3e": (1, "Come here..."),
         "h5cf45132g69fdg45ceg9483g7b67354eb3ec": (1, "Love you."),
         "h8ba27ee6g443bg49cag82eagf508a23378d5": (1, "My love..."),
@@ -342,16 +360,22 @@ def create_text_content() -> None:
         "hc751c93egfc93g4a06g95d2g58b5c50af39d": (1, "Shar Path"),
         "h5f5683edgb88ag4aebga179gd7ef6f7e2ae9": (1, "Selûne Path"),
         "h4d4f3604g877dg48d3gb88dgf2eed76304db": (1, "Selûne Path"),
+        "h0a252ff5g9784g4fd1ga881g34a06ef65b84": (1, "&lt;i&gt;Say nothing.&lt;/i&gt;"),
+        "h913ca6e1g36f2g44d4g9bcdg3606070423ac": (1, "I wanted to ask you about what Nightsong said."),
+        "he395601bg05fcg416agabc4gdf8ee6ce70c1": (1, "I'm sorry, I think you need some time alone. Let's talk later."),
+        "h2000e55bgdf1ag4915gbca3g271285815cbf": (1, "I found another Night Orchid. Thought you might like it. Here, take it."),
+        "h6e490525g7174g4ff1g98dagd0f6b4165d1f": (1, "You... you thought of me? Thank you, it's beautiful."),
         "h2a651adeg8c32g4c1bgbd58g098d3c7ffe84": (1, "You look poorly.")
     }
     loca = bg3.loca_object(files.add_new_file(files.get_loca_relative_path()))
     loca.add_lines(content)
-# v3ed74f063c6042dc83f6f034cb47c679_h8b2e38ebge27bg4aebg9aedge8773d675733.wem.wav
+
+
 def create_string_keys() -> None:
     strings = bg3.string_keys.create_new(files, 'Misc')
 
     # The original druid diary from EA
-    strings.add_string_key('hbb1bd14dg56f9g40f3g8ee9gb7353e6d6d04', 'DEN_DruidLair_CreepyDiary', text_version = 1)
+    strings.add_string_key('hbb1bd14dg56f9g40f3g8ee9gb7353e6d6d04', 'DEN_DruidLair_CreepyDiary')
 
     # The new game over reason for petty betrayers
     strings.add_string_key('h4b9a8445g655fg4fb0g9024g0a0ba786281a', 'GameOver_Betrayal')

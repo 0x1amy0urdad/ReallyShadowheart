@@ -91,7 +91,66 @@ class bg3_modding_tool:
                 raise RuntimeError(f'file {dest_path} has no extension')
             ext = dest_path[ext_pos:].lower()
             return dest_path[:-len(ext)] + ext
-        raise RuntimeError(f"Failed to unpack {target} from {pak_name}\nstdout: {proc.stdout}\nstderr: {proc.stderr}")
+        raise RuntimeError(f"Failed to unpack {target} from {pak_name}\nerror code {proc.returncode}\nstdout: {proc.stdout}\nstderr: {proc.stderr}")
+
+    def unpack_and_convert(self, pak_path: str, dest_dir_path: str | None = None) -> str:
+        if not os.path.isfile(pak_path):
+            raise RuntimeError(f'source path is not a pak file: {pak_path}')
+        if dest_dir_path is None:
+            dest_dir_path = os.path.splitext(pak_path)[0] + '_unpacked'
+            if os.path.exists(dest_dir_path):
+                shutil.rmtree(dest_dir_path)
+            os.makedirs(dest_dir_path, exist_ok = True)
+        elif os.path.isfile(dest_dir_path):
+            raise RuntimeError(f'destination path is a file {dest_dir_path}')
+        os.makedirs(dest_dir_path, exist_ok = True)
+        proc = subprocess.run(
+            [
+                self.__env.divine_exe,
+                '-g', 'bg3',
+                '-s', f'{pak_path}',
+                '-d', f'{dest_dir_path}',
+                '-a', 'extract-package'
+            ],
+            capture_output=True)
+        if proc.returncode != 0:
+            raise RuntimeError(f"Failed to unpack {pak_path}\nerror code {proc.returncode}\nstdout: {proc.stdout}\nstderr: {proc.stderr}")
+        return dest_dir_path
+        
+        def recurse_convert(path: str) -> None:
+            dirs = list[str]()
+            for p in os.listdir(path):
+                p = os.path.join(path, p)
+                if os.path.isfile(p):
+                    proc = None
+                    if len(p) > 5 and p[-5:] == '.loca':
+                        proc = subprocess.run(
+                            [
+                                self.__env.divine_exe,
+                                '-g', 'bg3',
+                                '-s', f'{p}',
+                                '-d', f'{p}.xml',
+                                '-a', 'convert-loca'
+                            ],
+                            capture_output=True)
+                    elif len(p) > 4 and p[-4:] == '.lsf':
+                        proc = subprocess.run(
+                            [
+                                self.__env.divine_exe,
+                                '-g', 'bg3',
+                                '-s', f'{p}',
+                                '-d', f'{p}.lsx',
+                                '-a', 'convert-resource'
+                            ],
+                            capture_output=True)
+                    if proc is not None and proc.returncode != 0:
+                        raise RuntimeError(f'failed to convert {p}\nerror code {proc.returncode}\nstdout: {proc.stdout}\nstderr: {proc.stderr}')
+                else:
+                    dirs.append(p)
+            for p in dirs:
+                recurse_convert(p)
+
+        recurse_convert(dest_dir_path)
 
     def pack(self, mod_dir_path: str, dest_pak_file_path: str) -> str:
         if not os.path.isdir(mod_dir_path):
@@ -109,9 +168,9 @@ class bg3_modding_tool:
                 '--package-priority', '30'
             ],
             capture_output=True)
-        if os.path.isfile(dest_pak_file_path):
+        if proc.returncode == 0 and os.path.isfile(dest_pak_file_path):
             return dest_pak_file_path
-        raise RuntimeError(f"Failed to pack {mod_dir_path}\nstdout: {proc.stdout}\nstderr: {proc.stderr}")
+        raise RuntimeError(f"Failed to pack {mod_dir_path}\nerror code {proc.returncode}\nstdout: {proc.stdout}\nstderr: {proc.stderr}")
 
     def convert_lsf_to_lsx(self, target: str) -> str:
         if target.endswith(".lsx.lsf"):
@@ -131,10 +190,10 @@ class bg3_modding_tool:
                 '-a', 'convert-resource'
             ],
             capture_output=True)
-        if os.path.isfile(dest_path):
+        if proc.returncode == 0 and os.path.isfile(dest_path):
             os.unlink(target)
             return dest_path
-        raise RuntimeError(f"Failed to convert {target} to .lsx\nstdout: {proc.stdout}\nstderr: {proc.stderr}")
+        raise RuntimeError(f"Failed to convert {target} to .lsx\nerror code {proc.returncode}\nstdout: {proc.stdout}\nstderr: {proc.stderr}")
 
     def convert_lsx_to_lsf(self, target: str) -> str:
         if target.endswith(".lsf.lsx"):
@@ -155,10 +214,10 @@ class bg3_modding_tool:
                 '-l', 'all'
             ],
             capture_output=True)
-        if os.path.isfile(dest_path) and os.stat(dest_path).st_size > 0:
+        if proc.returncode == 0 and os.path.isfile(dest_path) and os.stat(dest_path).st_size > 0:
             os.unlink(target)
             return dest_path
-        raise RuntimeError(f"Failed to convert {target} to .lsf\nstdout: {proc.stdout}\nstderr: {proc.stderr}")
+        raise RuntimeError(f"Failed to convert {target} to .lsf\nerror code {proc.returncode}\nstdout: {proc.stdout}\nstderr: {proc.stderr}")
 
     def convert_lsj_to_lsx(self, target: str) -> str:
         if target.endswith(".lsx.lsj"):
@@ -179,10 +238,10 @@ class bg3_modding_tool:
                 '-l', 'all'
             ],
             capture_output=True)
-        if os.path.isfile(dest_path) and os.stat(dest_path).st_size > 0:
+        if proc.returncode == 0 and os.path.isfile(dest_path) and os.stat(dest_path).st_size > 0:
             os.unlink(target)
             return dest_path
-        raise RuntimeError(f"Failed to convert {target} to .lsf\nstdout: {proc.stdout}\nstderr: {proc.stderr}")
+        raise RuntimeError(f"Failed to convert {target} to .lsf\nerror code {proc.returncode}\nstdout: {proc.stdout}\nstderr: {proc.stderr}")
 
     def convert_loca_to_xml(self, target: str) -> str:
         if not target.endswith(".loca"):
@@ -199,10 +258,10 @@ class bg3_modding_tool:
                 '-a', 'convert-loca'
             ],
             capture_output=True)
-        if os.path.isfile(dest_path):
+        if proc.returncode == 0 and os.path.isfile(dest_path):
             os.unlink(target)
             return dest_path
-        raise RuntimeError(f"Failed to convert {target} to .xml\nstdout: {proc.stdout}\nstderr: {proc.stderr}")
+        raise RuntimeError(f"Failed to convert {target} to .xml\nerror code {proc.returncode}\nstdout: {proc.stdout}\nstderr: {proc.stderr}")
 
     def convert_xml_to_loca(self, target: str) -> str:
         if not target.endswith(".loca.xml"):
@@ -219,7 +278,7 @@ class bg3_modding_tool:
                 '-a', 'convert-loca'
             ],
             capture_output=True)
-        if os.path.isfile(dest_path):
+        if proc.returncode == 0 and os.path.isfile(dest_path):
             os.unlink(target)
             return dest_path
-        raise RuntimeError(f"Failed to convert {target} to .loca\nstdout: {proc.stdout}\nstderr: {proc.stderr}")
+        raise RuntimeError(f"Failed to convert {target} to .loca\nerror code {proc.returncode}\nstdout: {proc.stdout}\nstderr: {proc.stderr}")

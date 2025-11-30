@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<save>
+	<version major="4" minor="6" revision="0" build="0" lslib_meta="v1,bswap_guids,lsf_keys_adjacency" />
+	<region id="dialog">
+		<node id="dialog">
+			<attribute id="category" type="LSString" value="Companion Dialog" />
+			<attribute id="UUID" type="FixedString" value="deb850b9-03df-eb30-686d-f9433317087a" />
+			<attribute id="TimelineId" type="FixedString" value="3edb670a-a925-1090-aebd-6e069d481198" />
+			<children>
+				<node id="DefaultAddressedSpeakers" />
+				<node id="speakerlist">
+					<children>
+						<node id="speaker" key="index">
+							<attribute id="index" type="FixedString" value="0" />
+							<attribute id="list" type="LSString" value="3ed74f06-3c60-42dc-83f6-f034cb47c679" />
+							<attribute id="SpeakerMappingId" type="guid" value="c15775d6-4f49-53bb-17b7-ee5e158912a8" />
+						</node>
+						<node id="speaker" key="index">
+							<attribute id="index" type="FixedString" value="1" />
+							<attribute id="list" type="LSString" value="e0d1ff71-04a8-4340-ae64-9684d846eb83" />
+							<attribute id="SpeakerMappingId" type="guid" value="b717e523-f24b-bffe-ee75-2fad9047324e" />
+						</node>
+					</children>
+				</node>
+				<node id="nodes">
+					<children>
+						<node id="RootNodes">
+							<attribute id="RootNodes" type="FixedString" value="5df536d1-33bb-448c-a4a4-dea0329b4f6e" />
+						</node>
+					</children>
+				</node>
+			</children>
+		</node>
+	</region>
+</save>

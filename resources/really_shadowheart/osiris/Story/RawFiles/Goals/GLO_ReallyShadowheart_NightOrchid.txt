@@ -1,0 +1,205 @@
+Version 1
+SubGoalCombiner SGC_AND
+INITSECTION
+NOT DB_ReallyShadowheart_GiftedOrchids((ITEM)NULL_00000000-0000-0000-0000-000000000000);
+
+NOT DB_ReallyShadowheart_TavOrchids((ITEM)NULL_00000000-0000-0000-0000-000000000000);
+
+NOT DB_ReallyShadowheart_GiftOrchid((ITEM)NULL_00000000-0000-0000-0000-000000000000);
+
+NOT DB_ReallyShadowheart_NightOrchidsInit(0);
+KBSECTION
+QRY
+QRY_ReallyShadowheart_IsCharacter((GUIDSTRING)_Object)
+AND
+DB_Avatars((CHARACTER)_Object)
+THEN
+DB_ReallyShadowheart_NOOP(1);
+
+
+QRY
+QRY_ReallyShadowheart_IsCharacter((GUIDSTRING)_Object)
+AND
+DB_Origins((CHARACTER)_Object)
+THEN
+DB_ReallyShadowheart_NOOP(1);
+
+
+QRY
+QRY_ReallyShadowheart_IsCharacter((GUIDSTRING)_Object)
+AND
+DB_Players((CHARACTER)_Object)
+THEN
+DB_ReallyShadowheart_NOOP(1);
+
+
+PROC
+PROC_ReallyShadowheart_UpdateTavHasOrchids((CHARACTER)_Tav)
+AND
+NOT DB_ReallyShadowheart_TavOrchids(_)
+AND
+GetFlag((FLAG)Tav_Has_Night_Orchids_a5bfae6f-7f96-4d9c-9c4d-e1e3c71fe32b, _Tav, 1)
+THEN
+ClearFlag((FLAG)Tav_Has_Night_Orchids_a5bfae6f-7f96-4d9c-9c4d-e1e3c71fe32b, _Tav, 0, 1);
+
+
+PROC
+PROC_ReallyShadowheart_UpdateTavHasOrchids((CHARACTER)_Tav)
+AND
+DB_GlobalFlag((FLAG)ORI_Shadowheart_State_NightsongPoint_GaveNightOrchid_cd01256d-93df-4d80-8d94-1233fe16ddf6)
+AND
+DB_ReallyShadowheart_TavOrchids(_)
+AND
+GetFlag((FLAG)Tav_Has_Night_Orchids_a5bfae6f-7f96-4d9c-9c4d-e1e3c71fe32b, _Tav, 0)
+THEN
+SetFlag((FLAG)Tav_Has_Night_Orchids_a5bfae6f-7f96-4d9c-9c4d-e1e3c71fe32b, _Tav, 0, 1);
+
+
+PROC
+PROC_ReallyShadowheart_NightOrchidAddedToInventory(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, (ITEM)_Orchid)
+AND
+NOT DB_ReallyShadowheart_GiftedOrchids(_Orchid)
+THEN
+DB_ReallyShadowheart_GiftedOrchids(_Orchid);
+
+
+PROC
+PROC_ReallyShadowheart_NightOrchidAddedToInventory((CHARACTER)_Character, (ITEM)_Orchid)
+AND
+DB_ReallyShadowheart_PartneredWithShadowheart(_Character)
+AND
+NOT DB_ReallyShadowheart_GiftedOrchids(_Orchid)
+AND
+NOT DB_ReallyShadowheart_TavOrchids(_Orchid)
+THEN
+DB_ReallyShadowheart_TavOrchids(_Orchid);
+PROC_ReallyShadowheart_UpdateTavHasOrchids(_Character);
+
+
+PROC
+PROC_ReallyShadowheart_NightOrchidRemovedFromInventory((CHARACTER)_Character, (ITEM)_Orchid)
+AND
+DB_ReallyShadowheart_PartneredWithShadowheart(_Character)
+AND
+DB_ReallyShadowheart_TavOrchids(_Orchid)
+THEN
+NOT DB_ReallyShadowheart_TavOrchids(_Orchid);
+PROC_ReallyShadowheart_UpdateTavHasOrchids(_Character);
+
+
+PROC
+PROC_ReallyShadowheart_GiftOrchid()
+AND
+DB_ReallyShadowheart_PartneredWithShadowheart(_Tav)
+AND
+QRY_GetRandom("DB_ReallyShadowheart_TavOrchids", 1, "DB_ReallyShadowheart_GiftOrchid")
+AND
+DB_ReallyShadowheart_GiftOrchid(_Orchid)
+AND
+DB_ReallyShadowheart_TavOrchids(_Orchid)
+THEN
+NOT DB_ReallyShadowheart_TavOrchids(_Orchid);
+NOT DB_ReallyShadowheart_GiftOrchid(_Orchid);
+DB_ReallyShadowheart_GiftedOrchids(_Orchid);
+ToInventory(_Orchid, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 1, 1, 1);
+PROC_ReallyShadowheart_UpdateTavHasOrchids(_Tav);
+
+
+PROC
+PROC_ReallyShadowheart_NightOrchidsInit()
+AND
+NOT DB_ReallyShadowheart_NightOrchidsInit(1)
+AND
+DB_ReallyShadowheart_PartneredWithShadowheart(_Tav)
+THEN
+IterateInventoryByTemplate(_Tav, (ITEMROOT)NightOrchid_11f6de17-4682-419c-808f-8a328d2cce15, "ReallyShadowheart_NightOrchid", "ReallyShadowheart_NightOrchidsInitDone");
+
+
+PROC
+PROC_ReallyShadowheart_ScanTavNightOrchids()
+AND
+DB_ReallyShadowheart_PartneredWithShadowheart(_Tav)
+THEN
+IterateInventoryByTemplate(_Tav, (ITEMROOT)NightOrchid_11f6de17-4682-419c-808f-8a328d2cce15, "ReallyShadowheart_TavNightOrchid", "");
+
+
+PROC
+PROC_ReallyShadowheart_ScanGiftedNightOrchids()
+THEN
+IterateInventoryByTemplate(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, (ITEMROOT)NightOrchid_11f6de17-4682-419c-808f-8a328d2cce15, "ReallyShadowheart_GiftedNightOrchid", "");
+
+
+PROC
+PROC_ReallyShadowheart_LongRestFinished()
+AND
+DB_ReallyShadowheart_PartneredWithShadowheart(_Tav)
+AND
+GetFlag((FLAG)Night_Orchid_Gift_fe57e05c-b577-4c2e-83ca-a9e4138a45a7, _Tav, 1)
+THEN
+ClearFlag((FLAG)Night_Orchid_Gift_fe57e05c-b577-4c2e-83ca-a9e4138a45a7, _Tav, 0, 1);
+
+
+PROC
+PROC_ReallyShadowheart_Initialize()
+THEN
+TimerLaunch("ReallyShadowheart_NightOrchidsInit", 1000);
+
+
+IF
+TextEvent("ScanTavNightOrchids")
+THEN
+PROC_ReallyShadowheart_ScanTavNightOrchids();
+
+
+IF
+TextEvent("ScanGiftedNightOrchids")
+THEN
+PROC_ReallyShadowheart_ScanGiftedNightOrchids();
+
+
+IF
+TimerFinished("ReallyShadowheart_NightOrchidsInit")
+THEN
+PROC_ReallyShadowheart_NightOrchidsInit();
+
+
+IF
+EntityEvent(_Orchid, "ReallyShadowheart_NightOrchid")
+THEN
+DB_ReallyShadowheart_TavOrchids((ITEM)_Orchid);
+
+
+IF
+EntityEvent(_Orchid, "ReallyShadowheart_NightOrchidsInitDone")
+AND
+DB_ReallyShadowheart_PartneredWithShadowheart(_Tav)
+THEN
+DB_ReallyShadowheart_NightOrchidsInit(1);
+PROC_ReallyShadowheart_UpdateTavHasOrchids(_Tav);
+
+
+IF
+TemplateAddedTo((ITEMROOT)NightOrchid_11f6de17-4682-419c-808f-8a328d2cce15, _Orchid, _Character, _)
+AND
+QRY_ReallyShadowheart_IsCharacter(_Character)
+THEN
+PROC_ReallyShadowheart_NightOrchidAddedToInventory((CHARACTER)_Character, (ITEM)_Orchid);
+
+
+IF
+TemplateRemovedFrom((ITEMROOT)NightOrchid_11f6de17-4682-419c-808f-8a328d2cce15, _Orchid, _Character)
+AND
+QRY_ReallyShadowheart_IsCharacter(_Character)
+THEN
+PROC_ReallyShadowheart_NightOrchidRemovedFromInventory((CHARACTER)_Character, (ITEM)_Orchid);
+
+
+IF
+FlagSet((FLAG)Night_Orchid_Gift_fe57e05c-b577-4c2e-83ca-a9e4138a45a7, _Tav, _)
+AND
+DB_ReallyShadowheart_PartneredWithShadowheart((CHARACTER)_Tav)
+THEN
+PROC_ReallyShadowheart_GiftOrchid();
+EXITSECTION
+
+ENDEXITSECTION

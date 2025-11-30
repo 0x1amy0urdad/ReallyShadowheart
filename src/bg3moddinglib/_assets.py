@@ -285,6 +285,11 @@ class dialog_index:
         with gzip.open(file_path, 'wt') as f:
             json.dump(self.__index, f)
 
+    def has_entry(self, dialog_name: str) -> bool:
+        dialog_name = dialog_name.lower()
+        dialog_index = self.__index['dialog_index']
+        return  dialog_name in dialog_index
+
     def get_entry(self, dialog_name: str) -> dict[str, str]:
         dialog_name = dialog_name.lower()
         dialog_index = self.__index['dialog_index']
@@ -329,47 +334,20 @@ class dialog_index:
 class bg3_assets:
     __files: game_files
     __index: dialog_index
-    __dialog_bank: game_file
-    __dialog_bank_parent_node: et.Element
-    __timeline_bank: game_file
-    __timeline_bank_parent_node: et.Element
+    __dialog_bank: game_file | None
+    __dialog_bank_parent_node: et.Element[str] | None
+    __timeline_bank: game_file | None
+    __timeline_bank_parent_node: et.Element[str] | None
     __asset_bundles: dict[str, dialog_asset_bundle]
 
     def __init__(self, files: game_files) -> None:
         self.__files = files
         self.__index = dialog_index(files)
         self.__asset_bundles = dict[str, dialog_asset_bundle]()
-        #self.__dialog_bank = self.__files.add_new_file(f'Public/ModNameHere/Content/Assets/Dialogs/[PAK]_{files.mod_name_uuid}/_merged.lsf', is_mod_specific = True)
-        self.__dialog_bank = self.__files.add_new_file(f'Public/ModNameHere/Content/[PAK]_{files.mod_name_uuid}/{files.mod_name_uuid}.lsf', is_mod_specific = True)
-        self.__timeline_bank = self.__files.add_new_file(f'Public/ModNameHere/Content/Generated/[PAK]_GeneratedDialogTimelines/{files.mod_name_uuid}.lsf', is_mod_specific = True)
-
-        dialog_bank_root_node = self.__dialog_bank.root_node
-        dialog_bank_root_node.append(et.fromstring('<version major="4" minor="0" revision="9" build="0" lslib_meta="v1,bswap_guids,lsf_adjacency" />'))
-        dialog_bank_root_node.append(et.fromstring(''.join((
-            '<region id="DialogBank">',
-            '<node id="DialogBank">',
-            '<children>',
-            '</children>',
-            '</node>',
-            '</region>'))))
-        dialog_bank_parent_node = dialog_bank_root_node.find('./region[@id="DialogBank"]/node[@id="DialogBank"]/children')
-        if dialog_bank_parent_node is None:
-            raise RuntimeError('Corrupt dialog bank')
-        self.__dialog_bank_parent_node = dialog_bank_parent_node
-
-        timeline_bank_root_node = self.__timeline_bank.root_node
-        timeline_bank_root_node.append(et.fromstring('<version major="4" minor="0" revision="9" build="0" lslib_meta="v1,bswap_guids,lsf_adjacency" />'))
-        timeline_bank_root_node.append(et.fromstring(''.join((
-            '<region id="TimelineBank">',
-            '<node id="TimelineBank">',
-            '<children>',
-            '</children>',
-            '</node>',
-            '</region>'))))
-        timeline_bank_parent_node = timeline_bank_root_node.find('./region[@id="TimelineBank"]/node[@id="TimelineBank"]/children')
-        if timeline_bank_parent_node is None:
-            raise RuntimeError('Corrupt dialog bank')
-        self.__timeline_bank_parent_node = timeline_bank_parent_node
+        self.__dialog_bank = None
+        self.__dialog_bank_parent_node = None
+        self.__timeline_bank = None
+        self.__timeline_bank_parent_node = None
 
 
     @property
@@ -385,6 +363,45 @@ class bg3_assets:
     @property
     def tool(self) -> bg3_modding_tool:
         return self.__files.tool
+
+
+    def __get_dialog_bank_parent_node(self) -> et.Element[str]:
+        if self.__dialog_bank_parent_node is None:
+            #self.__dialog_bank = self.__files.add_new_file(f'Public/ModNameHere/Content/Assets/Dialogs/[PAK]_{files.mod_name_uuid}/_merged.lsf', is_mod_specific = True)
+            self.__dialog_bank = self.__files.add_new_file(f'Public/ModNameHere/Content/[PAK]_{self.files.mod_name_uuid}/{self.files.mod_name_uuid}.lsf', is_mod_specific = True)
+            dialog_bank_root_node = self.__dialog_bank.root_node
+            dialog_bank_root_node.append(et.fromstring('<version major="4" minor="0" revision="9" build="0" lslib_meta="v1,bswap_guids,lsf_adjacency" />'))
+            dialog_bank_root_node.append(et.fromstring(''.join((
+                '<region id="DialogBank">',
+                '<node id="DialogBank">',
+                '<children>',
+                '</children>',
+                '</node>',
+                '</region>'))))
+            dialog_bank_parent_node = dialog_bank_root_node.find('./region[@id="DialogBank"]/node[@id="DialogBank"]/children')
+            if dialog_bank_parent_node is None:
+                raise RuntimeError('Corrupt dialog bank')
+            self.__dialog_bank_parent_node = dialog_bank_parent_node
+        return self.__dialog_bank_parent_node
+
+
+    def __get_timeline_bank_parent_node(self) -> et.Element[str]:
+        if self.__timeline_bank_parent_node is None:
+            self.__timeline_bank = self.__files.add_new_file(f'Public/ModNameHere/Content/Generated/[PAK]_GeneratedDialogTimelines/{self.files.mod_name_uuid}.lsf', is_mod_specific = True)
+            timeline_bank_root_node = self.__timeline_bank.root_node
+            timeline_bank_root_node.append(et.fromstring('<version major="4" minor="0" revision="9" build="0" lslib_meta="v1,bswap_guids,lsf_adjacency" />'))
+            timeline_bank_root_node.append(et.fromstring(''.join((
+                '<region id="TimelineBank">',
+                '<node id="TimelineBank">',
+                '<children>',
+                '</children>',
+                '</node>',
+                '</region>'))))
+            timeline_bank_parent_node = timeline_bank_root_node.find('./region[@id="TimelineBank"]/node[@id="TimelineBank"]/children')
+            if timeline_bank_parent_node is None:
+                raise RuntimeError('Corrupt dialog bank')
+            self.__timeline_bank_parent_node = timeline_bank_parent_node
+        return self.__timeline_bank_parent_node
 
 
     def get_modded_dialog_asset_bundle(self, dialog_name: str) -> dialog_asset_bundle:
@@ -537,10 +554,10 @@ class bg3_assets:
 
         ab = dialog_asset_bundle(original_dialog_uuid, new_dialog_uuid, original_timeline_uuid, new_timeline_uuid, dialog_file, timeline_file, scene_lsf_file, scene_lsx_file)
         self.__asset_bundles[dialog_name] = ab
-        self.__dialog_bank_parent_node.append(dialog_resource)
+        self.__get_dialog_bank_parent_node().append(dialog_resource)
 
         if has_timeline:
-            self.__timeline_bank_parent_node.append(timeline_resource)
+            self.__get_timeline_bank_parent_node().append(timeline_resource)
 
         return ab
 
@@ -589,7 +606,7 @@ class bg3_assets:
 
     # asset_id could be dialog UUID, or asset name
     def get_dialog_resource(self, asset_id: str) -> et.Element[str]:
-        resources = self.__dialog_bank_parent_node.findall('./node[@id="Resource"]')
+        resources = self.__get_dialog_bank_parent_node().findall('./node[@id="Resource"]')
         asset_id = asset_id.lower()
         for resource in resources:
             identifier = get_bg3_attribute(resource, 'Name')
@@ -603,7 +620,7 @@ class bg3_assets:
 
     # asset_id could be timeline UUID, dialog UUID, or asset name
     def get_timeline_resource(self, asset_id: str) -> et.Element[str]:
-        resources = self.__timeline_bank_parent_node.findall('./node[@id="Resource"]')
+        resources = self.__get_timeline_bank_parent_node().findall('./node[@id="Resource"]')
         asset_id = asset_id.lower()
         for resource in resources:
             identifier = get_bg3_attribute(resource, 'Name')
@@ -760,8 +777,8 @@ class bg3_assets:
             scene_lsf_file,
             scene_lsx_file)
         self.__asset_bundles[new_dialog_name.lower()] = ab
-        self.__dialog_bank_parent_node.append(dialog_resource)
-        self.__timeline_bank_parent_node.append(timeline_resource)
+        self.__get_dialog_bank_parent_node().append(dialog_resource)
+        self.__get_timeline_bank_parent_node().append(timeline_resource)
 
         return ab
 

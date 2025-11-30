@@ -45,7 +45,21 @@ DB_ReallyShadowheart_CAMP_SleepCutscene("ELFSONG", (DIALOGRESOURCE)CAMP_ELFSONG_
 //
 //////////////////////////////////////////////////////////////////////////
 
-// This prevents Tav from going to bed before speaking to Shadowheart
+// This prevents Tav from skipping important talks in camp
+
+// Nightsong and Shadowheart
+// NIGHT_NightsongShadowheartVisit_5cf06d9e-44ce-4431-a1c6-839bfdad5f79
+IF
+DB_HandlingRelationshipDialog(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, CAMP_NightsongShadowheartVisit_CFM_3327ccbc-a1c6-47ee-05ac-e735523036a5, _, _, _, _)
+THEN
+DB_Camp_RequiredTalks(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679);
+DB_Camp_RequiredTalks(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, CAMP_NightsongShadowheartVisit_CFM_3327ccbc-a1c6-47ee-05ac-e735523036a5);
+
+IF
+DialogEnded(CAMP_NightsongShadowheartVisit_CFM_3327ccbc-a1c6-47ee-05ac-e735523036a5, _)
+THEN
+PROC_Camp_RequiredTalks_Complete(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679);
+
 
 // Skinny Dipping CRD
 IF

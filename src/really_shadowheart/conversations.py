@@ -1170,6 +1170,7 @@ def create_recurrent_conversations() -> None:
     ))
 
     nested_noblestalk_node_uuid = '64997fac-8b75-4565-a4e9-8bc3822eb431'
+    # Did the noblestalk help you recall anything from your past?
     d.create_standard_dialog_node(
         noblestalk_question_node_uuid,
         bg3.SPEAKER_PLAYER,
@@ -1194,7 +1195,6 @@ def create_recurrent_conversations() -> None:
         [jump_back_node_uuid],
         speaker_count = 2)
     
-
 
 def create_more_recurring_conversations() -> None:
     ################################################################################################
@@ -1721,7 +1721,7 @@ def patch_conversations() -> None:
     ))
     
     # I'll help.
-    d.set_dialog_flags('33740734-0d3e-17f4-7e9a-fb8fdfc06a1c', setflags = (
+    d.set_dialog_flags('36870dc1-0ba7-c2ed-4dbc-d64231b82f1e', setflags = (
         bg3.flag_group('Object', (
             bg3.flag(Tav_Promised_Help_Saving_Parents.uuid, True, speaker_idx_shadowheart),
         )),

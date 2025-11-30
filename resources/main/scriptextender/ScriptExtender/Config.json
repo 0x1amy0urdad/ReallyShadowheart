@@ -1,8 +1,0 @@
-{
-    "RequiredVersion": 17,
-    "ModTable": "ReallyShadowheart",
-    "FeatureFlags": [
-        "Osiris",
-        "Lua"
-    ]
-}

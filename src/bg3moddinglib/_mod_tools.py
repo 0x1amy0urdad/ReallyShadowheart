@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 
 from ._assets import bg3_assets
 from ._dialog import dialog_object
-from ._common import get_required_bg3_attribute, new_random_uuid
+from ._common import get_bg3_attribute, get_required_bg3_attribute, new_random_uuid
 from ._files import game_files
 from ._env import bg3_modding_env
 from ._pak_content import pak_content
@@ -29,6 +29,14 @@ class mod_info:
     meta_lsx: XmlElement | None = None
     mod_folder: str = ""
     enabled_in_load_order: bool = True
+
+    def get_mod_attribute(self, attribute_name: str) -> str | None:
+        if self.meta_lsx is None:
+            return None
+        module_info = self.meta_lsx.find('./region[@id="Config"]/node[@id="root"]/children/node[@id="ModuleInfo"]')
+        if module_info is None:
+            return None
+        return get_bg3_attribute(module_info, attribute_name)
 
 
 @dataclass
@@ -213,19 +221,21 @@ class mod_manager:
 
     @staticmethod
     def resolve_dialog_conflict(ba: bg3_assets, dialog_uuid: str, mods: tuple[tuple[mod_info, pak_content], ...]) -> bool:
+        print(f'resolve_dialog_conflict for {dialog_uuid}')
         # Copy the dialog from the vanilla game
-        dialog_name = ba.index.get_dialog_name(dialog_uuid)
-        ab = ba.copy_dialog_to_mod(dialog_name)
+        # dialog_name = ba.index.get_dialog_name(dialog_uuid)
+        # ab = ba.copy_dialog_to_mod(dialog_name)
 
         # 
         d: dialog_object | None = None
         t: timeline_object | None = None
-        for _, pc in mods:
+        for mi, pc in mods:
             cb = pc.get_content_bundle(dialog_uuid)
-            if cb.dialog_file:
-                d = pc.get_dialog_object(dialog_uuid)
-            if cb.timeline_file:
-                t = pc.get_timeline_object(dialog_uuid)
+            print(f'content bundle from {mi.mod_name}: {cb}')
+            # if cb.dialog_file:
+            #     d = pc.get_dialog_object(dialog_uuid)
+            # if cb.timeline_file:
+            #     t = pc.get_timeline_object(dialog_uuid)
             
 
         return True
