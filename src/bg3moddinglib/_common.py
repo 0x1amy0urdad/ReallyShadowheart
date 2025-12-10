@@ -64,6 +64,10 @@ def new_random_uuid() -> str:
     return str(uuid.uuid4())
 
 
+def new_random_handle() -> str:
+    return 'h' + str(uuid.uuid4()).replace('-', 'g')
+
+
 def translate_path(in_path: str) -> str:
     parts = in_path.replace('\\', '/').split('/')
     if ':' in parts[0]:

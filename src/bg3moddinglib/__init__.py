@@ -10,6 +10,8 @@ from ._build import (
     feature_enabled,
     run_build_procedures
 )
+from ._config import config
+from ._logger import get_logger, setup_logger
 
 from ._assets import bg3_assets, dialog_asset_bundle, dialog_index
 from ._context import context

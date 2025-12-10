@@ -666,6 +666,9 @@ Night_Orchid_Gift = bg3.flag_object(
 Nightsong_Fate_Tav_Does_Not_Interfere = bg3.flag_object(
     files, 'Nightsong_Fate_Tav_Does_Not_Interfere', bg3.OBJECT_FLAG, flag_uuid='c9e7bee6-7a38-44b0-bfd2-adbdb40f36d4', description='Tav decided to not interfere in Shadowhearts big decision in Shadowfell.')
 
+Nightsong_Fate_Is_This_Truly_What_You_Want = bg3.flag_object(
+    files, 'Nightsong_Fate_Is_This_Truly_What_You_Want', bg3.OBJECT_FLAG, flag_uuid='ba398a88-b473-45b3-9402-be941164647c', description='Tav asked Shadowhearts if that was really what she wanted in Nightsong Prison.')
+
 Tav_Low_HP_Convo_Available = bg3.flag_object(
     files, 'Tav_Low_HP_Convo_Available', bg3.OBJECT_FLAG, flag_uuid='f0d65c1d-e6ed-4eb8-8589-3a2c0754e2f0', description='Tavs HP is low, Shadowheart will patch them up')
 

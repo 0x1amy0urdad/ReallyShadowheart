@@ -323,6 +323,15 @@ class game_files:
         self.__files[relative_path] = gf
         return gf
 
+    def create_osiris_script(self, script_name: str, script_lines: list[str]) -> None:
+        osi_dir_path = os.path.join(self.output_dir_path, "Mods", self.__mod_name, "Story", "RawFiles", "Goals")
+        os.makedirs(osi_dir_path, exist_ok = True)
+        osi_file_path = os.path.join(osi_dir_path, script_name + '.txt')
+        with open(osi_file_path, 'wt') as f:
+            for line in script_lines:
+                f.write(line)
+                f.write("\n")
+
     def copy_external_files(self, source_dir_path: str, relative_path: str) -> None:
         os.makedirs(self.output_dir_path, exist_ok = True)
         dest_path = os.path.join(self.output_dir_path, translate_path(relative_path))
@@ -336,9 +345,9 @@ class game_files:
         if not os.path.isdir(source_path):
             raise ValueError("not a directory path: " + source_path)
         if os.path.isdir(os.path.join(source_path, "Story")):
-            osi_dir_path = os.path.join(self.output_dir_path, "Mods", self.__mod_name, "Story")
+            osi_dir_path = os.path.join(self.output_dir_path, "Mods", self.__mod_name, "Story", "RawFiles", "Goals")
             os.makedirs(osi_dir_path, exist_ok=True)
-            shutil.copytree(os.path.join(source_path, "Story"), osi_dir_path, dirs_exist_ok=True)
+            shutil.copytree(os.path.join(source_path, "Story", "RawFiles", "Goals"), osi_dir_path, dirs_exist_ok=True)
 
     def copy_script_extender_lua_files(self, source_path: str) -> None:
         os.makedirs(self.output_dir_path, exist_ok = True)
@@ -346,7 +355,7 @@ class game_files:
             raise ValueError("not a directory path: " + source_path)
         if os.path.isdir(os.path.join(source_path, "ScriptExtender")):
             scripts_dir_path = os.path.join(self.output_dir_path, "Mods", self.__mod_name, "ScriptExtender")
-            os.makedirs(scripts_dir_path, exist_ok=True)
+            os.makedirs(scripts_dir_path, exist_ok = True)
             shutil.copytree(os.path.join(source_path, "ScriptExtender"), scripts_dir_path, dirs_exist_ok=True)
 
     def copy_mod_logo(self, source_path: str, mod_file_name: str) -> None:

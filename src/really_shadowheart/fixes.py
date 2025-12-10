@@ -5,14 +5,14 @@ import bg3moddinglib as bg3
 from .context import game_assets, files
 from .flags import *
 
-def fix_nightsong_choice_dialog() -> None:
+
+def patch_nightsong_fate_dialog() -> None:
     ################################################################################################
     # Dialog: SHA_NightsongsFate_OM_Shadowheart_AOM_OOM_COM.lsf
-    # Fix the Nightsong decision choice: if Tav accumulated enough Nightsong points and
-    # the approval is 20+, Shadowheart doesn't need to be persuaded into sparing her.
+    # This changes the flow of the scene.
+    # Shadowheart may spare Nightsong before she mentiones wolves.
+    # Shadowheart may not ask Tav's opinion if Tav trusts her.
     ################################################################################################
-
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Companions/Origin_Moments/SHA_NightsongsFate_OM_Shadowheart_AOM_OOM_COM.lsf'))
 
     ab = game_assets.get_modded_dialog_asset_bundle('SHA_NightsongsFate_OM_Shadowheart_AOM_OOM_COM')
     d = bg3.dialog_object(ab.dialog)
@@ -23,10 +23,7 @@ def fix_nightsong_choice_dialog() -> None:
     trust_shadowheart_do_not_interfere_node_uuid = '47a52989-7b3e-ec9f-0780-8498c528eef0' # existing node
     i_sense_more_in_you_than_you_know_node_uuid = 'df57b11c-03df-93df-65b6-c2cc8a4fe02a' # existing node
 
-    what_should_i_do_enough_points_node_uuid = 'c742bd23-9e60-a37d-d120-b93ce5367014' # existing node
-    roll_she_knows_something_about_you_node_uuid = '700be25e-710f-d3fe-ccee-d46283a14cd8' # existing node, approval < 40
-    roll_dont_do_it_node_uuid = 'fa32d463-6547-e866-1624-f513bf01c4c3' # existing node, approval < 20
-
+    is_this_truly_what_you_want_node_uuid = 'e5fa0eeb-195d-cd93-bb26-fe4fe4dcbfc9' # existing node
     whatever_you_think_node_uuid = '917ee67f-720d-299d-65b8-db261d8b428b' # existing node
     spear_throwaway_alias_first_node_uuid = '9781870a-b05f-6f1b-4331-b04ddf5d493a' # existing node
     spear_throwaway_alias_second_node_uuid = '11bb766f-f81e-a08d-06ad-8fbca76caab9' # existing node
@@ -38,14 +35,20 @@ def fix_nightsong_choice_dialog() -> None:
     jump_to_spear_throwaway_node_uuid = '167c8bb3-0861-49f4-99b7-52c042efb7dc'
     alias_whatever_you_think_dont_interfere_node_uuid = 'dbd6f20f-81c3-4f08-a57e-2c840b594ad8'
 
-    alias_she_knows_something_about_you_node_uuid = 'ba492f66-1884-4cf2-9ddd-9ad930d40f2e'
-    alias_dont_do_it_node_uuid = '580ab6cd-f3a1-4414-9ada-55720c986746'
 
     # If Tav decided to not interfere, set the flag to use it down the line.
-    # <i>Trust Shadowheart - do not interfere.</i>
+    # Trust Shadowheart - do not interfere.
     d.set_dialog_flags(trust_shadowheart_do_not_interfere_node_uuid, setflags = (
         bg3.flag_group('Object', (
             bg3.flag(Nightsong_Fate_Tav_Does_Not_Interfere.uuid, True, speaker_idx_tav),
+        )),
+    ))
+
+    # If Tav asked this question, Shadowheart will ask what to do if she has enough Nightsong points
+    # Is this truly what you want?
+    d.set_dialog_flags(is_this_truly_what_you_want_node_uuid, setflags = (
+        bg3.flag_group('Object', (
+            bg3.flag(Nightsong_Fate_Is_This_Truly_What_You_Want.uuid, True, speaker_idx_tav),
         )),
     ))
 
@@ -54,6 +57,7 @@ def fix_nightsong_choice_dialog() -> None:
     # Shadowheart and Tav are dating,
     # Shadowheart read the DJ plea book,
     # Shadowheart read the Unclaimed book,
+    # Tav didn't ask "Is this truly what you want"
     # and Shadowheart had the faith crisis,
     # she throws the spear away before Nightsong tells her about the wolves
     d.create_standard_dialog_node(
@@ -64,12 +68,14 @@ def fix_nightsong_choice_dialog() -> None:
         checkflags = (
             bg3.flag_group('Global', (
                 bg3.flag(bg3.FLAG_ORI_Shadowheart_State_NightsongPoint_HasEnoughPoints, True, None),
+                bg3.flag(Really_Shadowheart_Softened_Version.uuid, False, None),
             )),
             bg3.flag_group('Object', (
                 bg3.flag(Tav_Gave_DJ_Book_To_Shadowheart.uuid, True, speaker_idx_shadowheart),
                 bg3.flag(Tav_Gave_Unclaimed_Book_To_Shadowheart.uuid, True, speaker_idx_shadowheart),
                 bg3.flag(bg3.FLAG_Approval_AtLeast_40_For_Sp3, True, speaker_idx_shadowheart),
-                bg3.flag(bg3.FLAG_ORI_State_DatingShadowheart, True, speaker_idx_tav)
+                bg3.flag(bg3.FLAG_ORI_State_DatingShadowheart, True, speaker_idx_tav),
+                bg3.flag(Nightsong_Fate_Is_This_Truly_What_You_Want.uuid, False, speaker_idx_tav),
             )),
         ))
     d.create_jump_dialog_node(jump_to_spear_throwaway_high_approval_node_uuid, spear_throwaway_high_approval_node_uuid, 1)
@@ -99,13 +105,39 @@ def fix_nightsong_choice_dialog() -> None:
         whatever_you_think_node_uuid,
         [jump_to_spear_throwaway_node_uuid],
         checkflags = (
+            bg3.flag_group('Global', (
+                bg3.flag(Really_Shadowheart_Softened_Version.uuid, False, None),
+            )),
             bg3.flag_group('Object', (
                 bg3.flag(bg3.FLAG_Approval_AtLeast_40_For_Sp3, True, speaker_idx_shadowheart),
                 bg3.flag(Nightsong_Fate_Tav_Does_Not_Interfere.uuid, True, speaker_idx_tav),
+                bg3.flag(Nightsong_Fate_Is_This_Truly_What_You_Want.uuid, False, speaker_idx_tav),
             )),
         ))
     d.create_jump_dialog_node(jump_to_spear_throwaway_node_uuid, spear_throwaway_alias_first_node_uuid, 1)
     d.add_child_dialog_node(i_sense_more_in_you_than_you_know_node_uuid, alias_whatever_you_think_dont_interfere_node_uuid, 0)
+
+
+def fix_nightsong_fate_dialog() -> None:
+    ################################################################################################
+    # Dialog: SHA_NightsongsFate_OM_Shadowheart_AOM_OOM_COM.lsf
+    # Fix the Nightsong decision choice: if Tav accumulated enough Nightsong points and
+    # the approval is 20 to 40, add skill checks to persuade Shadowheart.
+    ################################################################################################
+
+    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Companions/Origin_Moments/SHA_NightsongsFate_OM_Shadowheart_AOM_OOM_COM.lsf'))
+
+    ab = game_assets.get_modded_dialog_asset_bundle('SHA_NightsongsFate_OM_Shadowheart_AOM_OOM_COM')
+    d = bg3.dialog_object(ab.dialog)
+
+    speaker_idx_shadowheart = d.get_speaker_slot_index(bg3.SPEAKER_SHADOWHEART)
+
+    what_should_i_do_enough_points_node_uuid = 'c742bd23-9e60-a37d-d120-b93ce5367014' # existing node
+    roll_she_knows_something_about_you_node_uuid = '700be25e-710f-d3fe-ccee-d46283a14cd8' # existing node, approval < 40
+    roll_dont_do_it_node_uuid = 'fa32d463-6547-e866-1624-f513bf01c4c3' # existing node, approval < 20
+
+    alias_she_knows_something_about_you_node_uuid = 'ba492f66-1884-4cf2-9ddd-9ad930d40f2e'
+    alias_dont_do_it_node_uuid = '580ab6cd-f3a1-4414-9ada-55720c986746'
 
     # She knows something about you. Spare her, and see what she has to say.
     d.create_alias_dialog_node(
@@ -1036,7 +1068,8 @@ def patch_shadowheart_path_tags() -> None:
     ))
 
 
-bg3.add_build_procedure('fix_nightsong_choice_dialog', fix_nightsong_choice_dialog)
+bg3.add_build_procedure('fix_nightsong_fate_dialog', fix_nightsong_fate_dialog)
+bg3.add_build_procedure('patch_nightsong_fate_dialog', patch_nightsong_fate_dialog)
 bg3.add_build_procedure('fix_skinny_dipping_crd', fix_skinny_dipping_crd)
 bg3.add_build_procedure('fix_waterfall_date_invitation', fix_waterfall_date_invitation)
 bg3.add_build_procedure('fix_now_and_always_thorm_mausoleum', fix_now_and_always_thorm_mausoleum)
