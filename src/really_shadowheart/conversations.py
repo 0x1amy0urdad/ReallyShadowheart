@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import bg3moddinglib as bg3
 
-from .context import game_assets
+from .context import get_context
 from .dialog_overrides import add_dialog_dependency, get_dialog_uuid
 from .flags import *
 
@@ -14,6 +14,8 @@ from .flags import *
 jump_back_node_uuid = '11bf5079-6bf4-49ce-9a3e-4ebc7f909955'
 
 def create_recurrent_conversations() -> None:
+    game_assets = get_context().assets
+
     ################################################################################################
     # Dialog: ShadowHeart_InParty2.lsf
     ################################################################################################
@@ -1197,11 +1199,11 @@ def create_recurrent_conversations() -> None:
     
 
 def create_more_recurring_conversations() -> None:
+    game_assets = get_context().assets
+
     ################################################################################################
     # Dialog: ShadowHeart_InParty2_Nested_BackgroundChapter.lsf
     ################################################################################################
-
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Companions/ShadowHeart_InParty2_Nested_BackgroundChapter.lsf'))
 
     ab = game_assets.get_modded_dialog_asset_bundle('ShadowHeart_InParty2_Nested_BackgroundChapter')
     d = bg3.dialog_object(ab.dialog)
@@ -1248,6 +1250,8 @@ def create_more_recurring_conversations() -> None:
 
 
 def create_gauntlet_conversation() -> None:
+    game_assets = get_context().assets
+
     ab = game_assets.get_modded_dialog_asset_bundle('Shadowheart_InParty_Nested_TopicalGreetings')
     d = bg3.dialog_object(ab.dialog)
 
@@ -1327,11 +1331,11 @@ def create_gauntlet_conversation() -> None:
 
 
 def create_hug_her_memories_conversation() -> None:
+    game_assets = get_context().assets
+
     ################################################################################################
     # Dialog: ShadowHeart_InParty2_Nested_CityChapter.lsf
     ################################################################################################
-
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Companions/ShadowHeart_InParty2_Nested_CityChapter.lsf'))
 
     ab = game_assets.get_modded_dialog_asset_bundle('ShadowHeart_InParty2_Nested_CityChapter')
     d = bg3.dialog_object(ab.dialog)
@@ -1385,11 +1389,11 @@ def create_hug_her_memories_conversation() -> None:
 
 
 def patch_conversations() -> None:
+    game_assets = get_context().assets
+
     ################################################################################################
     # Dialog: ShadowHeart_InParty2.lsf
     ################################################################################################
-
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Companions/ShadowHeart_InParty2.lsf'))
 
     ab = game_assets.get_modded_dialog_asset_bundle('ShadowHeart_InParty')
     d = bg3.dialog_object(ab.dialog)
@@ -1768,7 +1772,7 @@ def patch_conversations() -> None:
 
 
 def create_faith_conversation_entry_point() -> None:
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Companions/ShadowHeart_InParty2.lsf'))
+    game_assets = get_context().assets
 
     ab = game_assets.get_modded_dialog_asset_bundle('ShadowHeart_InParty')
     d = bg3.dialog_object(ab.dialog)
@@ -1817,8 +1821,8 @@ def create_faith_conversation_entry_point() -> None:
 
 
 def create_faith_conversation_nested() -> None:
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Companions/ShadowHeart_InParty2_Nested_SharranChapter.lsf'))
-    # t = bg3.timeline_object(files.get_file('Gustav', 'Public/GustavDev/Timeline/Generated/ShadowHeart_InParty2_Nested_SharranChapter.lsf'), d)
+    game_assets = get_context().assets
+    files = get_context().files
 
     ab = game_assets.get_modded_dialog_asset_bundle('ShadowHeart_InParty2_Nested_SharranChapter')
     d = bg3.dialog_object(ab.dialog)
@@ -2404,8 +2408,7 @@ def create_faith_conversation_nested() -> None:
 
 
 def create_book_conversations() -> None:
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Companions/ShadowHeart_InParty2.lsf'))
-    # t = bg3.timeline_object(files.get_file('Gustav', 'Public/GustavDev/Timeline/Generated/ShadowHeart_InParty2.lsf'), d)
+    game_assets = get_context().assets
 
     ab = game_assets.get_modded_dialog_asset_bundle('ShadowHeart_InParty')
     d = bg3.dialog_object(ab.dialog)
@@ -2557,8 +2560,7 @@ def create_book_conversations() -> None:
 
 
 def create_the_most_important_question() -> None:
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Companions/ShadowHeart_InParty2.lsf'))
-    # t = bg3.timeline_object(files.get_file('Gustav', 'Public/GustavDev/Timeline/Generated/ShadowHeart_InParty2.lsf'), d)
+    game_assets = get_context().assets
 
     ab = game_assets.get_modded_dialog_asset_bundle('ShadowHeart_InParty')
     d = bg3.dialog_object(ab.dialog)
@@ -2650,6 +2652,8 @@ def create_the_most_important_question() -> None:
 
 
 def create_the_most_important_question_nested() -> None:
+    game_assets = get_context().assets
+
     ab = game_assets.get_modded_dialog_asset_bundle('ShadowHeart_InParty2_Nested_DefaultChapter')
     d = bg3.dialog_object(ab.dialog)
 
@@ -2679,6 +2683,7 @@ def create_the_most_important_question_nested() -> None:
 
 
 def patch_reactions_to_crusher() -> None:
+    game_assets = get_context().assets
 
     #################################################################################
     # Crusher at goblin camp: "kiss me foot"
@@ -2764,6 +2769,8 @@ def patch_reactions_to_crusher() -> None:
 
 
 def patch_shadowheart_wolf_memory_response() -> None:
+    game_assets = get_context().assets
+
     ab = game_assets.get_modded_dialog_asset_bundle('ShadowHeart_InParty2_Nested_DefaultChapter')
     d = bg3.dialog_object(ab.dialog)
  

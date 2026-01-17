@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import bg3moddinglib as bg3
 
-from .context import game_assets
+from .context import get_context
 from .flags import *
 
 from decimal import Decimal
@@ -33,6 +33,7 @@ ACTOR_HERMIT_CRAB = '7105d35c-f0a9-4862-957f-e7ef8bde91a9'
 ##########################################################################################################
 
 def patch_act3_romance_conversations() -> None:
+    game_assets = get_context().assets
 
     ##########################################################################################################
     # Dialog: ShadowHeart_InParty2.lsf
@@ -309,6 +310,7 @@ def patch_act3_romance_conversations() -> None:
 
 
 def patch_skinny_dipping_scene() -> None:
+    game_assets = get_context().assets
 
     ##########################################################################################################
     # Dialog: CAMP_Shadowheart_SkinnyDipping_SD_ROM.lsf
@@ -3483,6 +3485,8 @@ def create_you_pest_timeline_node_uuid(d: bg3.dialog_object, t: bg3.timeline_obj
 
 
 def create_2nd_skinny_dipping_scene() -> None:
+    game_assets = get_context().assets
+
     ##########################################################################################################
     # Dialog: CAMP_Shadowheart_SkinnyDipping_SD_ROM.lsf
     # Removed dialog options that let Tav walk away if this isn't the first time they swim with Shadowheart
@@ -3765,8 +3769,7 @@ def create_2nd_skinny_dipping_scene() -> None:
 
 
 def create_act3_breakup_scene() -> None:
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Camp/Camp_Relationship_Dialogs/CAMP_Shadowheart_CRD_SkinnyDippingRomance.lsf'))
-    # t = bg3.timeline_object(files.get_file('Gustav', 'Public/GustavDev/Timeline/Generated/CAMP_Shadowheart_CRD_SkinnyDippingRomance.lsf'), d)
+    game_assets = get_context().assets
 
     ab = game_assets.get_modded_dialog_asset_bundle('CAMP_Shadowheart_CRD_SkinnyDippingRomance')
     d = bg3.dialog_object(ab.dialog)
@@ -3983,6 +3986,8 @@ def create_act3_breakup_scene() -> None:
 
 
 def allow_character_customizations_in_skinny_dipping_cutscene() -> None:
+    game_assets = get_context().assets
+
     ################################################################################################
     # CAMP_Shadowheart_SkinnyDipping_SD_ROM
     ################################################################################################
@@ -3993,8 +3998,6 @@ def allow_character_customizations_in_skinny_dipping_cutscene() -> None:
 
     for effect_component_uuid in ('31e525a9-8dad-45f1-804f-9ab04a6c99bb', '4ed49412-ce53-481e-9339-7eb6912af52c', 'f9428423-e34f-45e1-949f-bf629be100ea'):
         t.remove_effect_component(effect_component_uuid)
-    # for effect_component in t.find_effect_components(effect_component_types = 'TLShapeShift', actor = bg3.SPEAKER_SHADOWHEART):
-    #     t.remove_effect_component(effect_component)
 
 
 bg3.add_build_procedure('patch_act3_romance_conversations', patch_act3_romance_conversations)

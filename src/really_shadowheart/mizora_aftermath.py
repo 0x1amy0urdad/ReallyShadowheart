@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import bg3moddinglib as bg3
 
-from .context import game_assets
+from .context import get_context
 from .flags import *
 
 ##########################################################################################
@@ -10,12 +10,11 @@ from .flags import *
 ##########################################################################################
 
 def patch_mizora_aftermath_scene() -> None:
+    game_assets = get_context().assets
+
     ##########################################################################################
     # Dialog: CAMP_MizoraMorningAfter_CFM_ROM.lsf'
     ##########################################################################################
-
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Camp/Campfire_Moments/CAMP_MizoraMorningAfter_CFM_ROM.lsf'))
-    # t = bg3.timeline_object(files.get_file('Gustav', 'Public/GustavDev/Timeline/Generated/CAMP_MizoraMorningAfter_CFM_ROM.lsf'), d)
 
     """
     "h4d724a24g29eeg4ecagb2e2g8d006b026ec9 / 3": "Whatever Mizora has in store for you, I doubt it's anything good.<br>",

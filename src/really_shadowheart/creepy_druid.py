@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import bg3moddinglib as bg3
 
-from .context import game_assets
+from .context import get_context
 from .flags import *
 
 ############################################################################
@@ -10,6 +10,8 @@ from .flags import *
 ############################################################################
 
 def patch_creepy_druid() -> None:
+    game_assets = get_context().assets
+
     ############################################################################
     # Dialog: ShadowHeart_InParty2_Nested_DefaultChapter.lsf
     # If Shadowheart rejected Shar, she breaks up with Tav
@@ -403,6 +405,8 @@ def patch_creepy_druid() -> None:
 
 
 def patch_creepy_banter() -> None:
+    game_assets = get_context().assets
+
     ##################################################################
     # Banter: PB_Halsin_Shadowheart_ROM_Act3_Selune.lsf
     ##################################################################
@@ -434,7 +438,8 @@ def patch_creepy_banter() -> None:
 
 
 def create_post_creepy_banter_scene() -> None:
-    # crd = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Camp/Camp_Relationship_Dialogs/Camp_Act3_CRD_HalsinRomance.lsf'))
+    game_assets = get_context().assets
+    files = get_context().files
 
     ab = game_assets.get_modded_dialog_asset_bundle('Camp_Act3_CRD_HalsinRomance')
     crd = bg3.dialog_object(ab.dialog)
@@ -453,8 +458,6 @@ def create_post_creepy_banter_scene() -> None:
         )),
     ))
 
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Companions/Halsin_InParty.lsf'))
-    # t = bg3.timeline_object(files.get_file('Gustav', 'Public/GustavDev/Timeline/Generated/Halsin_InParty.lsf'), d)
 
     ab = game_assets.get_modded_dialog_asset_bundle('Halsin_InParty')
     d = bg3.dialog_object(ab.dialog)
@@ -1580,6 +1583,8 @@ def create_post_creepy_banter_scene() -> None:
 
 
 def patch_creepy_revenge() -> None:
+    game_assets = get_context().assets
+
     ab = game_assets.get_modded_dialog_asset_bundle('CAMP_HalsinsRevenge_CFM')
     d = bg3.dialog_object(ab.dialog)
 

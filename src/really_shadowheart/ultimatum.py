@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import bg3moddinglib as bg3
 
-from .context import game_assets
+from .context import get_context
 from .dialog_overrides import add_dialog_dependency, get_dialog_uuid
 from .flags import *
 
@@ -152,7 +152,7 @@ def patch_timeline(ab: bg3.dialog_asset_bundle) -> None:
             t.create_value_key(time = '7.0', value = '-3.1199996', value_type = 'float', interpolation_type = 0),
         ),
         (
-            t.create_value_key(time = '7.0', value = '0 -0.12864251 0 0.99169105', value_type = 'fvec4', interpolation_type = 0),
+            t.create_value_key(time = '7.0', value = (0.0, -0.12864251, 0, 0.99169105), value_type = 'fvec4', interpolation_type = 0),
         ),
         (
             t.create_value_key(time = '7.0', value = '1', value_type = 'float', interpolation_type = 3),
@@ -605,6 +605,8 @@ def fix_wyll_camera(ab: bg3.dialog_asset_bundle) -> None:
 
 
 def restore_shadowheart_ultimatum() -> None:
+    game_assets = get_context().assets
+
     ab = game_assets.get_modded_dialog_asset_bundle('CAMP_Shadowheart_CFM_Ultimatum')
     d = bg3.dialog_object(ab.dialog)
 
@@ -695,6 +697,8 @@ def restore_shadowheart_ultimatum() -> None:
 
 
 def patch_recruitment() -> None:
+    game_assets = get_context().assets
+
     #
     # Shadowheart_Recruitment_Camp
     #

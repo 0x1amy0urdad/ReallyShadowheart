@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import bg3moddinglib as bg3
 
-from .context import game_assets
+from .context import get_context
 
 ASSETS : dict[str, dict[str, str]] = {
     # Shadowheart dialogs
@@ -191,7 +191,7 @@ ASSETS : dict[str, dict[str, str]] = {
 }
 
 def prepare_assets() -> None:
-    game_assets.prepare_assets(ASSETS, verbose = True)
+    get_context().assets.prepare_assets(ASSETS, verbose = True)
 
 bg3.add_pre_build_procedure(0, 'prepare_assets', prepare_assets)
 
@@ -422,6 +422,6 @@ ASSETS_OVERRIDES : dict[str, dict[str, str]] = {
 }
 
 # def prepare_override_assets() -> None:
-#     game_assets.prepare_assets(ASSETS_OVERRIDES, verbose = True)
+#     get_context().assets.prepare_assets(ASSETS_OVERRIDES, verbose = True)
 
 # bg3.add_pre_build_procedure(0, 'prepare_override_assets', prepare_override_assets, 'override', True)

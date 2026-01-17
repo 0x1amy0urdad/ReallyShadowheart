@@ -9,6 +9,8 @@ from ._tool import bg3_modding_tool
 
 from typing import Iterable
 
+tag_factories: list[tag_factory]
+
 LOCAL_FLAG = 1
 OBJECT_FLAG = 4
 GLOBAL_FLAG = 5
@@ -163,6 +165,47 @@ class tag_object:
     def categories(self) -> tuple[str, ...]:
         return tuple(self.__categories)
 
+class tag_factory:
+    __tag_uuid: str
+    __tag_name: str
+    __description: str
+    __display_description_handle: tuple[str, int]
+    __display_name_handle: tuple[str, int]
+    __categories: Iterable[str]
+
+    def __init__(
+        self,
+        tag_uuid: str,
+        tag_name: str,
+        description: str,
+        display_description_handle: tuple[str, int],
+        display_name_handle: tuple[str, int],
+        categories: Iterable[str],            
+    ) -> None:
+        self.__tag_uuid = tag_uuid
+        self.__tag_name = tag_name
+        self.__description = description
+        self.__display_description_handle = display_description_handle
+        self.__display_name_handle = display_name_handle
+        self.__categories = categories
+        global tag_factories
+        tag_factories.append(self)
+
+    @property
+    def tag_uuid(self) -> str:
+        return self.__tag_uuid
+
+    def create(self, files: game_files) -> tag_object:
+        return tag_object.create_new(
+            files,
+            self.__tag_uuid,
+            self.__tag_name,
+            self.__description,
+            self.__display_description_handle,
+            self.__display_name_handle,
+            self.__categories)
+
+
 class tag_registry:
     __tool: bg3_modding_tool
     __registry: dict[str, tuple[str, str]]
@@ -197,3 +240,10 @@ class tag_registry:
         result = tag_object(game_file(self.__tool, tag_file, pak_name = pak_name))
         self.__cache[tag_uuid] = result
         return result
+
+tag_factories = list[tag_factory]()
+
+def create_tags(game_files_provider: Callable[[], game_files]) -> None:
+    files = game_files_provider()
+    for tf in tag_factories:
+        tf.create(files)

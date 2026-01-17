@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import bg3moddinglib as bg3
 
-from .context import game_assets
+from .context import get_context
 from .flags import *
 
 ########################################################################################
@@ -10,6 +10,7 @@ from .flags import *
 ########################################################################################
 
 def patch_cloister_events() -> None:
+    game_assets = get_context().assets
 
     ########################################################################################
     # ShadowHeart_InParty2.lsf
@@ -401,7 +402,7 @@ def patch_cloister_events() -> None:
 
 
 def patch_conversation_with_viconia() -> None:
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Companions/Origin_Moments/LOW_SharGrotto_ConfrontViconia_OM_Shadowheart_COM.lsf'))
+    game_assets = get_context().assets
 
     ab = game_assets.get_modded_dialog_asset_bundle('LOW_SharGrotto_ConfrontViconia_OM_Shadowheart_COM')
     d = bg3.dialog_object(ab.dialog)
@@ -471,6 +472,8 @@ def patch_conversation_with_viconia() -> None:
 
 
 def patch_conversation_with_mirie() -> None:
+    game_assets = get_context().assets
+
     ab = game_assets.get_modded_dialog_asset_bundle('LOW_HouseOfGrief_OM_Shadowheart_COM')
     d = bg3.dialog_object(ab.dialog)
 
@@ -492,6 +495,7 @@ def patch_conversation_with_mirie() -> None:
 
 
 def make_late_redemption_easier() -> None:
+    game_assets = get_context().assets
 
     ########################################################################################
     # LOW_SharGrotto_ParentsFate_OM_Shadowheart_COM.lsf

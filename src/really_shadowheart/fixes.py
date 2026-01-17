@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import bg3moddinglib as bg3
 
-from .context import game_assets, files
+from .context import get_context
 from .flags import *
 
 
 def patch_nightsong_fate_dialog() -> None:
+    game_assets = get_context().assets
+
     ################################################################################################
     # Dialog: SHA_NightsongsFate_OM_Shadowheart_AOM_OOM_COM.lsf
     # This changes the flow of the scene.
@@ -119,6 +121,8 @@ def patch_nightsong_fate_dialog() -> None:
 
 
 def fix_nightsong_fate_dialog() -> None:
+    game_assets = get_context().assets
+
     ################################################################################################
     # Dialog: SHA_NightsongsFate_OM_Shadowheart_AOM_OOM_COM.lsf
     # Fix the Nightsong decision choice: if Tav accumulated enough Nightsong points and
@@ -166,6 +170,8 @@ def fix_nightsong_fate_dialog() -> None:
 
 
 def fix_skinny_dipping_crd() -> None:
+    game_assets = get_context().assets
+
     ################################################################################################
     # Dialog: SHA_NightsongsFate_OM_Shadowheart_AOM_OOM_COM.lsf
     # This updates the skinny dipping romance conversation with lines for cases when
@@ -210,6 +216,8 @@ def fix_skinny_dipping_crd() -> None:
 
 
 def fix_waterfall_date_invitation() -> None:
+    game_assets = get_context().assets
+
     ################################################################################################
     # Dialog: ShadowHeart_InParty2.lsf
     # The 'truly connect' line is supposed to appear after the party, not before.
@@ -455,14 +463,14 @@ def fix_waterfall_date_invitation() -> None:
 
  
 def fix_now_and_always_thorm_mausoleum() -> None:
+    game_assets = get_context().assets
+
     ################################################################################################
     # Dialog: ShadowHeart_InParty2_Nested_ShadowCurseChapter.lsf
     # At the entrance of the Thorm mausoleum, when Tav & Shadowheart return from the Shadowfell,
     # Tav should not be able to tell her "You're not alone. You have me." if they are in
     # exclusive relationship with someone else.
     ################################################################################################
-
-#    d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Companions/ShadowHeart_InParty2_Nested_ShadowCurseChapter.lsf'))
 
     ab = game_assets.get_modded_dialog_asset_bundle('ShadowHeart_InParty2_Nested_ShadowCurseChapter')
     d = bg3.dialog_object(ab.dialog)
@@ -483,7 +491,7 @@ def fix_now_and_always_thorm_mausoleum() -> None:
 
 
 def fix_lolth_sworn_drow() -> None:
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Companions/ShadowHeart_InParty2_Nested_SharranChapter.lsf'))
+    game_assets = get_context().assets
 
     ab = game_assets.get_modded_dialog_asset_bundle('ShadowHeart_InParty2_Nested_SharranChapter')
     d = bg3.dialog_object(ab.dialog)
@@ -499,6 +507,8 @@ def fix_lolth_sworn_drow() -> None:
 
 
 def fix_all_that_happened_raider_victory() -> None:
+    game_assets = get_context().assets
+
     ab = game_assets.get_modded_dialog_asset_bundle('ShadowHeart_InParty2_Nested_DefaultChapter')
     d = bg3.dialog_object(ab.dialog)
 
@@ -516,6 +526,8 @@ def fix_all_that_happened_raider_victory() -> None:
 
 
 def fix_topical_greetings() -> None:
+    game_assets = get_context().assets
+
     ################################################################################################
     # Dialog: Shadowheart_InParty_Nested_TopicalGreetings.lsf
     ################################################################################################
@@ -576,6 +588,9 @@ def fix_topical_greetings() -> None:
 
 
 def fix_nightsong_meeting() -> None:
+    game_assets = get_context().assets
+    files = get_context().files
+
     ################################################################################################
     # Dialog: CAMP_NightsongShadowheartVisit_CFM.lsf
     ################################################################################################
@@ -785,6 +800,8 @@ def fix_nightsong_meeting() -> None:
 
 
 def fix_shadowheart_pod_opening_scene() -> None:
+    game_assets = get_context().assets
+
     ################################################################################################
     # Dialog: TUT_TransformChamber_PodLock.lsf
     # The following doesn't fix the scene yet, need to figure it out
@@ -822,6 +839,8 @@ def fix_shadowheart_pod_opening_scene() -> None:
 
 
 def fix_act3_romance_conversation() -> None:
+    game_assets = get_context().assets
+
     ab = game_assets.get_modded_dialog_asset_bundle('ShadowHeart_InParty')
     d = bg3.dialog_object(ab.dialog)
 
@@ -855,6 +874,8 @@ def fix_act3_romance_conversation() -> None:
 
 
 def fix_jaheira_greetings() -> None:
+    game_assets = get_context().assets
+
     ################################################################################################
     # Dialog: Jaheira_InParty.lsf
     ################################################################################################
@@ -882,6 +903,8 @@ def fix_jaheira_greetings() -> None:
 
 
 def patch_shadowheart_path_tags_in_dialog(dialog_name: str, patch_shar_path: bool, patch_selune_path: bool) -> None:
+    game_assets = get_context().assets
+
     ab = game_assets.get_modded_dialog_asset_bundle(dialog_name)
     d = bg3.dialog_object(ab.dialog)
 
@@ -908,6 +931,8 @@ def patch_shadowheart_path_tags_in_dialog(dialog_name: str, patch_shar_path: boo
 
 
 def patch_shadowheart_path_tags() -> None:
+    game_assets = get_context().assets
+
     ################################################################################################
     # Late redemption path doesn't remove SHADOWHEART_SHARPATH tag from Shadowheart;
     # this causes lots of sharran reactions even though she turned away from Shar.

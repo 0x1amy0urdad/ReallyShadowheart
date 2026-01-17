@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import bg3moddinglib as bg3
 
-from .context import game_assets
+from .context import get_context
 from .dialog_overrides import add_dialog_dependency, get_dialog_uuid
 from .flags import *
 
@@ -10,6 +10,9 @@ from .flags import *
 of_course_node_uuid = '23749c85-4289-4965-a7db-1909f5cb63a2' # existing node
 
 def patch_relationship_conversations() -> None:
+    game_assets = get_context().assets
+    files = get_context().files
+
     ################################################################################################
     # Dialog: ShadowHeart_InParty2_Nested_DefaultChapter.lsf
     # New response to "Admit it - you've never had a relationship quite like this one, have you?"
@@ -1196,8 +1199,8 @@ def patch_relationship_conversations() -> None:
 
 
 def create_reactions_to_creep_debacle() -> None:
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Companions/ShadowHeart_InParty2.lsf'))
-    # t = bg3.timeline_object(files.get_file('Gustav', 'Public/GustavDev/Timeline/Generated/ShadowHeart_InParty2.lsf'), d)
+    game_assets = get_context().assets
+    files = get_context().files
 
     ab = game_assets.get_modded_dialog_asset_bundle('ShadowHeart_InParty')
     d = bg3.dialog_object(ab.dialog)
@@ -1512,12 +1515,11 @@ def create_reactions_to_creep_debacle() -> None:
 
 
 def create_romance_events() -> None:
+    game_assets = get_context().assets
+
     ############################################################################################
     # Dialog: ShadowHeart_InParty2.lsf
     ############################################################################################
-
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Companions/ShadowHeart_InParty2.lsf'))
-    # t = bg3.timeline_object(files.get_file('Gustav', 'Public/GustavDev/Timeline/Generated/ShadowHeart_InParty2.lsf'), d)
 
     ab = game_assets.get_modded_dialog_asset_bundle('ShadowHeart_InParty')
     d = bg3.dialog_object(ab.dialog)
@@ -1874,8 +1876,7 @@ def create_romance_events() -> None:
 
 
 def create_sharran_kiss() -> None:
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Companions/ShadowHeart_InParty2_Nested_DefaultChapter.lsf'))
-    # t = bg3.timeline_object(files.get_file('Gustav', 'Public/GustavDev/Timeline/Generated/ShadowHeart_InParty2_Nested_DefaultChapter.lsf'), d)
+    game_assets = get_context().assets
 
     ab = game_assets.get_modded_dialog_asset_bundle('ShadowHeart_InParty2_Nested_DefaultChapter')
     d = bg3.dialog_object(ab.dialog)
@@ -2425,7 +2426,7 @@ def create_sharran_kiss() -> None:
     d.create_alias_dialog_node(
         blasphemy_kiss_node_uuid,
         kiss_node_uuid,
-        ['47eaa218-721a-446a-94fc-62895c1ce704'],
+        [bg3.SHADOWHEART_KISS_FORK_NODE_UUID],
         setflags = (
             bg3.flag_group('Global', (
                 bg3.flag(Nightfall_Point_Selune_Blasphemy_Kiss.uuid, True, None),
@@ -2437,7 +2438,7 @@ def create_sharran_kiss() -> None:
     d.create_alias_dialog_node(
         ability_check_kiss_node_uuid,
         kiss_node_uuid,
-        ['47eaa218-721a-446a-94fc-62895c1ce704'],
+        [bg3.SHADOWHEART_KISS_FORK_NODE_UUID],
         setflags = (
             bg3.flag_group('Global', (
                 bg3.flag(Nightfall_Point_Ability_Check_Kiss.uuid, True, None),
@@ -2447,11 +2448,11 @@ def create_sharran_kiss() -> None:
             )),
         ))
     kiss_nested_dialog_uuid = get_dialog_uuid('ShadowHeart_InParty2_Nested_ShadowheartKiss')
-    d.create_nested_dialog_node(
-        '47eaa218-721a-446a-94fc-62895c1ce704',
-        kiss_nested_dialog_uuid,
-        ['e648f02f-eab4-4000-8656-a5fd9b32a85d'],
-        speaker_count = 2)
+    # d.create_nested_dialog_node(
+    #     '47eaa218-721a-446a-94fc-62895c1ce704',
+    #     kiss_nested_dialog_uuid,
+    #     ['e648f02f-eab4-4000-8656-a5fd9b32a85d'],
+    #     speaker_count = 2)
     add_dialog_dependency(ab, kiss_nested_dialog_uuid)
     d.create_standard_dialog_node(
         'e648f02f-eab4-4000-8656-a5fd9b32a85d',
@@ -2470,12 +2471,11 @@ def create_sharran_kiss() -> None:
 
 
 def create_entry_point_to_partnered_dialog() -> None:
+    game_assets = get_context().assets
+
     ############################################################################################
     # Dialog: ShadowHeart_InParty2.lsf
     ############################################################################################
-
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Companions/ShadowHeart_InParty2.lsf'))
-    # t = bg3.timeline_object(files.get_file('Gustav', 'Public/GustavDev/Timeline/Generated/ShadowHeart_InParty2.lsf'), d)
 
     ab = game_assets.get_modded_dialog_asset_bundle('ShadowHeart_InParty')
     d = bg3.dialog_object(ab.dialog)
@@ -2588,8 +2588,8 @@ def create_entry_point_to_partnered_dialog() -> None:
 
 
 def create_incubus_reaction() -> None:
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Act3/LowerCity/HouseOfHope/LOW_HouseOfHope_ROM_Incubus.lsf'))
-    # t = bg3.timeline_object(files.get_file('Gustav', 'Public/GustavDev/Timeline/Generated/LOW_HouseOfHope_ROM_Incubus.lsf'), d)
+    game_assets = get_context().assets
+    files = get_context().files
 
     ab = game_assets.get_modded_dialog_asset_bundle('LOW_HouseOfHope_ROM_Incubus')
     d = bg3.dialog_object(ab.dialog)
@@ -3582,8 +3582,7 @@ def create_incubus_reaction() -> None:
 
 
 def create_post_incubus_breakup() -> None:
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Companions/ShadowHeart_InParty2.lsf'))
-    # t = bg3.timeline_object(files.get_file('Gustav', 'Public/GustavDev/Timeline/Generated/ShadowHeart_InParty2.lsf'), d)
+    game_assets = get_context().assets
 
     ab = game_assets.get_modded_dialog_asset_bundle('ShadowHeart_InParty')
     d = bg3.dialog_object(ab.dialog)
@@ -3837,6 +3836,8 @@ def create_post_incubus_breakup() -> None:
 
 
 def create_intimate_followups() -> None:
+    game_assets = get_context().assets
+
     ################################################################################################
     # Dialog: ShadowHeart_InParty2_Nested_DefaultChapter.lsf
     ################################################################################################
@@ -4165,6 +4166,8 @@ def create_intimate_followups() -> None:
 
 
 def create_post_dj_romance_conversation() -> None:
+    game_assets = get_context().assets
+
     ############################################################################################
     # Dialog: ShadowHeart_InParty2.lsf
     ############################################################################################
@@ -4439,6 +4442,8 @@ def create_post_dj_romance_conversation() -> None:
 
 
 def patch_post_shadowfell_conversation() -> None:
+    game_assets = get_context().assets
+
     ab = game_assets.get_modded_dialog_asset_bundle('ShadowHeart_InParty2_Nested_ShadowCurseChapter')
     d = bg3.dialog_object(ab.dialog)
     t = bg3.timeline_object(ab.timeline, d)
@@ -4500,6 +4505,9 @@ def patch_post_shadowfell_conversation() -> None:
 
 
 def create_night_orchid_scene() -> None:
+    game_assets = get_context().assets
+    files = get_context().files
+
     ab = game_assets.get_modded_dialog_asset_bundle('ShadowHeart_InParty')
     d = bg3.dialog_object(ab.dialog)
     t = bg3.timeline_object(ab.timeline, d)

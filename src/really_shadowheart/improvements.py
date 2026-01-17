@@ -3,7 +3,7 @@ from __future__ import annotations
 import bg3moddinglib as bg3
 
 from .common import create_approval_fork
-from .context import game_assets
+from .context import get_context
 from .flags import *
 
 ################################################################################################
@@ -11,6 +11,8 @@ from .flags import *
 ################################################################################################
 
 def grove_squirell_encounter_wound_flare() -> None:
+    game_assets = get_context().assets
+
     # When Shadowheart succeeds 2x animal handling checks, she'll got the wound flare.
 
     # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/Gustav/Story/DialogsBinary/Act1/DEN/DEN_General_Squirrel.lsf'))
@@ -68,6 +70,7 @@ def grove_squirell_encounter_wound_flare() -> None:
 
 
 def mean_greetings() -> None:
+    game_assets = get_context().assets
 
     ################################################################################################
     # Dialog: ShadowHeart_InParty2.lsf
@@ -105,11 +108,12 @@ def mean_greetings() -> None:
 
 
 def rejecting_half_illithid() -> None:
+    game_assets = get_context().assets
+    files = get_context().files
+
     #
     # Tav won't ask that again after picking 'Very well. If your mind is set, I won't try to change it.'
     #
-
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Companions/ShadowHeart_InParty2.lsf'))
 
     ab = game_assets.get_modded_dialog_asset_bundle('ShadowHeart_InParty')
     d = bg3.dialog_object(ab.dialog)
@@ -222,6 +226,9 @@ def rejecting_half_illithid() -> None:
 
 
 def shadowheart_recruitment() -> None:
+    game_assets = get_context().assets
+    files = get_context().files
+
     reaction_thankful_for_freeing_her = bg3.reaction_object.create_new(files, { bg3.SPEAKER_SHADOWHEART : 3 }, uuid = 'cfbfcb19-0881-438d-8f60-5258b910920f')
 
     ################################################################################################
@@ -507,6 +514,8 @@ def shadowheart_recruitment() -> None:
 
 
 def shadowheart_how_am_i_holding_up() -> None:
+    game_assets = get_context().assets
+
     ################################################################################################
     # ShadowHeart_InParty2_Nested_DefaultChapter
     ################################################################################################
@@ -1476,7 +1485,8 @@ def shadowheart_how_am_i_holding_up() -> None:
 
 
 def add_more_selunite_lines() -> None:
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Companions/ShadowHeart_InParty2_Nested_SharranChapter.lsf'))
+    game_assets = get_context().assets
+    files = get_context().files
 
     ab = game_assets.get_modded_dialog_asset_bundle('ShadowHeart_InParty2_Nested_SharranChapter')
     d = bg3.dialog_object(ab.dialog)
@@ -1538,6 +1548,9 @@ def add_more_selunite_lines() -> None:
 
 
 def gain_less_approval_other_topics_act1() -> None:
+    game_assets = get_context().assets
+    files = get_context().files
+
     ###################################################
     # ShadowHeart_InParty2_Nested_DefaultChapter.lsf
     ###################################################
@@ -1573,6 +1586,8 @@ def gain_less_approval_other_topics_act1() -> None:
 
 
 def gain_less_approval_sharran_topics_act1() -> None:
+    game_assets = get_context().assets
+    files = get_context().files
 
     ###################################################
     # ShadowHeart_InParty2_Nested_SharranChapter.lsf
@@ -1915,6 +1930,8 @@ def gain_less_approval_sharran_topics_act1() -> None:
 
 
 def increase_approval_requirements() -> None:
+    game_assets = get_context().assets
+
     ###################################################
     # CAMP_Night1_CRD_Shadowheart
     ###################################################
@@ -2110,6 +2127,8 @@ def increase_approval_requirements() -> None:
 
 
 def brain_defeated_always_show_shadowheart_swim_comment() -> None:
+    game_assets = get_context().assets
+
     ab = game_assets.get_modded_dialog_asset_bundle('END_BrainBattle_CombatOver_Nested_StandardIntro')
     d = bg3.dialog_object(ab.dialog)
 
@@ -2173,6 +2192,8 @@ def brain_defeated_always_show_shadowheart_swim_comment() -> None:
 
 
 def shadowheart_laezel_fight() -> None:
+    game_assets = get_context().assets
+
     ab = game_assets.get_modded_dialog_asset_bundle('CAMP_Shadowheart_IVB_CFM_LaezelFight')
     d = bg3.dialog_object(ab.dialog)
 
@@ -2220,6 +2241,8 @@ def shadowheart_laezel_fight() -> None:
 
 
 def enable_impostor_tg_for_durge() -> None:
+    game_assets = get_context().assets
+
     ab = game_assets.get_modded_dialog_asset_bundle('Shadowheart_InParty_Nested_TopicalGreetings')
     d = bg3.dialog_object(ab.dialog)
     t = bg3.timeline_object(ab.timeline, d)
@@ -2236,6 +2259,8 @@ def enable_impostor_tg_for_durge() -> None:
 
 
 def enable_selunite_answer_to_how_are_you() -> None:
+    game_assets = get_context().assets
+
     ab = game_assets.get_modded_dialog_asset_bundle('ShadowHeart_InParty2_Nested_DefaultChapter')
     d = bg3.dialog_object(ab.dialog)
 
@@ -2287,6 +2312,8 @@ def enable_selunite_answer_to_how_are_you() -> None:
 
 
 def romanced_reaction_join_me() -> None:
+    game_assets = get_context().assets
+
     ab = game_assets.get_modded_dialog_asset_bundle('ShadowHeart_InParty')
     d = bg3.dialog_object(ab.dialog)
     t = bg3.timeline_object(ab.timeline, d)
@@ -2329,6 +2356,8 @@ def romanced_reaction_join_me() -> None:
 
 
 def patch_noblestalk_line() -> None:
+    game_assets = get_context().assets
+
     ab = game_assets.get_modded_dialog_asset_bundle('ShadowHeart_InParty')
     d = bg3.dialog_object(ab.dialog)
 
@@ -2350,9 +2379,6 @@ def patch_noblestalk_line() -> None:
                 bg3.flag(bg3.FLAG_ORI_COM_Shadowheart_Travel_Memory_Suppressed, True, speaker_idx_tav),
             )),
         ))
-
-
-
 
 
 bg3.add_build_procedure('grove_squirell_encounter_wound_flare', grove_squirell_encounter_wound_flare)

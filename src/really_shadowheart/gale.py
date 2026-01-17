@@ -2,10 +2,12 @@ from __future__ import annotations
 
 import bg3moddinglib as bg3
 
-from .context import game_assets
+from .context import get_context
 from .flags import *
 
 def patch_gale_recruitment() -> None:
+    game_assets = get_context().assets
+
     ab = game_assets.get_modded_dialog_asset_bundle('Gale_Recruitment2')
     d = bg3.dialog_object(ab.dialog)
     t = bg3.timeline_object(ab.timeline, d)

@@ -908,23 +908,29 @@ class dialog_to_html:
 
         if ctor == 'Nested Dialog':
             nested_dialog_uuid = get_required_bg3_attribute(dialog_node, 'NestedDialogNodeUUID')
-            dialog_name = self.__assets.index.get_dialog_name(nested_dialog_uuid)
-            e = self.__assets.index.get_entry(dialog_name)
+            try:
+                dialog_name = self.__assets.index.get_dialog_name(nested_dialog_uuid)
+                e = self.__assets.index.get_entry(dialog_name)
 
-            if 'lsj_path' in e and e['lsj_path']:
-                pos = e['lsj_path'].rfind('/')
-                file_name = e['lsj_path'][pos + 1: -4] + '.html'
+                if 'lsj_path' in e and e['lsj_path']:
+                    pos = e['lsj_path'].rfind('/')
+                    file_name = e['lsj_path'][pos + 1: -4] + '.html'
 
-                path_pos = e['lsj_path'].find('/Story/Dialogs/')
-                dirs = e['lsj_path'][path_pos + 15: pos].split('/')
-            elif 'lsf_path' in e and e['lsf_path']:
-                pos = e['lsf_path'].rfind('/')
-                file_name = e['lsf_path'][pos + 1: -4] + '.html'
+                    path_pos = e['lsj_path'].find('/Story/Dialogs/')
+                    dirs = e['lsj_path'][path_pos + 15: pos].split('/')
+                elif 'lsf_path' in e and e['lsf_path']:
+                    pos = e['lsf_path'].rfind('/')
+                    file_name = e['lsf_path'][pos + 1: -4] + '.html'
 
-                path_pos = e['lsf_path'].find('/Story/DialogsBinary/')
-                dirs = e['lsf_path'][path_pos + 21: pos].split('/')
-            else:
-                raise RuntimeError(f'cannot determine nested dialog file path for {nested_dialog_uuid}')
+                    path_pos = e['lsf_path'].find('/Story/DialogsBinary/')
+                    dirs = e['lsf_path'][path_pos + 21: pos].split('/')
+                else:
+                    dirs = []
+                    file_name = 'unknown_nested_dialog'
+            except:
+                dialog_name = 'unknown_nested_dialog'
+                dirs = []
+                file_name = 'unknown_nested_dialog'
             
             nested_dialog_file_path = os.path.join(self.__root_dir_path, *dirs, file_name)
 

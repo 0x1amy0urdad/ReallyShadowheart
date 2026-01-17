@@ -1,9 +1,5 @@
 from bg3moddinglib import context
 
-#MOD_NAME = 'ReallyShadowheartExtension'
-#MOD_UUID = 'a7e4e79b-4e4a-497b-bcc1-d324794b141d'
-#MOD_DISPLAY_NAME = 'Really Shadowheart Extension'
-#MOD_PUBLISH_HANDLE = 1234567
 MOD_NAME = 'ReallyShadowheartEAContent'
 MOD_UUID = 'bca42409-927d-2a30-aec3-2d73762da363'
 MOD_DISPLAY_NAME = 'ReallyShadowheart Early Access Content'

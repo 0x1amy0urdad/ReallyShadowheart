@@ -10,9 +10,6 @@ resources/no_notes/
 resources/main/speech/
 resources/main/templates/
 
-src/*/_build.py
-src/context/
-
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

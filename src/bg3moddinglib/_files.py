@@ -7,13 +7,20 @@ import os
 import os.path
 import shutil
 import sys
+import time
 import xml.etree.ElementTree as et
+
+from typing import Callable
 
 from ._common import get_required_bg3_attribute, translate_path
 from ._meta_lsx import create_meta_lsx
 from ._tool import bg3_modding_tool
 
 type ElementTree = et.ElementTree[et.Element[str]]
+
+
+PROGRESS_MSG_LEN = 72
+
 
 class game_file:
     __tool: bg3_modding_tool
@@ -159,6 +166,10 @@ class game_file:
     def is_mod_specific(self) -> bool:
         return self.__mod_specific
 
+    @is_mod_specific.setter
+    def is_mod_specific(self, val: bool) -> None:
+        self.__mod_specific = val
+
     @property
     def rename_to(self) -> str:
         return self.__rename_to
@@ -276,6 +287,9 @@ class game_files:
             pass
         return game_file(self.__tool, f'Mods/Gustav/Localization/English/Soundbanks/{soundbank_id}.lsf', pak_name = 'Localization/Voice.pak')
 
+    def contains_file(self, relative_path: str) -> bool:
+        return relative_path in self.__files
+
     def get_file(
             self,
             pak_name: str | None,
@@ -291,6 +305,11 @@ class game_files:
         if not exclude_from_build:
             self.__files[file_path] = gf
         return gf
+
+    def add(self, gf: game_file) -> None:
+        if gf.relative_file_path in self.__files:
+            raise RuntimeError(f'Duplicate file: {gf.relative_file_path}')
+        self.__files[gf.relative_file_path] = gf
 
     def add_new_file(self, relative_path: str, is_mod_specific = False) -> game_file:
         if relative_path in self.__files:
@@ -429,12 +448,25 @@ class game_files:
         with open(info_json_path, "wt") as f:
             json.dump(info_json, f)
 
-    def build(self, /, preview: bool = True, verbose: bool = False) -> None:
+    def build(self, /, preview: bool = True, verbose: bool = False, progress_callback: Callable[[int, int, str], None] | None = None) -> str:
+        total_count = len(self.__files)
+        count = 0
+        t = time.time()
+
         output_dir_path = self.output_dir_path
         preview_dir_path = self.preview_dir_path
         os.makedirs(output_dir_path, exist_ok = True)
         os.makedirs(preview_dir_path, exist_ok = True)
         for gf in self.__files.values():
+            count += 1
+            if progress_callback is not None and time.time() - t >= 1.0:
+                t = time.time()
+                s = f'Generating mod files: {gf.relative_file_path}'
+                if len(s) > PROGRESS_MSG_LEN:
+                    n = len(s) - PROGRESS_MSG_LEN
+                    s = f'Generating mod files: ...{gf.relative_file_path[n + 2:]}'
+                progress_callback(count, total_count, s)
+
             relative_file_path = translate_path(gf.relative_file_path)
             output_relative_path = translate_path(gf.get_output_relative_path(self.__mod_name))
             if verbose:
@@ -507,12 +539,12 @@ class game_files:
                     if preview:
                         preview_file_path = os.path.join(preview_dir_path, relative_file_path) + '.xml'
                         os.makedirs(os.path.dirname(preview_file_path), exist_ok=True)
-                        gf.xml.write(preview_file_path, encoding="utf-8", xml_declaration=True)
+                        gf.xml.write(preview_file_path, encoding = "utf-8", xml_declaration = True)
                         if verbose:
                             sys.stdout.write('.')
                     xml_file_path = os.path.join(output_dir_path, relative_file_path) + '.xml'
                     os.makedirs(os.path.dirname(xml_file_path), exist_ok=True)
-                    gf.xml.write(xml_file_path, encoding="utf-8", xml_declaration=True)
+                    gf.xml.write(xml_file_path, encoding = "utf-8", xml_declaration = True)
                     if verbose:
                         sys.stdout.write('.')
                     self.__tool.convert_xml_to_loca(xml_file_path)
@@ -547,17 +579,26 @@ class game_files:
                             shutil.copy(gf.unpacked_file_path, preview_file_path)
                         shutil.copy(gf.unpacked_file_path, file_path)
                     else:
-                        raise RuntimeError(f"failed to process an external file {gf.unpacked_file_path} with target relative path {gf.relative_file_path}")
+                        raise RuntimeError(f'failed to process an external file {gf.unpacked_file_path} with target relative path {gf.relative_file_path}')
                     if verbose:
                         sys.stdout.write('. done\n')
                 case unknown_format:
-                    raise ValueError(F"Unknown file format: {unknown_format}")
+                    raise ValueError(f'Unknown file format: {unknown_format}')
         if verbose:
             sys.stdout.write('Generating the .pak file .')
-        pak_file = self.__tool.pack(self.output_dir_path, os.path.join(self.pak_path, self.__mod_name + ".pak"))
+        pak_file_name = self.__mod_name + '.pak'
+        pak_file = self.__tool.pack_deprecated(self.output_dir_path, os.path.join(self.pak_path, pak_file_name))
         if verbose:
             sys.stdout.write('.')
         md5 = hashlib.new('md5')
+
+        if progress_callback is not None:
+            s = f'Creating the pak: {pak_file_name}'
+            if len(s) > PROGRESS_MSG_LEN:
+                n = len(s) - PROGRESS_MSG_LEN
+                s = s[:n - 2] + '...'
+            progress_callback(100, 100, s)
+
         with open(pak_file, 'rb') as f:
             buf = f.read(1024 * 1024)
             while buf:
@@ -570,12 +611,16 @@ class game_files:
             sys.stdout.write('. done\n')
         self.create_info_json(md5_hash)
 
+        if progress_callback is not None:
+            progress_callback(100, 100, 'Succesfully finished.')
 
-    def build_mod_io_pak(self) -> str:
+        return pak_file
+
+    def repack_mod(self) -> str:
         output_pak_path = os.path.join(self.pak_path, self.__mod_name + "_mod.io.pak")
         if os.path.isfile(output_pak_path):
             os.unlink(output_pak_path)
-        return self.__tool.pack(self.output_dir_path, output_pak_path)
+        return self.__tool.pack_deprecated(self.output_dir_path, output_pak_path)
 
     def get_mod_hash_and_version(self, pak_path: str) -> tuple[str, tuple[int, int, int, int]]:
         meta_lsx_path = self.__tool.unpack(pak_path, f'Mods/{self.__mod_name}/meta.lsx')

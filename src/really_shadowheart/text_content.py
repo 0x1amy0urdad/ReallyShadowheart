@@ -2,15 +2,17 @@ from __future__ import annotations
 
 import bg3moddinglib as bg3
 
-from .context import files
+from .context import get_context
 
 ########################################################
 # Create custom strings, put them in english.loca.xml
 ########################################################
 
 def create_text_content() -> None:
+    files = get_context().files
+
     content = {
-        "h744690e1g4055g49b9gba6cgf175c791781f": (1, ""),
+        #"h744690e1g4055g49b9gba6cgf175c791781f": (1, ""),
         "h8ce2f791g872eg4e96g9fc9g28bf3bf54a34": (1, "Rehearsal"),
 
         #
@@ -348,7 +350,7 @@ def create_text_content() -> None:
         "hbb1bd14dg56f9g40f3g8ee9gb7353e6d6d04": (1, "[This is an ancient notebook, whose ink is faded and pages are starting to crumble. It's not easy, but some words can still be made out.]&lt;br&gt;&lt;br&gt;&lt;br&gt;How do you describe events like these? An accident? A tragedy? The cruelty of fate?&lt;br&gt;It does not matter. Isobel is just as dead. &lt;br&gt;&lt;br&gt; I can't remember what happened with any clarity. We were negotiating. She with [...] I led the druids. [...] words grew heated [...] threw the first punch. It was mayhem. &lt;br&gt;[...] stared at me, my glaive's blade buried in her stomach and shock in her eyes. I can't believe she wanted to hurt me. It was pure instinct - the heat of combat. &lt;br&gt;&lt;br&gt;[...] washed the blood from my hands. My glaive was still there, coated in her blood, but something else felt different. There's a sickness in the blade. It seems cursed, but by whom? Selûne herself? &lt;br&gt;&lt;br&gt;It is locked away now. I do not trust its power in the wrong hands. And I never want to see it again."),
         "h2a7a961bg5a07g4adbgbab8g56db98e84814": (1, "I'd love to help you wash all that sand out of your hair."),
         "h93d2e7aeg716eg463fga1dag2f1110664d35": (1, "You don't waste time, do you?"),
-        "h18ffbc26g6b50g4068g8b32g273ff82086a0": (1,  "Yes. I ... love you."),
+        "h18ffbc26g6b50g4068g8b32g273ff82086a0": (1, "Yes. I ... love you."),
         "h8aa24494g5c0dg400dg810bg94afbed5b8fd": (1, "Did the noblestalk help you recall anything from your past?"),
         "hd23c4788gb0c8g4facg9e05gc0c3d502e3f4": (1, "Game Over"),
         "hf02c49c2g16e9g4941ga0dcgbba1f22c2879": (1, "Gods' favourite princess will end your playthrough."),
@@ -365,14 +367,18 @@ def create_text_content() -> None:
         "he395601bg05fcg416agabc4gdf8ee6ce70c1": (1, "I'm sorry, I think you need some time alone. Let's talk later."),
         "h2000e55bgdf1ag4915gbca3g271285815cbf": (1, "I found another Night Orchid. Thought you might like it. Here, take it."),
         "h6e490525g7174g4ff1g98dagd0f6b4165d1f": (1, "You... you thought of me? Thank you, it's beautiful."),
-        "h2a651adeg8c32g4c1bgbd58g098d3c7ffe84": (1, "You look poorly.")
+        "h7459ebc8g8031g439bgb1f6g2bfeb9547e3c": (1, "Do you think the tadpole caused it?"),
+        "hd7a3991bgf469g4ac5gaba9g205578c38b73": (1, "Why do you think it happened right at that moment?"),
+        "h7fc2d5d7g33e5g4811g9541gcb3a9dbbdc4f": (1, "I'm worried it could hurt me. How dangerous is it?"),
+        "ha4c29745g1474g400fgb120g867c851ba716": (1, "I don't like the look of it. I'll keep an eye on you, just in case."),
+        "hce38ab83ga0afg4fdfg95c1gb4c3fa8fe151": (1, "Hmmm. I didn't have odd magical flares since I was infected."),
     }
     loca = bg3.loca_object(files.add_new_file(files.get_loca_relative_path()))
     loca.add_lines(content)
 
 
 def create_string_keys() -> None:
-    strings = bg3.string_keys.create_new(files, 'Misc')
+    strings = bg3.string_keys.create_new(get_context().files, 'Misc')
 
     # The original druid diary from EA
     strings.add_string_key('hbb1bd14dg56f9g40f3g8ee9gb7353e6d6d04', 'DEN_DruidLair_CreepyDiary')

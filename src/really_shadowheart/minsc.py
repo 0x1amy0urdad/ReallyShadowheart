@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import bg3moddinglib as bg3
 
-from .context import game_assets
+from .context import get_context
 from .flags import *
 
 
 def patch_minsc_conversations() -> None:
+    game_assets = get_context().assets
+
     ########################################################################################
     # Minsc_InParty_Nested_PersonalQuestions.lsf
     ########################################################################################

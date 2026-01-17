@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import bg3moddinglib as bg3
 
-from .context import game_assets
+from .context import get_context
 from .flags import *
 
 ########################################################################################
@@ -12,6 +12,8 @@ from .flags import *
 ########################################################################################
 
 def create_betrayal_reactions() -> None:
+    game_assets = get_context().assets
+
     ########################################################################################
     # Astarion_InParty2_Nested_TopicalGreetings.lsf
     ########################################################################################

@@ -2,10 +2,12 @@ from __future__ import annotations
 
 import bg3moddinglib as bg3
 
-from .context import game_assets
+from .context import get_context
 from .flags import *
 
 def patch_dapper_drow_intimacy() -> None:
+    game_assets = get_context().assets
+
     ##############################################################################################
     # Dialog: WYR_DapperDrow_SiblingsThreeWay.lsf
     ##############################################################################################
@@ -71,6 +73,8 @@ def patch_dapper_drow_intimacy() -> None:
 
 
 def patch_sharess_caress() -> None:
+    game_assets = get_context().assets
+
     ##############################################################################################
     # Dialog: WYR_DapperDrow_SiblingsThreeWay.lsf
     ##############################################################################################

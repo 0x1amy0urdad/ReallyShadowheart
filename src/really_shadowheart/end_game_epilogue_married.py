@@ -2,13 +2,11 @@ from __future__ import annotations
 
 import bg3moddinglib as bg3
 
-from .context import game_assets
+from .context import get_context
 from .flags import *
 
 def create_conversation_epilogue_married_couple() -> None:
-
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Act3/EndGame/Epilogue/EPI_Epilogue_Shadowheart.lsf'))
-    # t = bg3.timeline_object(files.get_file('Gustav', 'Public/GustavDev/Timeline/Generated/EPI_Epilogue_Shadowheart.lsf'), d)
+    game_assets = get_context().assets
 
     ab = game_assets.get_modded_dialog_asset_bundle('EPI_Epilogue_Shadowheart')
     d = bg3.dialog_object(ab.dialog)

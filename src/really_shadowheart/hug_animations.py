@@ -4,10 +4,7 @@ import bg3moddinglib as bg3
 import os
 import os.path
 
-from .context import (
-    game_assets,
-    root_path
-)
+from .context import get_context
 from .flags import *
 
 entry_point_node_uuid = '5df536d1-33bb-448c-a4a4-dea0329b4f6e'
@@ -39,6 +36,8 @@ hug_reaction_node_uuid = '05ee0346-137b-d7b7-54b6-b14f0e8a5264'
 ###########################################################################
 
 def add_hugs_to_the_story() -> None:
+    game_assets = get_context().assets
+
     ###########################################################################
     # Dialog: ShadowHeart_InParty2_Nested_ShadowCurseChapter.lsf
     # Hug her after she spares Nightsong (at the Thorm mausoleum entrance)
@@ -132,6 +131,8 @@ def add_hugs_to_the_story() -> None:
 
 
 def create_hugs_dialogs() -> None:
+    game_assets = get_context().assets
+    root_path = get_context().root_path
 
     dialog_src_lsx = os.path.join(root_path, 'resources', 'really_shadowheart', 'templates', 'Dialog_ShadowHeart_InParty2_Nested_ShadowheartHug_Empty.lsf.lsx')
     dialog_file = bg3.game_file(game_assets.tool, "", source_file_path = dialog_src_lsx)
@@ -350,15 +351,13 @@ def create_hugs_dialogs() -> None:
 
 
 def create_hugs_timeline() -> None:
+    game_assets = get_context().assets
+    root_path = get_context().root_path
+
     ###########################################################################
     # Timeline: ShadowHeart_InParty2_Nested_ShadowheartHug.lsf
     # This cell contains timelines for dialogs defined in the cell above 
     ###########################################################################
-
-    # timeline_src_lsx = os.path.join(root_path, 'resources', 'templates', 'Timeline_ShadowHeart_InParty2_Nested_ShadowheartHug_Empty.lsf.lsx')
-    # files.add_external_file(timeline_src_lsx, 'Public/GustavDev/Timeline/Generated/ShadowHeart_InParty2_Nested_ShadowheartHug.lsf')
-    # d = bg3.dialog_object(files.get_file(None, 'Mods/GustavDev/Story/DialogsBinary/Companions/ShadowHeart_InParty2_Nested_ShadowheartHug.lsf'))
-    # t = bg3.timeline_object(files.get_file(None, 'Public/GustavDev/Timeline/Generated/ShadowHeart_InParty2_Nested_ShadowheartHug.lsf'), d)
 
     timeline_src_lsx = os.path.join(root_path, 'resources', 'really_shadowheart', 'templates', 'Timeline_ShadowHeart_InParty2_Nested_ShadowheartHug_Empty.lsf.lsx')
     timeline_file = bg3.game_file(game_assets.tool, "", source_file_path = timeline_src_lsx)

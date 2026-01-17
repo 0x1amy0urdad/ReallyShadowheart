@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import bg3moddinglib as bg3
 
-from .context import game_assets
+from .context import get_context
 from .dialog_overrides import add_dialog_dependency, get_dialog_uuid
 from .flags import *
 
@@ -15,8 +15,9 @@ from .flags import *
 #################################################################################################
 
 def create_conversation_gur_monster_hunter_putrid_bog() -> None:
+    game_assets = get_context().assets
 
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/Gustav/Story/DialogsBinary/Companions/Origin_Moments/HAG_GurHunter_OM_Astarion_COM.lsf'))
+
     ab = game_assets.get_modded_dialog_asset_bundle('HAG_GurHunter_OM_Astarion_COM')
     d = bg3.dialog_object(ab.dialog)
 

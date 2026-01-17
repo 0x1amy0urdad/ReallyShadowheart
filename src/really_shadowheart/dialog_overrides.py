@@ -3,12 +3,14 @@ from __future__ import annotations
 import bg3moddinglib as bg3
 
 from .assets import ASSETS_OVERRIDES
-from .context import game_assets
+from .context import get_context
 from .flags import *
 
 OVERRIDES_LOOKUP_MAP: dict[str, str]
 
 def create_overrides_lookup_map() -> dict[str, str]:
+    game_assets = get_context().assets
+
     result = dict[str, str]()
     index = game_assets.index
     for dialog_name, new_uuids in ASSETS_OVERRIDES.items():
@@ -19,6 +21,8 @@ def create_overrides_lookup_map() -> dict[str, str]:
 
 
 def get_dialog_uuid(dialog_name: str) -> str:
+    game_assets = get_context().assets
+
     dialog_uuid = game_assets.index.get_entry(dialog_name)['dialog_uuid']
     if bg3.feature_enabled('override', True, False):
         if dialog_uuid in OVERRIDES_LOOKUP_MAP:
@@ -27,6 +31,8 @@ def get_dialog_uuid(dialog_name: str) -> str:
 
 
 def add_dialog_dependency(ab: bg3.dialog_asset_bundle, dependency_uuid: str) -> None:
+    game_assets = get_context().assets
+
     dialog_res = game_assets.get_dialog_resource(ab.modded_dialog_uuid)
     child_resources = dialog_res.findall('./children/node[@id="childResources"]')
     for child_resource in child_resources:
@@ -39,6 +45,8 @@ def add_dialog_dependency(ab: bg3.dialog_asset_bundle, dependency_uuid: str) -> 
 
 
 def override_nested_dialogs_in_dialog(dialog_name: str) -> None:
+    game_assets = get_context().assets
+
     ab = game_assets.get_modded_dialog_asset_bundle(dialog_name)
     d = bg3.dialog_object(ab.dialog)
     nested_overides = False

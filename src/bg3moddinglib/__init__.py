@@ -11,9 +11,10 @@ from ._build import (
     run_build_procedures
 )
 from ._config import config
-from ._logger import get_logger, setup_logger
+from ._logger import get_logger, setup_console_logger, setup_logger
 
 from ._assets import bg3_assets, dialog_asset_bundle, dialog_index
+from ._camera_tool import scene_camera_tool
 from ._context import context
 from ._dialog import dialog_flag, dialog_object, speaker_flag, text_content
 from ._dialog_differ import dialog_differ
@@ -24,8 +25,10 @@ from ._flags import (
     GLOBAL_FLAG,
     LOCAL_FLAG,
     OBJECT_FLAG,
+    create_flags,
     flag,
     flag_group,
+    flag_factory,
     flag_object,
     flag_registry,
 )
@@ -35,9 +38,11 @@ from ._loca import loca_object, text_bank
 from ._meta_lsx import create_meta_lsx
 from ._mod_tools import (
     conflict_resolution_settings,
+    conflict_resolution_method,
     mod_conflict,
     mod_info,
-    mod_manager
+    mod_manager,
+    mod_metadata
 )
 from ._pak_content import (
     content_bundle,
@@ -53,8 +58,13 @@ from ._soundbank import soundbank_object
 from ._string_keys import string_key, string_keys
 from ._timeline import timeline_object, timeline_phase
 from ._timeline_differ import normalized_tl_phase, normalized_tl_phases, timeline_differ
-from ._tags import tag_object
-from ._tool import bg3_modding_tool
+from ._tags import (
+    create_tags,
+    tag_factory,
+    tag_object,
+    tag_registry,
+)
+from ._tool import bg3_modding_tool, DOTNET_INITIALIZED
 from ._types import XmlElement
 
 import xml.etree.ElementTree as et

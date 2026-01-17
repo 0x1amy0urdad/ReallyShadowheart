@@ -191,7 +191,8 @@ class pak_content:
                 cb.timeline_uuid = entry['timeline_uuid']
         self.__content_bundles = dict[str, content_bundle]()
         for fn, cb in content_bundles.items():
-            self.__content_bundles[cb.dialog_uuid] = cb
+            if cb.dialog_uuid:
+                self.__content_bundles[cb.dialog_uuid] = cb
 
     @property
     def tool(self) -> bg3_modding_tool:
@@ -208,6 +209,9 @@ class pak_content:
     @property
     def content_index(self) -> tuple[str, ...]:
         return tuple(self.__content_bundles.keys())
+
+    def has_content_bundle(self, dialog_uuid: str) -> bool:
+        return dialog_uuid.lower() in self.__content_bundles
 
     def get_content_bundle(self, dialog_uuid: str) -> content_bundle:
         dialog_uuid = dialog_uuid.lower()

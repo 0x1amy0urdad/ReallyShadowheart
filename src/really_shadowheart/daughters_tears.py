@@ -2,11 +2,14 @@ from __future__ import annotations
 
 import bg3moddinglib as bg3
 
-from .context import game_assets
+from .context import get_context
 from .flags import *
 
 
 def patch_daughter_tears() -> None:
+    game_assets = get_context().assets
+    files = get_context().files
+
     ########################################################################################
     # CAMP_Shadowheart_DaughterTears_SD.lsf
     ########################################################################################
@@ -111,6 +114,8 @@ def patch_daughter_tears() -> None:
 
 
 def patch_nightfall() -> None:
+    game_assets = get_context().assets
+
     ########################################################################################
     # CAMP_Shadowheart_Nightfall_SD_ROM.lsf
     ########################################################################################
@@ -364,7 +369,7 @@ def cine_post_dj_selune_prayer_loop(
             ),
             (
                 # tilt down
-                t.create_value_key(time = '0.0', value = bg3.euler_to_quaternion(10.0, 0.0, 0.0, sequence = 'xyz'), interpolation_type = 0),
+                t.create_value_key(time = '0.0', value = bg3.euler_to_quaternion(0.0, 10.0, 0.0, sequence = 'yxz'), interpolation_type = 0),
             ),
             (), ()
         ))
@@ -483,7 +488,7 @@ def cine_post_dj_selune_prayer_loop(
             ),
             (
                 # tilt down
-                t.create_value_key(time = '0.0', value = bg3.euler_to_quaternion(7.0, 0.0, 0.0, sequence = 'xyz'), interpolation_type = 0),
+                t.create_value_key(time = '0.0', value = bg3.euler_to_quaternion(0.0, 7.0, 0.0, sequence = 'yxz'), interpolation_type = 0),
             ),
             (), ()
         ),
@@ -568,7 +573,7 @@ def cine_post_dj_selune_prayer_end(
             ),
             (
                 # tilt down
-                t.create_value_key(time = '0.0', value = bg3.euler_to_quaternion(7.0, 0.0, 0.0, sequence = 'xyz'), interpolation_type = 0),
+                t.create_value_key(time = '0.0', value = bg3.euler_to_quaternion(0.0, 7.0, 0.0, sequence = 'yxz'), interpolation_type = 0),
             ),
             (), ()
         ),
@@ -611,6 +616,8 @@ def cine_post_dj_selune_prayer_end(
 
 
 def create_daughter_tears_entry_point() -> None:
+    game_assets = get_context().assets
+
     ###########################################################################
     # Dialog: CAMP_Shadowheart_DaughterTears_SD.lsf
     # if hugs weren't enabled in act 2, this enables them in act 3.

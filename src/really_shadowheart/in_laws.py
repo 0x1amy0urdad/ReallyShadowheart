@@ -2,13 +2,12 @@ from __future__ import annotations
 
 import bg3moddinglib as bg3
 
-from .context import game_assets
+from .context import get_context
 from .flags import *
 
 
 def create_father_blessing() -> None:
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Camp/CAMP_ShadowheartFather.lsf'))
-    # t = bg3.timeline_object(files.get_file('Gustav', 'Public/GustavDev/Timeline/Generated/CAMP_ShadowheartFather.lsf'), d)
+    game_assets = get_context().assets
 
     ab = game_assets.get_modded_dialog_asset_bundle('CAMP_ShadowheartFather')
     d = bg3.dialog_object(ab.dialog)
@@ -125,8 +124,8 @@ def create_father_blessing() -> None:
 
 
 def create_mother_blessing() -> None:
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Camp/CAMP_ShadowheartMother.lsf'))
-    # t = bg3.timeline_object(files.get_file('Gustav', 'Public/GustavDev/Timeline/Generated/CAMP_ShadowheartMother.lsf'), d)
+    game_assets = get_context().assets
+    files = get_context().files
 
     ab = game_assets.get_modded_dialog_asset_bundle('CAMP_ShadowheartMother')
     d = bg3.dialog_object(ab.dialog)
@@ -405,8 +404,7 @@ def create_hug_timeline(
 
 
 def patch_shadowheart_father_conversation() -> None:
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Camp/CAMP_ShadowheartFather.lsf'))
-    # t = bg3.timeline_object(files.get_file('Gustav', 'Public/GustavDev/Timeline/Generated/CAMP_ShadowheartFather.lsf'), d)
+    game_assets = get_context().assets
 
     ab = game_assets.get_modded_dialog_asset_bundle('CAMP_ShadowheartFather')
     d = bg3.dialog_object(ab.dialog)
@@ -541,8 +539,7 @@ def patch_shadowheart_father_conversation() -> None:
 
 
 def patch_shadowheart_mother_conversation() -> None:
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Camp/CAMP_ShadowheartMother.lsf'))
-    # t = bg3.timeline_object(files.get_file('Gustav', 'Public/GustavDev/Timeline/Generated/CAMP_ShadowheartMother.lsf'), d)
+    game_assets = get_context().assets
 
     ab = game_assets.get_modded_dialog_asset_bundle('CAMP_ShadowheartMother')
     d = bg3.dialog_object(ab.dialog)
@@ -683,6 +680,8 @@ def patch_shadowheart_mother_conversation() -> None:
 
 
 def patch_parents_visuals() -> None:
+    game_assets = get_context().assets
+
     gf = game_assets.files.get_file('Gustav', 'Public/GustavDev/Content/[PAK]_CharacterVisuals/_merged.lsf', mod_specific = True)
 
     children = gf.xml.find('./region[@id="CharacterVisualBank"]/node[@id="CharacterVisualBank"]/children')

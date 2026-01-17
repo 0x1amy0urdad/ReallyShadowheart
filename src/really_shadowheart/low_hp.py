@@ -2,12 +2,14 @@ from __future__ import annotations
 
 import bg3moddinglib as bg3
 
-from .context import game_assets
+from .context import get_context
 from .dialog_overrides import add_dialog_dependency, get_dialog_uuid
 from .flags import *
 
 
 def create_low_hp_tav_dialog() -> None:
+    game_assets = get_context().assets
+
     ab = game_assets.get_modded_dialog_asset_bundle('ShadowHeart_InParty')
     d = bg3.dialog_object(ab.dialog)
 

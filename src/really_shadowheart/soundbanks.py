@@ -2,14 +2,14 @@ from __future__ import annotations
 
 import bg3moddinglib as bg3
 
-from .context import files
+from .context import get_context
 
 #################################################################
 # Soundbank: Shadowheart, 3ed74f063c6042dc83f6f034cb47c679.lsf
 #################################################################
 
 def create_shadowheart_voice_metadata() -> None:
-    soundbank = bg3.soundbank_object.create_new(files, bg3.SPEAKER_SHADOWHEART)
+    soundbank = bg3.soundbank_object.create_new(get_context().files, bg3.SPEAKER_SHADOWHEART)
     soundbank.add_voice_metadata('h7b905a4fgda7dg4417g9c24g768f4ef486e4', 04.801)
     soundbank.add_voice_metadata('h0d2027f1g386eg45bbg8a6ag7ab77f651a6c', 04.334)
     soundbank.add_voice_metadata('h9b00b4fbgd0e0g4bbcgadc0gdbea99682ab5', 14.938)
@@ -49,12 +49,12 @@ def create_shadowheart_voice_metadata() -> None:
     soundbank.add_voice_metadata('h6e490525g7174g4ff1g98dagd0f6b4165d1f', 07.500)
 
 def create_creep_voice_metadata() -> None:
-    soundbank = bg3.soundbank_object.create_new(files, bg3.SPEAKER_HALSIN)
+    soundbank = bg3.soundbank_object.create_new(get_context().files, bg3.SPEAKER_HALSIN)
     soundbank.add_voice_metadata('hb6f8b00fg8bd2g4a0dg973bg58b5fe96021a', 09.975)
     soundbank.add_voice_metadata('ha06ce793g2c90g4073gaa0dg676340b475ec', 14.000)
 
 def create_narrator_voice_metadata() -> None:
-    soundbank = bg3.soundbank_object.create_new(files, bg3.SPEAKER_NARRATOR)
+    soundbank = bg3.soundbank_object.create_new(get_context().files, bg3.SPEAKER_NARRATOR)
     soundbank.add_voice_metadata('h56f32cd2g389dg407cg98b4g002620edc107', 05.954)
     soundbank.add_voice_metadata('he112f6b7gfd35g4cabg97dag817ab8be7767', 06.965)
     soundbank.add_voice_metadata('hdd08feb1g3693g4216g9986gbbfe2e47e6ea', 07.866)
@@ -63,24 +63,24 @@ def create_narrator_voice_metadata() -> None:
     soundbank.add_voice_metadata('h20e0ce3bg8aceg4fa8gbb65g9c09297b9901', 09.347)
 
 def create_gale_voice_metadata() -> None:
-    soundbank = bg3.soundbank_object.create_new(files, bg3.SPEAKER_GALE)
+    soundbank = bg3.soundbank_object.create_new(get_context().files, bg3.SPEAKER_GALE)
     soundbank.add_voice_metadata('h3d86f328g1291g4680ga4f7g06c919eb06c2', 04.166)
     soundbank.add_voice_metadata('hb40e2ddag4ab3g47c7g9861g22850b737c56', 06.982)
     soundbank.add_voice_metadata('he2199212gc803g41a1gbabfg213c05b770bb', 01.916)
     soundbank.add_voice_metadata('h9c98d4f5ga8dfg452bgb17fg9b9375c17fde', 03.529)
 
 def create_wyll_voice_metadata() -> None:
-    soundbank = bg3.soundbank_object.create_new(files, bg3.SPEAKER_WYLL)
+    soundbank = bg3.soundbank_object.create_new(get_context().files, bg3.SPEAKER_WYLL)
     soundbank.add_voice_metadata('h3c4a24a0g35f8g47e0ga56dgf124a480354d', 03.406)
     soundbank.add_voice_metadata('hb1a84415g63e2g4751gbfb7g0ff140015290', 04.222)
 
 def create_astarion_voice_metadata() -> None:
-    soundbank = bg3.soundbank_object.create_new(files, bg3.SPEAKER_ASTARION)
+    soundbank = bg3.soundbank_object.create_new(get_context().files, bg3.SPEAKER_ASTARION)
     soundbank.add_voice_metadata('h0a972525gfc99g48dcgb8edgadbd9f45d0f4', 05.097)
     soundbank.add_voice_metadata('h54a6cfa4g557fg416fg8f9dg98bc9423e32f', 05.243)
 
 def create_laezel_voice_metadata() -> None:
-    soundbank = bg3.soundbank_object.create_new(files, bg3.SPEAKER_LAEZEL)
+    soundbank = bg3.soundbank_object.create_new(get_context().files, bg3.SPEAKER_LAEZEL)
     soundbank.add_voice_metadata('h2a85cd55gb187g4ee6gacbcg024ccdd69b82', 02.739)
     soundbank.add_voice_metadata('h3109256dg4f09g4367g8e08g83d4a3cb063f', 03.437)
 

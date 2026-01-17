@@ -20,11 +20,23 @@ class bg3_modding_env:
     __divine_exe: str
     __bg3_data_path: str
     __bg3_data_path_default: str
+    __bg3_toolkit_path: str
+    __bg3_toolkit_path_default: str
+    __modio_endpoint: str
+    __modio_endpoint_default: str
+    __modio_api_key: str
+    __modio_api_key_default: str
+    __modio_api_token: str
+    __modio_api_token_default: str
     __output_path: str
     __output_path_default: str
     __index_path: str
     __index_path_default: str
     __bg3_data_paths: dict[str, str]
+    __bg3_toolkit_paths: dict[str, str]
+    __modio_endpoints: dict[str, str]
+    __modio_api_keys: dict[str, str]
+    __modio_api_tokens: dict[str, str]
     __output_paths: dict[str, str]
     __index_paths: dict[str, str]
 
@@ -34,8 +46,12 @@ class bg3_modding_env:
             env_root_path: str,
             /,
             bg3_data_path: str | None = None,
-            output_path: str | None = None,
-            index_path: str | None = None,
+            bg3_toolkit_path: str | None = None,
+            modio_endpoint: str | None = None,
+            modio_api_key: str | None = None,
+            modio_api_token: str | None = None,
+            output_dir: str | None = None,
+            index_dir: str | None = None,
             skip_config: bool = False
     ) -> None:
         self.__env_root_path = env_root_path
@@ -43,17 +59,29 @@ class bg3_modding_env:
         self.__lslib_path = os.path.join(self.__env_root_path, "lslib")
         self.__divine_exe = os.path.join(self.__lslib_path, "Packed", "Tools", "divine.exe")
         self.__bg3_data_path = ""
-        self.__output_path = os.path.join(self.__env_root_path, "out")
-        self.__index_path = os.path.join(self.__env_root_path, "index")
+        self.__bg3_toolkit_path = ""
+        self.__modio_endpoint = ""
+        self.__modio_api_key = ""
+        self.__modio_api_token = ""
+        self.__output_path = ""
+        self.__index_path = ""
         self.__get_lslib()
         if not skip_config:
             self.__read_config()
-        if bg3_data_path is not None:
+        if bg3_data_path is not None and not self.__bg3_data_path:
             self.__bg3_data_path = translate_path(bg3_data_path)
-        if output_path is not None:
-            self.__output_path = translate_path(output_path)
-        if index_path is not None:
-            self.__index_path = translate_path(index_path)
+        if bg3_toolkit_path is not None and not self.__bg3_toolkit_path:
+            self.__bg3_toolkit_path = translate_path(bg3_toolkit_path)
+        if modio_endpoint is not None and not self.__modio_endpoint:
+            self.__modio_endpoint = modio_endpoint
+        if modio_api_key is not None and not self.__modio_api_key:
+            self.__modio_api_key = modio_api_key
+        if modio_api_token is not None and not self.__modio_api_token:
+            self.__modio_api_token = modio_api_token
+        if output_dir is not None and not self.__output_path:
+            self.__output_path = translate_path(os.path.join(self.__env_root_path, output_dir))
+        if index_dir is not None and not self.__index_path:
+            self.__index_path = translate_path(os.path.join(self.__env_root_path, index_dir))
         self.__sanity_check()
 
     @property
@@ -73,6 +101,22 @@ class bg3_modding_env:
         return self.__bg3_data_path
 
     @property
+    def bg3_toolkit_path(self) -> str:
+        return self.__bg3_toolkit_path
+
+    @property
+    def modio_endpoint(self) -> str:
+        return self.__modio_endpoint
+
+    @property
+    def modio_api_key(self) -> str:
+        return self.__modio_api_key
+
+    @property
+    def modio_api_token(self) -> str:
+        return self.__modio_api_token
+
+    @property
     def output_path(self) -> str:
         return self.__output_path
 
@@ -83,12 +127,20 @@ class bg3_modding_env:
     def use_config(self, name: str) -> None:
         if name == 'default':
             self.__bg3_data_path = self.__bg3_data_path_default
+            self.__bg3_toolkit_path = self.__bg3_toolkit_path_default
+            self.__modio_endpoint = self.__modio_endpoint_default
+            self.__modio_api_key = self.__modio_api_key_default
+            self.__modio_api_token = self.__modio_api_token_default
             self.__output_path = self.__output_path_default
             self.__index_path = self.__index_path_default
         elif name not in self.__bg3_data_paths or name not in self.__output_paths:
             raise KeyError(f"Configuration with name {name} doesn't exist")
         else:
             self.__bg3_data_path = self.__bg3_data_paths[name]
+            self.__bg3_toolkit_path = self.__bg3_toolkit_paths[name]
+            self.__modio_endpoint = self.__modio_endpoints[name]
+            self.__modio_api_key = self.__modio_api_keys[name]
+            self.__modio_api_token = self.__modio_api_tokens[name]
             self.__output_path = translate_path(os.path.join(self.__env_root_path, self.__output_paths[name]))
             self.__index_path = translate_path(os.path.join(self.__env_root_path, self.__index_paths[name]))
 
@@ -130,6 +182,30 @@ class bg3_modding_env:
                 self.__bg3_data_path = translate_path(bg3_data_paths[default_key])
                 self.__bg3_data_path_default = self.__bg3_data_path
                 self.__bg3_data_paths = bg3_data_paths
+            if 'bg3_toolkit_paths' in cfg and isinstance(cfg['bg3_toolkit_paths'], dict):
+                bg3_toolkit_paths = cast(dict[str, str], cfg['bg3_toolkit_paths'])
+                default_key = bg3_toolkit_paths['default']
+                self.__bg3_toolkit_path = translate_path(bg3_toolkit_paths[default_key])
+                self.__bg3_toolkit_path_default = self.__bg3_toolkit_path
+                self.__bg3_toolkit_paths = bg3_toolkit_paths
+            if 'modio_endpoints' in cfg and isinstance(cfg['modio_endpoints'], dict):
+                modio_endpoints = cast(dict[str, str], cfg['modio_endpoints'])
+                default_key = modio_endpoints['default']
+                self.__modio_endpoint = modio_endpoints[default_key]
+                self.__modio_endpoint_default = self.__modio_endpoint
+                self.__modio_endpoints = modio_endpoints
+            if 'modio_api_keys' in cfg and isinstance(cfg['modio_api_keys'], dict):
+                modio_api_keys = cast(dict[str, str], cfg['modio_api_keys'])
+                default_key = modio_api_keys['default']
+                self.__modio_api_key = modio_api_keys[default_key]
+                self.__modio_api_key_default = self.__modio_api_key
+                self.__modio_api_keys = modio_api_keys
+            if 'modio_api_tokens' in cfg and isinstance(cfg['modio_api_tokens'], dict):
+                modio_api_tokens = cast(dict[str, str], cfg['modio_api_tokens'])
+                default_key = modio_api_tokens['default']
+                self.__modio_api_token = modio_api_tokens[default_key]
+                self.__modio_api_token_default = self.__modio_api_token
+                self.__modio_api_tokens = modio_api_tokens
             if 'output_paths' in cfg and isinstance(cfg['output_paths'], dict):
                 output_paths = cast(dict[str, str], cfg['output_paths'])
                 default_key = output_paths['default']

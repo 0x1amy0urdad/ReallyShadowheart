@@ -1,21 +1,18 @@
 TODO list
 
 This is an un-ordered TODO list. I will be adding all good ideas suggested by the community to keep track of them.
-* Add a new question where Tav/Durge could ask her how she feels and if she needs help if her HP is below 50%.
-* Shadowheart loves flowers. After gifting her the night orchid, Tav should be able to gift her more flowers.
+
+* Tav/Durge could invite Shadowheart to roam the streets of Bladur's Gate. It could be a set of short cutscenes on streets of BG where they walk holding hands, kiss, maybe dance; consider re-using some animations from Aylin/Isobel (there are a few great ones)
 * If Shadowheart eats the Noblestalk, she should be able to hug Nocturne
+* Add a new question where Tav/Durge could ask her how she feels and if she needs help if her HP is below 50%.
 * Add more night sleep cutscenes; for example, if they sleep in Shadowheart's bedroll near the window, the moon is visible at certain camera angle.
 * Lakrissa has a few lines where she's borderline flirting with Tav. Perhaps, Shadowheart could react to that.
 * When Shadowheart says to Tav/Durge "you mean a lot to me", they could say something pleasant in return instead of being jerky.
 * There seems to be unused Shadowheart voice lines about Isobel. Their dialogs could be extended.
 * Add a conversation between Tav and Shadowheart when they descend into the cloister. Tav could ask Shadowheart to let them scout the area first instead of stepping into a trap. More conversations could be added after Viconia attempts to bargain with Tav and ask them to surrender Shadowheart.
-* Tav/Durge could invite Shadowheart to roam the streets of Bladur's Gate. It could be a set of short cutscenes on streets of BG where they walk holding hands, kiss, maybe dance; consider re-using some animations from Aylin/Isobel (there are a few great ones)
-* Tav/Durge could give certain books to Shadowheart: DJ's plea, the unclaimed, Selunite prayer book. Reading these books will trigger wound flare events or sassy reactions.
 * Epilogue: add Zae's animations (sober dancing)
 * Epilogue: Tav/Durge could ask Milil to play the dream walk, and invite Shadowheart to dance (Wyll's animation).
 * Slow dancing in camp (use one of Karlach's kiss animations, find appropriate music)
-* Minthara/creep confrontation: re-use the voice lines to reconstruct the dialog in camp between acts 2 & 3, before the night time gith attack and Emperor reveal
-* Implement the late redemption path, when Shadowheart kills the Nightsong, but reclaims herself at the last moment by saving her parents and rejecting Shar; basically, this means to enable Selunite dialogs on that path, and carefully merge them into the story
 * Tav/Durge could invite Shadowheart to drink wine at night when camping in the wilderness more than once. This means, a variant of act 1 romance cutscene could be re-played multiple times as long as the party is camping in the wilderness, Tav is dating Shadowheart and her approval is > 20 (40?).
 * Slow down approval gains, slow down progression of her warming up to Tav/Durge, make her answers less polite and more pointy (perhaps with some EA content)
 * When Shadowheart meets a wolf for the first time, she should get scared without a passive skill check. All subsequent encounters should use the skill check as usual. This would help players to avoid fishing for wolf scare to unlock the conversation about the woods and "wolf fear".
@@ -30,9 +27,13 @@ PARTIALLY DONE list
 
 DONE list
 
+* Implement the late redemption path, when Shadowheart kills the Nightsong, but reclaims herself at the last moment by saving her parents and rejecting Shar; basically, this means to enable Selunite dialogs on that path, and carefully merge them into the story
+* Tav/Durge could give certain books to Shadowheart: DJ's plea, the unclaimed, Selunite prayer book. Reading these books will trigger wound flare events or sassy reactions.
+* Shadowheart loves flowers. After gifting her the night orchid, Tav should be able to gift her more flowers.
 * Add "the chatty stool" to the elfsong camp in act 3. Also, remove Shar symbol from her nightstand.
 * Extended skinny dipping scene: Tav and Shadowheart repeatedly splash each other.
 * Suppress Shadowheart's banters while she's going through her Shar rejection crisis in late act 2.
+* Minthara/creep confrontation: re-use the voice lines to reconstruct the dialog in camp between acts 2 & 3, before the night time gith attack and Emperor reveal
 * Add sharran prayer dialog.
 * Add small romance dialogs initiated by Shadowheart. She may want Tav to kiss or hug her from time to time.
 * Add yet another question where Tav/Durge could ask her if she needs help after she takes damage from shadow curse. There could also be a teasing option, and a sarcastic one.

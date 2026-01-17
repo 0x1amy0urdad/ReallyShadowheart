@@ -54,27 +54,29 @@ class soundbank_object:
     def create_new(files: game_files, speaker: str) -> soundbank_object:
         if speaker == SPEAKER_NARRATOR:
             speaker = 'NARRATOR'
-        filename = speaker.replace('-', '')
-        soundbank_file = files.add_new_file(f'Mods/ModNameHere/Localization/English/Soundbanks/{filename}.lsf', is_mod_specific = True)
-        root_node = soundbank_file.root_node
-        root_node.append(et.fromstring('<version major="3" minor="2" revision="0" build="0" lslib_meta="v1,bswap_guids" />'))
-        root_node.append(et.fromstring(''.join((
-            '<region id="VoiceMetaData">',
-            '<node id="VoiceMetaData">',
-            '<children>',
-            '<node id="VoiceSpeakerMetaData">',
-            f'<attribute id="MapKey" type="FixedString" value="{speaker}" />',
-            '<children>',
-            '<node id="MapValue">',
-            '<children>',
-            '</children>',
-            '</node>',
-            '</children>',
-            '</node>',
-            '</children>',
-            '</node>',
-            '</region>'
-        ))))
+        filename = f'Mods/ModNameHere/Localization/English/Soundbanks/{speaker.replace('-', '')}.lsf'
+        already_initialized = files.contains_file(filename)
+        soundbank_file = files.add_new_file(filename, is_mod_specific = True)
+        if not already_initialized:
+            root_node = soundbank_file.root_node
+            root_node.append(et.fromstring('<version major="3" minor="2" revision="0" build="0" lslib_meta="v1,bswap_guids" />'))
+            root_node.append(et.fromstring(''.join((
+                '<region id="VoiceMetaData">',
+                '<node id="VoiceMetaData">',
+                '<children>',
+                '<node id="VoiceSpeakerMetaData">',
+                f'<attribute id="MapKey" type="FixedString" value="{speaker}" />',
+                '<children>',
+                '<node id="MapValue">',
+                '<children>',
+                '</children>',
+                '</node>',
+                '</children>',
+                '</node>',
+                '</children>',
+                '</node>',
+                '</region>'
+            ))))
         return soundbank_object(soundbank_file)
 
     @property
@@ -105,7 +107,13 @@ class soundbank_object:
             duration = get_required_bg3_attribute(value, 'Length')
             self.__index[handle] = (source, duration)
 
-    def add_voice_metadata(self, text_handle: str, duration: float | str, audio_file_name: str | None = None) -> None:
+    def add_voice_metadata(
+            self,
+            text_handle: str,
+            duration: float | str,
+            priority: str | None = 'P1_StoryDialog',
+            audio_file_name: str | None = None,
+    ) -> None:
         root_node = self.__file.root_node
         parent_node = root_node.find('./region[@id="VoiceMetaData"]/node[@id="VoiceMetaData"]/children/node[@id="VoiceSpeakerMetaData"]/children/node[@id="MapValue"]/children')
         if parent_node is None:
@@ -123,7 +131,7 @@ class soundbank_object:
                 <node id="MapValue">
                     <attribute id="Codec" type="FixedString" value="VORBIS" />
                     <attribute id="Length" type="float" value="{duration}" />
-                    <attribute id="Priority" type="FixedString" value="P1_StoryDialog" />
+                    <attribute id="Priority" type="FixedString" value="{priority}" />
                     <attribute id="Source" type="FixedString" value="{audio_file_name}" />
                 </node>
             </children>

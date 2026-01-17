@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import bg3moddinglib as bg3
 
-from .context import game_assets
+from .context import get_context
 from .flags import *
 
 ################################################################################################
@@ -12,6 +12,9 @@ sleep_together_entry_point_node_uuid = '80ad286d-cf0a-4737-9261-3b4a8e6ee797'
 existing_partnered_greetings_node_uuid = '4c2f28c3-4a1b-370a-73f8-d2bfcea53e9d' # existing node
 
 def create_greetings() -> None:
+    game_assets = get_context().assets
+    files = get_context().files
+
     ############################################################################################
     # Dialog: ShadowHeart_InParty2.lsf
     ############################################################################################
@@ -1457,12 +1460,11 @@ def create_greetings() -> None:
 
 
 def create_sharran_greetings() -> None:
+    game_assets = get_context().assets
+
     ############################################################################################
     # Dialog: ShadowHeart_InParty2.lsf
     ############################################################################################
-
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Companions/ShadowHeart_InParty2.lsf'))
-    # t = bg3.timeline_object(files.get_file('Gustav', 'Public/GustavDev/Timeline/Generated/ShadowHeart_InParty2.lsf'), d)
 
     ab = game_assets.get_modded_dialog_asset_bundle('ShadowHeart_InParty')
     d = bg3.dialog_object(ab.dialog)

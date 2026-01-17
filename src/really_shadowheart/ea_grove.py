@@ -2,10 +2,11 @@ from __future__ import annotations
 
 import bg3moddinglib as bg3
 
-from .context import game_assets
+from .context import get_context
 from .flags import *
 
 def create_reaction_to_sazza() -> None:
+    game_assets = get_context().assets
 
     #################################################################################################
     # DEN_CapturedGoblin_GuardsAvenge
@@ -468,6 +469,8 @@ def create_reaction_to_sazza() -> None:
 
 
 def create_reaction_arabella_death() -> None:
+    game_assets = get_context().assets
+
     #################################################################################################
     # DEN_ShadowDruid_SnakesCourt
     #################################################################################################
@@ -1013,6 +1016,8 @@ def create_reaction_arabella_death() -> None:
 
 
 def create_nettie_reaction() -> None:
+    game_assets = get_context().assets
+
     #################################################################################################
     # Dialog: DEN_Apprentice_Cyanide.lsf
     #################################################################################################

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import bg3moddinglib as bg3
 
-from .context import files
+from .context import get_context, MOD_NAME, MOD_UUID
 from .flags import *
 
 
@@ -23,6 +23,8 @@ def create_new_book_root_template(
         /,
         is_story_item: bool = False
 ) -> None:
+    files = get_context().files
+
     gf = files.add_new_file(f'Public/ModNameHere/RootTemplates/{root_template_uuid}.lsf', is_mod_specific = True)
     if gf.xml is None:
         raise RuntimeError('Failed to create a new root template')
@@ -62,7 +64,7 @@ def create_new_book_root_template(
             </node>
         </region>
         """))
-    books = bg3.string_keys.create_new(files, 'Misc')
+    books = bg3.string_keys.create_new(files, MOD_NAME + '_' + MOD_UUID)
     books.add_string_key(text_handle[0], book_id, text_version = text_handle[1])
 
 
@@ -94,6 +96,8 @@ def create_mod_author_note() -> None:
 
 
 def patch_druid_notebook() -> None:
+    files = get_context().files
+
     gf = files.get_file('Gustav', 'Mods/Gustav/Levels/WLD_Main_A/Items/_merged.lsf', mod_specific = True)
     children = gf.xml.find('./region[@id="Templates"]/node[@id="Templates"]/children')
     if children is None:

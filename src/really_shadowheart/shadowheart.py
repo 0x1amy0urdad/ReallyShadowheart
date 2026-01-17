@@ -2,10 +2,12 @@ from __future__ import annotations
 
 import bg3moddinglib as bg3
 
-from .context import game_assets
+from .context import get_context
 from .flags import *
 
 def customize_shadowheart_character_template() -> None:
+    game_assets = get_context().assets
+
     gf = game_assets.files.get_file('Gustav', 'Mods/Gustav/Globals/WLD_Main_A/Characters/_merged.lsf', mod_specific = True)
     children = gf.root_node.find('./region[@id="Templates"]/node[@id="Templates"]/children')
     if children is None:
@@ -24,6 +26,8 @@ def customize_shadowheart_character_template() -> None:
 
 
 def customize_shadowheart_origin() -> None:
+    game_assets = get_context().assets
+
     gf = game_assets.files.get_file('Gustav', 'Public/GustavDev/Origins/Origins.lsx', mod_specific = True)
     children = gf.root_node.find('./region[@id="Origins"]/node[@id="root"]/children')
     if children is None:
@@ -42,6 +46,8 @@ def customize_shadowheart_origin() -> None:
 
 
 def create_inspirations() -> None:
+    game_assets = get_context().assets
+
     gf = game_assets.files.add_new_file('Public/ModNameHere/Backgrounds/BackgroundGoals.lsx', is_mod_specific = True)
     gf.root_node.append(bg3.et.fromstring('<version major="4" minor="0" revision="10" build="400"/>'))
     gf.root_node.append(bg3.et.fromstring('<region id="BackgroundGoals"><node id="root"><children></children></node></region>'))
@@ -126,6 +132,8 @@ def initialize_templates_merged_lsf(gf: bg3.game_file) -> bg3.et.Element[str]:
 
 
 def modify_act3_elfsong_camp() -> None:
+    game_assets = get_context().assets
+
     gf = game_assets.files.get_file('Gustav', 'Mods/GustavDev/Levels/CMP_Bed_Shadowheart_A/Scenery/_merged.lsf', mod_specific = True)
 
     children = gf.xml.find('./region[@id="Templates"]/node[@id="Templates"]/children')
@@ -188,6 +196,8 @@ def modify_act3_elfsong_camp() -> None:
 
 
 def modify_act3_slums_camp() -> None:
+    game_assets = get_context().assets
+
     gf = game_assets.files.get_file('Gustav', 'Mods/GustavDev/Levels/CMP_CTY_Slums_A/Triggers/_merged.lsf', mod_specific = True)
 
     children = gf.xml.find('./region[@id="Templates"]/node[@id="Templates"]/children')

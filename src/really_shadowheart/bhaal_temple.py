@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import bg3moddinglib as bg3
 
-from .context import game_assets
+from .context import get_context
 
 root_victim_killed_node_uuid = '13301f86-8e73-0619-acd3-24402b712d03'
 root_victim_saved_node_uuid = '27b8e711-5f07-8986-cf63-6da90796c5d4'
@@ -277,9 +277,7 @@ def create_shadowheart_line_its_difficult_to_talk_about(
 
 
 def create_scene_shadowheart_cries_when_durge_dies() -> None:
-
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Act3/LowerCity/BhaalTemple/LOW_BhaalTemple_PostBattleDarkUrge_Resistance.lsf'))
-    # t = bg3.timeline_object(files.get_file('Gustav', 'Public/GustavDev/Timeline/Generated/LOW_BhaalTemple_PostBattleDarkUrge_Resistance.lsf'), d)
+    game_assets = get_context().assets
 
     ab = game_assets.get_modded_dialog_asset_bundle('LOW_BhaalTemple_PostBattleDarkUrge_Resistance')
     d = bg3.dialog_object(ab.dialog)
@@ -746,9 +744,7 @@ def create_scene_shadowheart_cries_when_durge_dies() -> None:
 #################################################################################################
 
 def create_scene_shadowheart_reaction_body_type_2() -> None:
-
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Act3/LowerCity/BhaalTemple/LOW_BhaalTemple_PostBattleDarkUrge_Resistance.lsf'))
-    # t = bg3.timeline_object(files.get_file('Gustav', 'Public/GustavDev/Timeline/Generated/LOW_BhaalTemple_PostBattleDarkUrge_Resistance.lsf'), d)
+    game_assets = get_context().assets
 
     ab = game_assets.get_modded_dialog_asset_bundle('LOW_BhaalTemple_PostBattleDarkUrge_Resistance')
     d = bg3.dialog_object(ab.dialog)
@@ -1604,9 +1600,7 @@ def create_scene_shadowheart_reaction_body_type_2() -> None:
 #################################################################################################
 
 def create_scene_shadowheart_reaction_body_type_2_gith() -> None:
-
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Act3/LowerCity/BhaalTemple/LOW_BhaalTemple_PostBattleDarkUrge_Resistance.lsf'))
-    # t = bg3.timeline_object(files.get_file('Gustav', 'Public/GustavDev/Timeline/Generated/LOW_BhaalTemple_PostBattleDarkUrge_Resistance.lsf'), d)
+    game_assets = get_context().assets
 
     ab = game_assets.get_modded_dialog_asset_bundle('LOW_BhaalTemple_PostBattleDarkUrge_Resistance')
     d = bg3.dialog_object(ab.dialog)
@@ -2527,9 +2521,7 @@ def create_scene_shadowheart_reaction_body_type_2_gith() -> None:
 #################################################################################################
 
 def create_scene_shadowheart_reaction_body_type_1() -> None:
-
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Act3/LowerCity/BhaalTemple/LOW_BhaalTemple_PostBattleDarkUrge_Resistance.lsf'))
-    # t = bg3.timeline_object(files.get_file('Gustav', 'Public/GustavDev/Timeline/Generated/LOW_BhaalTemple_PostBattleDarkUrge_Resistance.lsf'), d)
+    game_assets = get_context().assets
 
     ab = game_assets.get_modded_dialog_asset_bundle('LOW_BhaalTemple_PostBattleDarkUrge_Resistance')
     d = bg3.dialog_object(ab.dialog)
@@ -3450,9 +3442,7 @@ def create_scene_shadowheart_reaction_body_type_1() -> None:
 #################################################################################################
 
 def create_scene_shadowheart_reaction_body_type_3() -> None:
-
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Act3/LowerCity/BhaalTemple/LOW_BhaalTemple_PostBattleDarkUrge_Resistance.lsf'))
-    # t = bg3.timeline_object(files.get_file('Gustav', 'Public/GustavDev/Timeline/Generated/LOW_BhaalTemple_PostBattleDarkUrge_Resistance.lsf'), d)
+    game_assets = get_context().assets
 
     ab = game_assets.get_modded_dialog_asset_bundle('LOW_BhaalTemple_PostBattleDarkUrge_Resistance')
     d = bg3.dialog_object(ab.dialog)
@@ -4376,9 +4366,7 @@ def create_scene_shadowheart_reaction_body_type_3() -> None:
 #################################################################################################
 
 def create_scene_shadowheart_reaction_body_type_4() -> None:
-
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Act3/LowerCity/BhaalTemple/LOW_BhaalTemple_PostBattleDarkUrge_Resistance.lsf'))
-    # t = bg3.timeline_object(files.get_file('Gustav', 'Public/GustavDev/Timeline/Generated/LOW_BhaalTemple_PostBattleDarkUrge_Resistance.lsf'), d)
+    game_assets = get_context().assets
 
     ab = game_assets.get_modded_dialog_asset_bundle('LOW_BhaalTemple_PostBattleDarkUrge_Resistance')
     d = bg3.dialog_object(ab.dialog)
@@ -5003,9 +4991,7 @@ def create_scene_shadowheart_reaction_body_type_4() -> None:
 #################################################################################################
 
 def create_scene_shadowheart_reaction_dwarf() -> None:
-
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Act3/LowerCity/BhaalTemple/LOW_BhaalTemple_PostBattleDarkUrge_Resistance.lsf'))
-    # t = bg3.timeline_object(files.get_file('Gustav', 'Public/GustavDev/Timeline/Generated/LOW_BhaalTemple_PostBattleDarkUrge_Resistance.lsf'), d)
+    game_assets = get_context().assets
 
     ab = game_assets.get_modded_dialog_asset_bundle('LOW_BhaalTemple_PostBattleDarkUrge_Resistance')
     d = bg3.dialog_object(ab.dialog)
@@ -5564,9 +5550,7 @@ def create_scene_shadowheart_reaction_dwarf() -> None:
 #################################################################################################
 
 def create_scene_shadowheart_reaction_short_races() -> None:
-
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Act3/LowerCity/BhaalTemple/LOW_BhaalTemple_PostBattleDarkUrge_Resistance.lsf'))
-    # t = bg3.timeline_object(files.get_file('Gustav', 'Public/GustavDev/Timeline/Generated/LOW_BhaalTemple_PostBattleDarkUrge_Resistance.lsf'), d)
+    game_assets = get_context().assets
 
     ab = game_assets.get_modded_dialog_asset_bundle('LOW_BhaalTemple_PostBattleDarkUrge_Resistance')
     d = bg3.dialog_object(ab.dialog)
@@ -6147,9 +6131,7 @@ def create_scene_shadowheart_reaction_short_races() -> None:
 #################################################################################################
 
 def create_scene_shadowheart_reaction_dragonborn() -> None:
-
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Act3/LowerCity/BhaalTemple/LOW_BhaalTemple_PostBattleDarkUrge_Resistance.lsf'))
-    # t = bg3.timeline_object(files.get_file('Gustav', 'Public/GustavDev/Timeline/Generated/LOW_BhaalTemple_PostBattleDarkUrge_Resistance.lsf'), d)
+    game_assets = get_context().assets
 
     ab = game_assets.get_modded_dialog_asset_bundle('LOW_BhaalTemple_PostBattleDarkUrge_Resistance')
     d = bg3.dialog_object(ab.dialog)

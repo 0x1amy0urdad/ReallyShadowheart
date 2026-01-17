@@ -163,6 +163,7 @@ class dialog_object:
     __file: game_file
     __dialog_nodes_parent: XmlElement
     __dialog_nodes: dict[str, XmlElement]
+    __root_nodes: dict[str, int]
     __speakers_slots: dict[str, tuple[int, str, bool]]
 
     def __init__(self, gamefile: game_file) -> None:
@@ -173,6 +174,7 @@ class dialog_object:
             raise RuntimeError(f"file {gamefile.relative_file_path} doesn't contain a dialog")
         self.__dialog_nodes_parent = n
         self.__dialog_nodes = { get_required_bg3_attribute(n, "UUID") : n for n in self.get_dialog_nodes() }
+        self.scan_root_nodes()
 
     @property
     def dialog_file(self) -> game_file:
@@ -533,12 +535,21 @@ class dialog_object:
                             if not is_global_flag and speaker_override is not None:
                                 set_bg3_attribute(f, 'paramval', speaker_override)
 
+    def has_dialog_node(self, dialog_node_uuid: str) -> bool:
+        node = self.__dialog_nodes_parent.find(f'./node[@id="node"]/attribute[@id="UUID"][@value="{dialog_node_uuid}"]')
+        return dialog_node_uuid in self.__dialog_nodes and node is not None
+
     def delete_dialog_node(self, dialog_node_uuid: str) -> None:
         dialog_node = self.find_dialog_node(dialog_node_uuid)
         if dialog_node is None:
             raise RuntimeError(f"dialog node {dialog_node_uuid} doesn't exist in {self.__file.relative_file_path}")
         self.__dialog_nodes_parent.remove(dialog_node)
         del self.__dialog_nodes[dialog_node_uuid]
+
+    def add_dialog_node(self, dialog_node: XmlElement) -> None:
+        dialog_node_uuid = get_required_bg3_attribute(dialog_node, 'UUID')
+        self.__dialog_nodes[dialog_node_uuid] = dialog_node
+        self.__dialog_nodes_parent.append(dialog_node)
 
     def create_standard_dialog_node(
             self,
@@ -1008,6 +1019,7 @@ class dialog_object:
         new_root_node = et.fromstring(f'<node id="RootNodes"><attribute id="RootNodes" type="FixedString" value="{node_uuid}" /></node>')
         if index == -1:
             nodes.append(new_root_node)
+            self.scan_root_nodes()
             return
         n = len(nodes)
         if index >= 0:
@@ -1016,6 +1028,7 @@ class dialog_object:
                 if nodes[i].get("id") == 'RootNodes':
                     if idx == 0:
                         nodes.insert(i, new_root_node)
+                        self.scan_root_nodes()
                         return
                     else:
                         idx -= 1
@@ -1038,6 +1051,7 @@ class dialog_object:
             for root_node in root_nodes:
                 if get_required_bg3_attribute(root_node, 'RootNodes') == node_uuid:
                     children.remove(root_node)
+                    self.scan_root_nodes()
                     return
         raise RuntimeError(f"Cannot remove root node '{node_uuid}'")
 
@@ -1045,14 +1059,21 @@ class dialog_object:
         root_nodes = self.__file.root_node.findall("./region[@id='dialog']/node[@id='dialog']/children/node[@id='nodes']/children/node[@id='RootNodes']")
         return [get_required_bg3_attribute(root_node, 'RootNodes') for root_node in root_nodes]
 
+    def get_root_nodes_order(self) -> dict[str, int]:
+        return self.__root_nodes.copy()
+
     def get_root_node_index(self, node_uuid: str) -> int:
-        root_nodes = self.__file.root_node.findall("./region[@id='dialog']/node[@id='dialog']/children/node[@id='nodes']/children/node[@id='RootNodes']")
-        for index in range(0, len(root_nodes)):
-            root_node = root_nodes[index]
-            current_node_uuid = get_required_bg3_attribute(root_node, 'RootNodes')
-            if current_node_uuid == node_uuid:
-                return index
+        if node_uuid in self.__root_nodes:
+            return self.__root_nodes[node_uuid]
         raise KeyError(f"root node {node_uuid} doesn't exist in {self.__file.relative_file_path}")
+
+    def scan_root_nodes(self) -> None:
+        self.__root_nodes = dict[str, int]()
+        root_nodes = self.__file.root_node.findall("./region[@id='dialog']/node[@id='dialog']/children/node[@id='nodes']/children/node[@id='RootNodes']")
+        for root_node_index in range(0, len(root_nodes)):
+            root_node = root_nodes[root_node_index]
+            root_node_uuid = get_required_bg3_attribute(root_node, 'RootNodes')
+            self.__root_nodes[root_node_uuid] = root_node_index
 
     def get_dialog_flags(self, node_uuid: str, /, setflags: bool = False, checkflags: bool = False) -> dict[str, dialog_flag]:
         result = dict[str, dialog_flag]()

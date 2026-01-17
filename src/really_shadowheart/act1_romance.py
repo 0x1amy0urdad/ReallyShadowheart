@@ -2,13 +2,12 @@ from __future__ import annotations
 
 import bg3moddinglib as bg3
 
-from .context import game_assets
+from .context import get_context
 from .flags import *
 
 
 def make_them_hold_hands() -> None:
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/Gustav/Story/DialogsBinary/Camp/Campfire_Moments/CAMP_GoblinHuntCelebration_SD_ROM_NightWithShadowheart.lsf'))
-    # t = bg3.timeline_object(files.get_file('Gustav', 'Public/Gustav/Timeline/Generated/CAMP_GoblinHuntCelebration_SD_ROM_NightWithShadowheart.lsf'), d)
+    game_assets = get_context().assets
 
     ab = game_assets.get_modded_dialog_asset_bundle('CAMP_GoblinHuntCelebration_SD_ROM_NightWithShadowheart')
     d = bg3.dialog_object(ab.dialog)

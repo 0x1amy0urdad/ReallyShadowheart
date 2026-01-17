@@ -7,7 +7,9 @@ from ._common import get_required_bg3_attribute, new_random_uuid
 from ._files import game_file, game_files
 from ._tool import bg3_modding_tool
 
-from typing import Iterable
+from typing import Callable, Iterable
+
+flag_factories: list[flag_factory]
 
 LOCAL_FLAG = 1
 OBJECT_FLAG = 4
@@ -99,6 +101,33 @@ class flag_object:
     @property
     def script(self) -> str | None:
         return self.__script
+
+class flag_factory:
+    __name: str
+    __usage: int
+    __flag_uuid: str
+    __description: str
+
+    def __init__(
+            self,
+            name: str,
+            usage: int,
+            flag_uuid: str,
+            description: str
+    ) -> None:
+        self.__name = name
+        self.__usage = usage
+        self.__flag_uuid = flag_uuid
+        self.__description = description
+        global flag_factories
+        flag_factories.append(self)
+
+    @property
+    def uuid(self) -> str:
+        return self.__flag_uuid
+
+    def create(self, files: game_files) -> flag_object:
+        return flag_object(files, name = self.__name, usage = self.__usage, flag_uuid = self.__flag_uuid, description = self.__description)
 
 class flag:
     __uuid: str
@@ -210,3 +239,10 @@ class flag_registry:
         self.__cache[flag_uuid] = result
         return result
 
+flag_factories = list[flag_factory]()
+
+def create_flags(game_files_provider: Callable[[], game_files]) -> None:
+    global flag_factories
+    files = game_files_provider()
+    for ff in flag_factories:
+        ff.create(files)

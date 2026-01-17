@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+import copy
 import gzip
 import json
-import os.path
 import sys
 import xml.etree.ElementTree as et
 
@@ -125,7 +125,28 @@ class dialog_index:
             return dialog_name_index[path_or_uuid]
         raise RuntimeError(f'Cannot find dialog by {path_or_uuid}')
 
-    def get_timeline_resource(self, timeline_uuid: str) -> et.Element:
+    def get_dialog_uuid(self, dialog_name: str) -> str:
+        dialog_index = self.__index['dialog_index']
+        if dialog_name in dialog_index:
+            return dialog_index[dialog_name]['dialog_uuid']
+        name = self.get_dialog_name(dialog_name)
+        if name in dialog_index:
+            return dialog_index[name]['dialog_uuid']
+        raise RuntimeError(f'Cannot find dialog by {dialog_name}')
+
+    def get_dialog_resource(self, dialog_id: str) -> et.Element[str]:
+        entry = self.get_entry(dialog_id)
+        dialog_uuid = entry['dialog_uuid']
+        pak_name = entry['dialog_bank_pak']
+        dialog_bank_path = entry['dialog_bank_path']
+        dialog_bank = self.__files.get_file(pak_name, dialog_bank_path, exclude_from_build = True)
+        resources = dialog_bank.root_node.findall('./region[@id="DialogBank"]/node[@id="DialogBank"]/children/node[@id="Resource"]')
+        for resource in resources:
+            if get_required_bg3_attribute(resource, 'ID') == dialog_uuid:
+                return resource
+        raise RuntimeError(f'Cannot find dialog resource {dialog_id} in {pak_name} {dialog_bank_path}')
+
+    def get_timeline_resource(self, timeline_uuid: str) -> et.Element[str]:
         timeline_index = self.__index['timeline_index']
         if timeline_uuid in timeline_index:
             return et.fromstring(b64decode(timeline_index[timeline_uuid]))
@@ -295,7 +316,7 @@ class dialog_index:
         dialog_index = self.__index['dialog_index']
         if dialog_name in dialog_index:
             return dialog_index[dialog_name]
-        raise KeyError(f"Dialog {dialog_name} doesn't exist")
+        return dialog_index[self.get_dialog_name(dialog_name)]
 
     def get_all_entries(self) -> tuple[dict[str, str], ...]:
         dialog_index = cast(dict[str, dict[str, str]], self.__index['dialog_index'])
@@ -336,8 +357,10 @@ class bg3_assets:
     __index: dialog_index
     __dialog_bank: game_file | None
     __dialog_bank_parent_node: et.Element[str] | None
+    __dialog_bank_uuids: set[str]
     __timeline_bank: game_file | None
     __timeline_bank_parent_node: et.Element[str] | None
+    __timeline_bank_uuids: set[str]
     __asset_bundles: dict[str, dialog_asset_bundle]
 
     def __init__(self, files: game_files) -> None:
@@ -346,8 +369,10 @@ class bg3_assets:
         self.__asset_bundles = dict[str, dialog_asset_bundle]()
         self.__dialog_bank = None
         self.__dialog_bank_parent_node = None
+        self.__dialog_bank_uuids = set[str]()
         self.__timeline_bank = None
         self.__timeline_bank_parent_node = None
+        self.__timeline_bank_uuids = set[str]()
 
 
     @property
@@ -470,7 +495,7 @@ class bg3_assets:
 
         if new_dialog_uuid is None:
             new_dialog_uuid = original_dialog_uuid
-        if has_timeline and new_timeline_uuid is None:
+        if new_timeline_uuid is None:
             new_timeline_uuid = original_timeline_uuid
 
         pos = source_dialog_path.rfind('/')
@@ -543,6 +568,9 @@ class bg3_assets:
             set_bg3_attribute(timeline_resource, 'SourceFile', timeline_file_path, attribute_type = 'LSString')
             set_bg3_attribute(timeline_resource, '_OriginalFileVersion_', str(timeline_version), attribute_type = 'int64')
 
+            # remove all compiled snapshots
+            self.remove_compiled_snapshots(timeline_file.root_node)
+
             # update timeline dependency list
             # replace UUID of the original dialog with the new dialog UUID
             dependencies = timeline_resource.findall('./children/node[@id="DependencyCache"]')
@@ -551,15 +579,27 @@ class bg3_assets:
                 if dependency_uuid == original_dialog_uuid:
                     set_bg3_attribute(dependency, 'Object', new_dialog_uuid, attribute_type = 'guid')
                     break
+            self.add_to_timeline_bank(timeline_resource)
 
         ab = dialog_asset_bundle(original_dialog_uuid, new_dialog_uuid, original_timeline_uuid, new_timeline_uuid, dialog_file, timeline_file, scene_lsf_file, scene_lsx_file)
         self.__asset_bundles[dialog_name] = ab
-        self.__get_dialog_bank_parent_node().append(dialog_resource)
-
-        if has_timeline:
-            self.__get_timeline_bank_parent_node().append(timeline_resource)
+        self.add_to_dialog_bank(dialog_resource)
 
         return ab
+
+
+    def add_to_dialog_bank(self, dialog_resource: et.Element[str]) -> None:
+        dialog_uuid = get_required_bg3_attribute(dialog_resource, 'ID')
+        if dialog_uuid not in self.__dialog_bank_uuids:
+            self.__get_dialog_bank_parent_node().append(dialog_resource)
+            self.__dialog_bank_uuids.add(dialog_uuid)
+
+
+    def add_to_timeline_bank(self, timeline_resource: et.Element[str]) -> None:
+        timeline_uuid = get_required_bg3_attribute(timeline_resource, 'ID')
+        if timeline_uuid not in self.__timeline_bank_uuids:
+            self.__get_timeline_bank_parent_node().append(timeline_resource)
+            self.__timeline_bank_uuids.add(timeline_uuid)
 
 
     def update_timeline_actor(self, timeline_file: game_file, new_timeline_uuid: str) -> None:
@@ -615,7 +655,8 @@ class bg3_assets:
             identifier = get_bg3_attribute(resource, 'ID')
             if identifier is not None and identifier.lower() == asset_id:
                 return resource
-        raise RuntimeError(f'Cannot find dialog resource with id {asset_id}')
+        # fallback to vanilla game dialog bank
+        return self.__index.get_dialog_resource(asset_id)
 
 
     # asset_id could be timeline UUID, dialog UUID, or asset name
@@ -632,7 +673,32 @@ class bg3_assets:
             identifier = get_bg3_attribute(resource, 'DialogResourceId')
             if identifier is not None and identifier.lower() == asset_id:
                 return resource
-        raise RuntimeError(f'Cannot find timeline resource with id {asset_id}')
+        # fallback to vanilla game timeline bank, this requires asset_id to be timeline UUID
+        return self.__index.get_timeline_resource(asset_id)
+
+
+    def append_dependency_to_dialog(self, dialog_id: str, nested_dialog_uuid: str) -> None:
+        resources = self.__get_dialog_bank_parent_node().findall('./node[@id="Resource"]')
+        dialog_id = dialog_id.lower()
+        dialog_resource = None
+        for resource in resources:
+            identifier = get_bg3_attribute(resource, 'Name')
+            if identifier is not None and identifier.lower() == dialog_id:
+                dialog_resource = resource
+                break
+            identifier = get_bg3_attribute(resource, 'ID')
+            if identifier is not None and identifier.lower() == dialog_id:
+                dialog_resource = resource
+                break
+        if dialog_resource is None:
+            raise RuntimeError(f'dialog resource {dialog_id} cannot be found')
+        children = dialog_resource.find(f'./children')
+        if children is None:
+            raise RuntimeError(f'dialog resource {dialog_id} has no children')
+        existing = children.find(f'./node[@id="childResources"]/attribute[@id="Object"][@type="guid"][@value="{nested_dialog_uuid}"]')
+        if existing is not None:
+            raise RuntimeError(f'dialog resource {dialog_id} already has a dependency on {nested_dialog_uuid}')
+        children.append(et.fromstring(f'<node id="childResources"><attribute id="Object" type="guid" value="{nested_dialog_uuid}" /></node>'))
 
 
     def append_dependency_to_timeline(self, asset_id: str, dependency_uuid: str) -> None:
@@ -667,12 +733,33 @@ class bg3_assets:
                 dest_deps_node.append(et.fromstring(f'<node id="DependencyCache"><attribute id="Object" type="guid" value="{dep_uuid}" /></node>'))
 
 
+    def remove_compiled_snapshots(self, timeline_root_node: et.Element[str]) -> None:
+        # remove all CompiledNodeSnapshots
+        actor_data_vals = timeline_root_node.findall('./region[@id="TimelineContent"]/node[@id="TimelineContent"]/children/node[@id="TimelineActorData"]/children/node[@id="TimelineActorData"]/children/node[@id="Object"]/children/node[@id="Value"]')
+        for actor_data_val in actor_data_vals:
+            parent_node = actor_data_val.find('./children')
+            if parent_node is not None:
+                compiled_snapshots = parent_node.find('./node[@id="CompiledNodeSnapshots"]')
+                if compiled_snapshots is not None:
+                    parent_node.remove(compiled_snapshots)
+                    parent_node.append(et.fromstring('<node id="CompiledNodeSnapshots"><children><node id="ComponentMap" /></children></node>'))
+
+        # remove RootCompiledNodeSnapshots
+        parent_node = timeline_root_node.find('./region[@id="TimelineContent"]/node[@id="TimelineContent"]/children')
+        if parent_node is not None:
+            root_compiled_node_snapshots = parent_node.find('./node[@id="RootCompiledNodeSnapshots"]')
+            if root_compiled_node_snapshots is not None:
+                parent_node.remove(root_compiled_node_snapshots)
+                parent_node.append(et.fromstring('<node id="RootCompiledNodeSnapshots"><children><node id="ComponentMap" /></children></node>'))
+
+
     def create_new_empty_dialog_from_another(
             self,
             source_dialog_name: str,
             new_dialog_name: str,
             new_dialog_uuid: str,
-            new_timeline_uuid: str
+            new_timeline_uuid: str,
+            subfolder: str | None = None
     ) -> dialog_asset_bundle:
         source_dialog_name = source_dialog_name.lower()
 
@@ -688,23 +775,19 @@ class bg3_assets:
 
         source_mod_name = source_dialog_path.split('/')[1]
         new_file_name = f'{self.__files.mod_name}_{new_dialog_name}'
-        new_file_name_scene = new_file_name + '_Scene'
-        dialog_file = self.__files.get_file(
-            self.__index.get_pak_by_file(source_dialog_path), source_dialog_path, mod_specific = True, rename_to = new_file_name)
+        dialog_file = self.__files.get_file(self.__index.get_pak_by_file(source_dialog_path), source_dialog_path, exclude_from_build = True)
         source_timeline_path = f'Public/{source_mod_name}/Timeline/Generated/{dialog_file_name}.lsf'
-        timeline_file = self.__files.get_file(
-            self.__index.get_pak_by_file(source_timeline_path), source_timeline_path, mod_specific = True, rename_to = new_file_name)
+        timeline_file = self.__files.get_file(self.__index.get_pak_by_file(source_timeline_path), source_timeline_path, exclude_from_build = True)
         source_scene_lsf_path = f'Public/{source_mod_name}/Timeline/Generated/{dialog_file_name}_Scene.lsf'
-        scene_lsf_file = self.__files.get_file(
-            self.__index.get_pak_by_file(source_scene_lsf_path), source_scene_lsf_path, mod_specific = True, rename_to = new_file_name_scene)
+        scene_lsf_file = self.__files.get_file(self.__index.get_pak_by_file(source_scene_lsf_path), source_scene_lsf_path, exclude_from_build = True)
         source_scene_lsx_path = f'Public/{source_mod_name}/Timeline/Generated/{dialog_file_name}_Scene.lsx'
-        scene_lsx_file = self.__files.get_file(
-            self.__index.get_pak_by_file(source_scene_lsx_path), source_scene_lsx_path, mod_specific = True, rename_to = new_file_name_scene)
+        scene_lsx_file = self.__files.get_file(self.__index.get_pak_by_file(source_scene_lsx_path), source_scene_lsx_path, exclude_from_build = True)
 
         internal_dialog_uuid = new_random_uuid()
         internal_scene_uuid = new_random_uuid()
 
-        dialog_node = dialog_file.root_node.find('./region[@id="dialog"]/node[@id="dialog"]')
+        dialog_root_node = copy.deepcopy(dialog_file.root_node)
+        dialog_node = dialog_root_node.find('./region[@id="dialog"]/node[@id="dialog"]')
         if dialog_node is None:
             raise RuntimeError(f'Failed to find a dialog node in {dialog_file.relative_file_path}')
         set_bg3_attribute(dialog_node, 'UUID', internal_dialog_uuid, attribute_type = 'FixedString')
@@ -717,68 +800,101 @@ class bg3_assets:
         remove_all_nodes(nodes)
 
         # remove all existing phases, timeline phases, and effects from the timeline
-        phases = timeline_file.root_node.find('./region[@id="TimelineContent"]/node[@id="TimelineContent"]/children/node[@id="Effect"]/children/node[@id="Phases"]')
+        timeline_root_node = copy.deepcopy(timeline_file.root_node)
+        phases = timeline_root_node.find('./region[@id="TimelineContent"]/node[@id="TimelineContent"]/children/node[@id="Effect"]/children/node[@id="Phases"]')
         if phases is None:
             raise RuntimeError(f'Failed to parse a dialog from {timeline_file.relative_file_path}')
         remove_all_nodes(phases)
 
-        effect_components = timeline_file.root_node.find('./region[@id="TimelineContent"]/node[@id="TimelineContent"]/children/node[@id="Effect"]/children/node[@id="EffectComponents"]')
+        effect_components = timeline_root_node.find('./region[@id="TimelineContent"]/node[@id="TimelineContent"]/children/node[@id="Effect"]/children/node[@id="EffectComponents"]')
         if effect_components is None:
             raise RuntimeError(f'Failed to parse a dialog from {timeline_file.relative_file_path}')
         remove_all_nodes(effect_components)
 
-        timeline_phases = timeline_file.root_node.find('./region[@id="TimelineContent"]/node[@id="TimelineContent"]/children/node[@id="TimelinePhases"]')
+        timeline_phases = timeline_root_node.find('./region[@id="TimelineContent"]/node[@id="TimelineContent"]/children/node[@id="TimelinePhases"]/children/node[@id="Object"]')
         if timeline_phases is None:
             raise RuntimeError(f'Failed to parse a dialog from {timeline_file.relative_file_path}')
         remove_all_nodes(timeline_phases)
 
-        scene_lsf_node = scene_lsf_file.root_node.find('./region[@id="TLScene"]/node[@id="TLScene"]')
+        self.remove_compiled_snapshots(timeline_root_node)
+
+        # do not change the scene files, yet deep copy them either just in case
+        scene_lsf_root_node = copy.deepcopy(scene_lsf_file.root_node)
+        scene_lsf_node = scene_lsf_root_node.find('./region[@id="TLScene"]/node[@id="TLScene"]')
         if scene_lsf_node is None:
             raise RuntimeError(f'Failed to find a TLScene node in {scene_lsf_file.relative_file_path}')
         set_bg3_attribute(scene_lsf_node, 'Identifier', internal_scene_uuid, attribute_type = 'guid')
 
-        scene_lsx_node = scene_lsx_file.root_node.find('./region[@id="TLScene"]/node[@id="root"]')
+        scene_lsx_root_node = copy.deepcopy(scene_lsx_file.root_node)
+        scene_lsx_node = scene_lsx_root_node.find('./region[@id="TLScene"]/node[@id="root"]')
         if scene_lsx_node is None:
             raise RuntimeError(f'Failed to find a root node in {scene_lsx_file.relative_file_path}')
         set_bg3_attribute(scene_lsx_node, 'Identifier', internal_scene_uuid, attribute_type = 'guid')
 
+        # create new dialog file
+        if subfolder is None:
+            lsf_path = f'Mods/{self.__files.mod_name_uuid}/Story/DialogsBinary/{new_file_name}.lsf'
+            lsj_path = f'Mods/{self.__files.mod_name_uuid}/Story/Dialogs/{new_file_name}.lsj'
+        else:
+            subfolder = subfolder.replace('\\','/')
+            if subfolder.startswith('/'):
+                subfolder = subfolder[1:]
+            if subfolder.endswith('/'):
+                subfolder = subfolder[:-1]
+            lsf_path = f'Mods/{self.__files.mod_name_uuid}/Story/DialogsBinary/{subfolder}/{new_file_name}.lsf'
+            lsj_path = f'Mods/{self.__files.mod_name_uuid}/Story/Dialogs/{subfolder}/{new_file_name}.lsj'
+        new_dialog_file = self.__files.add_new_file(lsf_path)
+        new_dialog_file.replace_xml(et.ElementTree(dialog_root_node))
+
         dialog_resource = self.load_dialog_resource(index_entry['dialog_bank_pak'], index_entry['dialog_bank_path'], original_dialog_uuid)
-        lsf_path = dialog_file.get_output_relative_path(self.__files.mod_name_uuid)
-        lsj_path = lsf_path.replace('/Story/DialogsBinary/', '/Story/Dialogs/')[:-4] + '.lsj'
-        dialog_version = int(get_required_bg3_attribute(dialog_resource, '_OriginalFileVersion_')) + 2147483648 + 1
-        set_bg3_attribute(dialog_resource, 'ID', new_dialog_uuid, attribute_type = 'FixedString')
-        set_bg3_attribute(dialog_resource, 'SourceFile', lsj_path, attribute_type = 'LSString')
-        set_bg3_attribute(dialog_resource, 'Name', new_file_name, attribute_type = 'LSString')
-        set_bg3_attribute(dialog_resource, '_OriginalFileVersion_', str(dialog_version), attribute_type = 'int64')
+        new_dialog_resource = copy.deepcopy(dialog_resource)
+        set_bg3_attribute(new_dialog_resource, 'ID', new_dialog_uuid, attribute_type = 'FixedString')
+        set_bg3_attribute(new_dialog_resource, 'SourceFile', lsj_path, attribute_type = 'LSString')
+        set_bg3_attribute(new_dialog_resource, 'Name', new_file_name, attribute_type = 'LSString')
+        set_bg3_attribute(new_dialog_resource, '_OriginalFileVersion_', '36028799166447617', attribute_type = 'int64')
+
+        # create new timeline file
+        timeline_file_path = f'Public/{self.__files.mod_name_uuid}/Timeline/Generated/{new_file_name}.lsf'
+        new_timeline_file = self.__files.add_new_file(timeline_file_path)
+        new_timeline_file.replace_xml(et.ElementTree(timeline_root_node))
 
         timeline_resource = self.__index.get_timeline_resource(original_timeline_uuid)
-        timeline_file_path = timeline_file.get_output_relative_path(self.__files.mod_name_uuid)
-        timeline_version = int(get_required_bg3_attribute(timeline_resource, '_OriginalFileVersion_')) + 2147483648 + 1
-        set_bg3_attribute(timeline_resource, 'DialogResourceId', new_dialog_uuid, attribute_type = 'guid')
-        set_bg3_attribute(timeline_resource, 'ID', new_timeline_uuid, attribute_type = 'FixedString')
-        set_bg3_attribute(timeline_resource, 'Name', new_file_name, attribute_type = 'LSString')
-        set_bg3_attribute(timeline_resource, 'SourceFile', timeline_file_path, attribute_type = 'LSString')
-        set_bg3_attribute(timeline_resource, '_OriginalFileVersion_', str(timeline_version), attribute_type = 'int64')
+        new_timeline_resource = copy.deepcopy(timeline_resource)
+        set_bg3_attribute(new_timeline_resource, 'DialogResourceId', new_dialog_uuid, attribute_type = 'guid')
+        set_bg3_attribute(new_timeline_resource, 'ID', new_timeline_uuid, attribute_type = 'FixedString')
+        set_bg3_attribute(new_timeline_resource, 'Name', new_file_name, attribute_type = 'LSString')
+        set_bg3_attribute(new_timeline_resource, 'SourceFile', timeline_file_path, attribute_type = 'LSString')
+        set_bg3_attribute(new_timeline_resource, '_OriginalFileVersion_', '36028799166447617', attribute_type = 'int64')
 
-        dependencies = timeline_resource.findall('./children/node[@id="DependencyCache"]')
+        # replace the old dialog reference with the new dialog reference
+        dependencies = new_timeline_resource.findall('./children/node[@id="DependencyCache"]')
         for dependency in dependencies:
             dependency_uuid = get_required_bg3_attribute(dependency, 'Object')
             if dependency_uuid == original_dialog_uuid:
                 set_bg3_attribute(dependency, 'Object', new_dialog_uuid, attribute_type = 'guid')
                 break
 
+        # create new scene files
+        scene_lsf_file_path = f'Public/{self.__files.mod_name_uuid}/Timeline/Generated/{new_file_name}_Scene.lsf'
+        new_scene_lsf_file = self.__files.add_new_file(scene_lsf_file_path)
+        new_scene_lsf_file.replace_xml(et.ElementTree(scene_lsf_root_node))
+
+        scene_lsx_file_path = f'Public/{self.__files.mod_name_uuid}/Timeline/Generated/{new_file_name}_Scene.lsx'
+        new_scene_lsx_file = self.__files.add_new_file(scene_lsx_file_path)
+        new_scene_lsx_file.replace_xml(et.ElementTree(scene_lsx_root_node))
+
         ab = dialog_asset_bundle(
             new_dialog_uuid,
             new_dialog_uuid,
             new_timeline_uuid,
             new_timeline_uuid,
-            dialog_file,
-            timeline_file,
-            scene_lsf_file,
-            scene_lsx_file)
+            new_dialog_file,
+            new_timeline_file,
+            new_scene_lsf_file,
+            new_scene_lsx_file)
         self.__asset_bundles[new_dialog_name.lower()] = ab
-        self.__get_dialog_bank_parent_node().append(dialog_resource)
-        self.__get_timeline_bank_parent_node().append(timeline_resource)
+        self.__get_dialog_bank_parent_node().append(new_dialog_resource)
+        self.__get_timeline_bank_parent_node().append(new_timeline_resource)
 
         return ab
 

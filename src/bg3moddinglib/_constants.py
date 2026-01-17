@@ -17,6 +17,9 @@ SHADOWHEART_THOUGHTS_QUESTION_BANK_NODE_UUID = '9f7d4510-e658-4b23-b066-4fe117fb
 # Nested dialogs
 SHADOWHEART_INPARTY2_NESTED_DEFAULTCHAPTER = '8bd1efb6-27fb-a511-e459-dbad23302a3e'
 
+# Kiss fork node
+SHADOWHEART_KISS_FORK_NODE_UUID = '92a90ee0-6d0a-433f-8ac6-e90916752cd3'
+
 # Origins and Companions: UUIDs, these are used in reactions
 ORIGIN_SHADOWHEART = '2bb39cf2-4649-4238-8d0c-44f62b5a3dfd'
 ORIGIN_ASTARION    = '3780c689-d903-41c2-bf64-1e6ec6a8e1e5'
@@ -252,6 +255,7 @@ FLAG_ORI_State_HandledBreakupWithGale = 'dc42fe44-e320-4c96-85f0-66bb71403ee6'
 FLAG_ORI_State_ChosePartnerOverGale = 'ff5cbe4e-d3a8-4cc6-86fa-f336f15e4304'
 
 # Wyll states
+FLAG_ORI_Wyll_State_IsDevil = 'f83eee79-271b-4044-947a-d8eb699d734a' # Global flag. Wyll was turned into his devil form
 FLAG_CAMP_MizorasPact_State_WyllReleasedFromPact = '79a90490-b009-507c-e0d3-f79b0bdd4cb6' # Wyll was released from his pact, Ravengard is doomed to the hells
 FLAG_GLO_Wyll_State_GrandDuke = '0e223e4d-be63-89f4-380f-5cc755817abd' # Wyll chose to become Grand Duke before endgame
 FLAG_CAMP_MizorasPact_State_WyllEternalPact = '8da8b1fb-5aa9-8cf5-8b45-6f8ca31a1227' # Wyll is eternally pacted to Mizora

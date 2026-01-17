@@ -10,8 +10,9 @@ from ._types import XmlElement
 
 from dataclasses import dataclass, field
 
-import os.path
+import copy
 import decimal as dc
+import os.path
 
 
 @dataclass
@@ -36,6 +37,10 @@ class normalized_tl_phases:
 
 
 class timeline_differ:
+    ADDED = 'added'
+    DELETED = 'deleted'
+    MODIFIED = 'modified'
+
     __assets: bg3_assets
     __index: dialog_index
 
@@ -68,32 +73,53 @@ class timeline_differ:
         common_uuids = original_phases_uuids.intersection(modded_phases_uuids)
         only_in_modded_uuids = modded_phases_uuids.difference(original_phases_uuids)
         only_in_original_uuids = original_phases_uuids.difference(modded_phases_uuids)
-        for dialog_uuid in only_in_original_uuids:
-            phase = original_phases.phases_by_dialog[dialog_uuid]
+        for dialog_node_uuid in only_in_original_uuids:
+            phase = original_phases.phases_by_dialog[dialog_node_uuid]
             for effect_uuid in phase.effects_by_uuid.keys():
-                result[effect_uuid] = f'removed|{dialog_uuid}'
-        for dialog_uuid in only_in_modded_uuids:
-            phase = modded_phases.phases_by_dialog[dialog_uuid]
+                result[effect_uuid] = timeline_differ.DELETED + '|' + dialog_node_uuid
+        for dialog_node_uuid in only_in_modded_uuids:
+            phase = modded_phases.phases_by_dialog[dialog_node_uuid]
             for effect_uuid in phase.effects_by_uuid.keys():
-                result[effect_uuid] = f'added|{dialog_uuid}'
-        for dialog_uuid in common_uuids:
-            modded_phase = modded_phases.phases_by_dialog[dialog_uuid]
-            original_phase = original_phases.phases_by_dialog[dialog_uuid]
+                result[effect_uuid] = timeline_differ.ADDED + '|' + dialog_node_uuid
+        for dialog_node_uuid in common_uuids:
+            modded_phase = modded_phases.phases_by_dialog[dialog_node_uuid]
+            original_phase = original_phases.phases_by_dialog[dialog_node_uuid]
             modded_phase_uuids = set(modded_phase.effects_by_uuid.keys())
             original_phase_uuids = set(original_phase.effects_by_uuid.keys())
             common_uuids = original_phase_uuids.intersection(modded_phase_uuids)
             only_in_modded_uuids = modded_phase_uuids.difference(original_phase_uuids)
             only_in_original_uuids = original_phase_uuids.difference(modded_phase_uuids)
             for effect_uuid in only_in_original_uuids:
-                result[effect_uuid] = f'removed|{dialog_uuid}'
+                result[effect_uuid] = timeline_differ.DELETED + '|' + dialog_node_uuid
             for effect_uuid in only_in_modded_uuids:
-                result[effect_uuid] = f'added|{dialog_uuid}'
+                result[effect_uuid] = timeline_differ.ADDED + '|' + dialog_node_uuid
             for effect_uuid in common_uuids:
                 modded_effect = modded_phase.effects[modded_phase.effects_by_uuid[effect_uuid]]
                 original_effect = original_phase.effects[original_phase.effects_by_uuid[effect_uuid]]
                 if not timeline_differ.compare_timeline_nodes(original_effect, modded_effect):
-                    result[effect_uuid] = f'modified|{dialog_uuid}'
+                    result[effect_uuid] = timeline_differ.MODIFIED + '|' + dialog_node_uuid
         return result
+
+    @staticmethod
+    def normalize_tl_node(node: XmlElement, phase_start: dc.Decimal) -> XmlElement:
+        result = copy.deepcopy(node)
+        start_time, end_time = timeline_differ.get_start_end_times(result)
+        if start_time > DECIMAL_ZERO:
+            delete_bg3_attribute(result, 'StartTime')
+        start_time -= phase_start
+        end_time -= phase_start
+        if start_time > DECIMAL_ZERO:
+            set_bg3_attribute(result, 'StartTime', str(start_time), attribute_type = 'float')
+        set_bg3_attribute(result, 'EndTime', str(end_time))
+        keys = timeline_differ.find_keys(result)
+        for key in keys:
+            time_attr = get_bg3_attribute(key, 'Time')
+            if time_attr is not None:
+                time_val = decimal_from_str(time_attr)
+                time_val -= phase_start
+                set_bg3_attribute(key, 'Time', str(time_val))
+        return result
+
 
 
     @staticmethod
@@ -102,9 +128,9 @@ class timeline_differ:
         effect_node = t.xml.find('./region[@id="TimelineContent"]/node[@id="TimelineContent"]/children/node[@id="Effect"]')
         if effect_node is None:
             raise RuntimeError('bad timeline format, "Effect" node is not found')
-        timeline_phases = t.xml.findall('./region[@id="TimelineContent"]/node[@id="TimelineContent"]/children/node[@id="TimelinePhases"]/children/node[@id="Object"]/children/node[@id="Object"]')
-        if len(timeline_phases) == 0:
-            raise RuntimeError('bad timeline format, "TimelinePhases" node is not found')
+        # timeline_phases = t.xml.findall('./region[@id="TimelineContent"]/node[@id="TimelineContent"]/children/node[@id="TimelinePhases"]/children/node[@id="Object"]/children/node[@id="Object"]')
+        # if len(timeline_phases) == 0:
+        #     raise RuntimeError('bad timeline format, "TimelinePhases" node is not found')
         phases = effect_node.findall('./children/node[@id="Phases"]/children/node[@id="Phase"]')
         if len(phases) == 0:
             raise RuntimeError('bad timeline format, "Phases" node is not found')
@@ -129,25 +155,26 @@ class timeline_differ:
                 ntp.phase_start = start_time            
             node_uuid = get_required_bg3_attribute(effect_comp, 'ID')
             ntp.effects_by_uuid[node_uuid] = len(ntp.effects)
-            ntp.effects.append(effect_comp)
+            ntp.effects.append(timeline_differ.normalize_tl_node(effect_comp, ntp.phase_start))
 
-        for ntp in result.phases:
-            for tl_node in ntp.effects:
-                start_time, end_time = timeline_differ.get_start_end_times(tl_node)
-                if start_time > DECIMAL_ZERO:
-                    delete_bg3_attribute(tl_node, 'StartTime')
-                start_time -= ntp.phase_start
-                end_time -= ntp.phase_start
-                if start_time > DECIMAL_ZERO:
-                    set_bg3_attribute(tl_node, 'StartTime', str(start_time))
-                set_bg3_attribute(tl_node, 'EndTime', str(end_time))
-                keys = timeline_differ.find_keys(tl_node)
-                for key in keys:
-                    time_attr = get_bg3_attribute(key, 'Time')
-                    if time_attr is not None:
-                        time_val = decimal_from_str(time_attr)
-                        time_val -= ntp.phase_start
-                        set_bg3_attribute(key, 'Time', str(time_val))
+        # The following is done in timeline_differ.normalize_tl_node()
+        # for ntp in result.phases:
+        #     for tl_node in ntp.effects:
+        #         start_time, end_time = timeline_differ.get_start_end_times(tl_node)
+        #         if start_time > DECIMAL_ZERO:
+        #             delete_bg3_attribute(tl_node, 'StartTime')
+        #         start_time -= ntp.phase_start
+        #         end_time -= ntp.phase_start
+        #         if start_time > DECIMAL_ZERO:
+        #             set_bg3_attribute(tl_node, 'StartTime', str(start_time))
+        #         set_bg3_attribute(tl_node, 'EndTime', str(end_time))
+        #         keys = timeline_differ.find_keys(tl_node)
+        #         for key in keys:
+        #             time_attr = get_bg3_attribute(key, 'Time')
+        #             if time_attr is not None:
+        #                 time_val = decimal_from_str(time_attr)
+        #                 time_val -= ntp.phase_start
+        #                 set_bg3_attribute(key, 'Time', str(time_val))
 
         return result
 

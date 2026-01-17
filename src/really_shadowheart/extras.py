@@ -2,12 +2,14 @@ from __future__ import annotations
 
 import bg3moddinglib as bg3
 
-from .context import game_assets
+from .context import get_context
 from .dialog_overrides import add_dialog_dependency, get_dialog_uuid
 from .flags import *
 
 
 def create_obfuscate_text_content() -> None:
+    files = get_context().files
+
     content = {
         # Obfuscate region
         "hddc41f9ag5022g431ag831cgc37e5af1cc72": (1, "&lt;i&gt;Tell her about your Master Sophia who taught you everything. Recall the pain you felt when she died.&lt;/i&gt;"),
@@ -23,6 +25,8 @@ def create_obfuscate_text_content() -> None:
 
 
 def add_obfuscate_lines_act_1() -> None:
+    game_assets = get_context().assets
+
     ab = game_assets.get_modded_dialog_asset_bundle('CAMP_GoblinHuntCelebration_SD_ROM_NightWithShadowheart')
     d = bg3.dialog_object(ab.dialog)
     t = bg3.timeline_object(ab.timeline, d)
@@ -263,6 +267,8 @@ def add_obfuscate_lines_act_1() -> None:
 
 
 def add_obfuscate_lines_act_3() -> None:
+    game_assets = get_context().assets
+
     # h41e16b9cg1017g419bga093ge2ec19add985": (1, "Do you think all that I did was my own free will... that I am not a puppet of any master anymore?"
     # "hc71b8f5bg8cc5g457aga817gc180cef540d0#2": "Not just that - you did what no one else was capable of. Thank you.<br>"
 

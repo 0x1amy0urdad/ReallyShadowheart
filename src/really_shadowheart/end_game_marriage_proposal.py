@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import bg3moddinglib as bg3
 
-from .context import game_assets
+from .context import get_context
 from .flags import *
 
 ########################################################
@@ -2337,12 +2337,11 @@ def create_proposal_cinematic_bt4(dialog_node_uuid: str, t: bg3.timeline_object)
 
 
 def create_scene_marriage_proposal() -> None:
+    game_assets = get_context().assets
+
     ################################################################################################
     # Dialog: END_GameFinale_RomanceFates_Shadowheart.lsf
     ################################################################################################
-
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Act3/EndGame/END_GameFinale_RomanceFates_Shadowheart.lsf'))
-    # t = bg3.timeline_object(files.get_file('Gustav', 'Public/GustavDev/Timeline/Generated/END_GameFinale_RomanceFates_Shadowheart.lsf'), d)
 
     ab = game_assets.get_modded_dialog_asset_bundle('END_GameFinale_RomanceFates_Shadowheart')
     d = bg3.dialog_object(ab.dialog)

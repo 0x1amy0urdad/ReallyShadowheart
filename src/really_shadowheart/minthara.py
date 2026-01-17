@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import bg3moddinglib as bg3
 
-from .context import game_assets
+from .context import get_context
 from .flags import *
 
 ########################################################################################
@@ -10,10 +10,11 @@ from .flags import *
 ########################################################################################
 
 def patch_minthara_conversations() -> None:
+    game_assets = get_context().assets
+
     ########################################################################################
     # Minthara_InParty.lsf
     ########################################################################################
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Companions/Minthara_InParty.lsf'))
 
     ab = game_assets.get_modded_dialog_asset_bundle('Minthara_InParty')
     d = bg3.dialog_object(ab.dialog)
@@ -30,7 +31,6 @@ def patch_minthara_conversations() -> None:
     ########################################################################################
     # Minthara_InParty_Nested_PartyMemberThoughts.lsf
     ########################################################################################
-    # d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Companions/Minthara_InParty_Nested_PartyMemberThoughts.lsf'))
 
     ab = game_assets.get_modded_dialog_asset_bundle('Minthara_InParty_Nested_PartyMemberThoughts')
     d = bg3.dialog_object(ab.dialog)
@@ -121,6 +121,8 @@ def patch_minthara_conversations() -> None:
 
 
 def patch_minthara_creep_confrontation() -> None:
+    game_assets = get_context().assets
+
     ab = game_assets.get_modded_dialog_asset_bundle('CAMP_Halsin_Minthara_CFM_Confrontation')
     d = bg3.dialog_object(ab.dialog)
     t = bg3.timeline_object(ab.timeline, d)

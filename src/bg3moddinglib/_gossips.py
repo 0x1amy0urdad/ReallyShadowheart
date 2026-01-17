@@ -1,30 +1,29 @@
 from __future__ import annotations
 
-import os
+import copy
 import uuid
 import xml.etree.ElementTree as et
 
-from ._files import game_file
-from ._common import get_bg3_attribute
-
+from ._common import get_bg3_attribute, get_required_bg3_attribute
+from ._files import game_file, game_files
+from ._types import XmlElement
 
 class gossips_object:
     __file: game_file
-    __gossips: et.Element
+    __gossips: XmlElement
 
-    __gossips_by_name: dict[str, et.Element]
-    __gossips_by_uuid: dict[str, et.Element]
-    __gossips_by_dialog_uuid: dict[str, et.Element]
+    __gossips_by_name: dict[str, XmlElement]
+    __gossips_by_uuid: dict[str, XmlElement]
+    __gossips_by_dialog_uuid: dict[str, XmlElement]
 
     def __init__(self, gamefile: game_file) -> None:
         self.__file = gamefile
-        g = self.__file.root_node.findall("./region[@id='Gossips']/node[@id='root']/children")
-        if len(g) == 0 or len(g[0]) == 0:
-            raise RuntimeError(f"No gossips found in {self.__file.relative_file_path}")
-        self.__gossips = g[0]
-        self.__gossips_by_name = dict[str, et.Element]()
-        self.__gossips_by_uuid = dict[str, et.Element]()
-        self.__gossips_by_dialog_uuid = dict[str, et.Element]()
+        self.__gossips = self.__file.root_node.find("./region[@id='Gossips']/node[@id='root']/children")
+        if self.__gossips is None:
+            raise RuntimeError(f"Bad gossips file:  {self.__file.relative_file_path}")
+        self.__gossips_by_name = dict[str, XmlElement]()
+        self.__gossips_by_uuid = dict[str, XmlElement]()
+        self.__gossips_by_dialog_uuid = dict[str, XmlElement]()
         for gossip in self.__gossips:
             name = get_bg3_attribute(gossip, "Name")
             if name:
@@ -36,20 +35,48 @@ class gossips_object:
             if uuid:
                 self.__gossips_by_dialog_uuid[uuid] = gossip
 
+    @staticmethod
+    def create_new(files: game_files) -> gossips_object:
+        gossips_file_name = 'Public/ModName/Gossips/Gossips.lsx'
+        is_initialized = files.contains_file(gossips_file_name)
+        gossips_file = files.add_new_file(gossips_file_name, is_mod_specific = True)
+        if not is_initialized:
+            root_node = gossips_file.root_node
+            root_node.append(et.fromstring('<version major="4" minor="7" revision="1" build="3" />'))
+            root_node.append(et.fromstring(''.join((
+                '<region id="Gossips">',
+                '<node id="root">',
+                '<children>',
+                '</children>',
+                '</node>',
+                '</region>'
+            ))))
+        return gossips_object(gossips_file)
+
     def __contains__(self, gossip_id: str) -> bool:
         return gossip_id in self.__gossips_by_dialog_uuid or gossip_id in self.__gossips_by_uuid or gossip_id in self.__gossips_by_name
 
-    def get_gossip_by_name(self, name: str) -> et.Element:
+    def get_gossip_by_name(self, name: str) -> XmlElement:
         if name not in self.__gossips_by_name:
             raise KeyError(f"Gossip with name {name} doesn't exist in {self.__file.relative_file_path}")
         return self.__gossips_by_name[name]
 
-    def get_gossip_by_uuid(self, gossip_uuid: str) -> et.Element:
+    def get_gossip_by_uuid(self, gossip_uuid: str) -> XmlElement:
         if gossip_uuid in self.__gossips_by_uuid:
             return self.__gossips_by_uuid[gossip_uuid]
         if gossip_uuid in self.__gossips_by_dialog_uuid:
             return self.__gossips_by_dialog_uuid[gossip_uuid]
         raise KeyError(f"Gossip with uuid {gossip_uuid} doesn't exist in {self.__file.relative_file_path}")
+
+    def add_gossip_element(self, gossip: XmlElement) -> None:
+        g = copy.deepcopy(gossip)
+        self.__gossips.append(g)
+        gossip_name = get_required_bg3_attribute(g, 'Name')
+        gossip_uuid = get_required_bg3_attribute(g, 'UUID')
+        gossip_dialog_uuid = get_required_bg3_attribute(g, 'DialogUUID')
+        self.__gossips_by_name[gossip_name] = g
+        self.__gossips_by_uuid[gossip_uuid] = g
+        self.__gossips_by_dialog_uuid[gossip_dialog_uuid] = g
 
     def add_new_gossip(self, gossip_dialog_uuid: str, gossip_name: str, priority: int, conditions: tuple[tuple[str, str], ...] = ()) -> None:
         new_uuid = str(uuid.uuid4())
@@ -97,11 +124,11 @@ class gossips_object:
         if conditions_node is None:
             children_node = g.find('./children')
             if children_node is None:
-                g.append(et.fromstring('<children><children>'))
+                g.append(et.fromstring('<children></children>'))
                 children_node = g.find('./children')
                 if children_node is None:
                     raise RuntimeError()
-            children_node.append(et.fromstring(f'<node id=""><children></children></node>'))
+            children_node.append(et.fromstring(f'<node id="ConditionFlags"><children></children></node>'))
             conditions_node = children_node.find('./node[@id="ConditionFlags"]/children')
             if conditions_node is None:
                 raise RuntimeError()

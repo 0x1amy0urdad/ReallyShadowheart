@@ -2,13 +2,11 @@ from __future__ import annotations
 
 import bg3moddinglib as bg3
 
-from .context import game_assets
+################################################################
+# This adds Lae'zel's forehead kiss with an L-word voice line
+################################################################
 
-###############################################################
-# This adds Lae'zel's kiss
-###############################################################
-
-def add_laezel_kiss_bt2_animation(d: bg3.dialog_object, t: bg3.timeline_object, dialog_node_uuid: str) -> None:
+def create_lword_kiss_bt2_timeline(d: bg3.dialog_object, t: bg3.timeline_object, dialog_node_uuid: str) -> None:
 
     # t = bg3.timeline_object(files.get_file('Gustav', 'Public/GustavDev/Timeline/Generated/ShadowHeart_InParty2_Nested_ShadowheartKiss.lsf'), d)
 
@@ -423,7 +421,7 @@ def add_laezel_kiss_bt2_animation(d: bg3.dialog_object, t: bg3.timeline_object, 
     t.create_tl_shot('18c5bd4f-c066-4c52-8cdb-d8bbe1d8034e', '32.14', phase_duration, is_snapped_to_end = True)
 
 
-def add_laezel_kiss_bt1_animation(d: bg3.dialog_object, t: bg3.timeline_object, dialog_node_uuid: str) -> None:
+def create_lword_kiss_bt1_timeline(d: bg3.dialog_object, t: bg3.timeline_object, dialog_node_uuid: str) -> None:
 
     # t = bg3.timeline_object(files.get_file('Gustav', 'Public/GustavDev/Timeline/Generated/ShadowHeart_InParty2_Nested_ShadowheartKiss.lsf'), d)
 
@@ -749,7 +747,7 @@ def add_laezel_kiss_bt1_animation(d: bg3.dialog_object, t: bg3.timeline_object, 
     t.create_tl_shot('18c5bd4f-c066-4c52-8cdb-d8bbe1d8034e', '32.09', phase_duration, is_snapped_to_end = True)
 
 
-def add_laezel_kiss_bt34_animation(d: bg3.dialog_object, t: bg3.timeline_object, dialog_node_uuid: str) -> None:
+def create_lword_kiss_bt34_timeline(d: bg3.dialog_object, t: bg3.timeline_object, dialog_node_uuid: str) -> None:
 
     # t = bg3.timeline_object(files.get_file('Gustav', 'Public/GustavDev/Timeline/Generated/ShadowHeart_InParty2_Nested_ShadowheartKiss.lsf'), d)
 
@@ -1064,7 +1062,7 @@ def add_laezel_kiss_bt34_animation(d: bg3.dialog_object, t: bg3.timeline_object,
     t.create_tl_shot('18c5bd4f-c066-4c52-8cdb-d8bbe1d8034e', '32.635', phase_duration, is_snapped_to_end = True)
 
 
-def add_laezel_kiss_dragonborn_animation(d: bg3.dialog_object, t: bg3.timeline_object, dialog_node_uuid: str) -> None:
+def create_lword_kiss_dragonborn_timeline(d: bg3.dialog_object, t: bg3.timeline_object, dialog_node_uuid: str) -> None:
 
     # t = bg3.timeline_object(files.get_file('Gustav', 'Public/GustavDev/Timeline/Generated/ShadowHeart_InParty2_Nested_ShadowheartKiss.lsf'), d)
 
@@ -1379,7 +1377,7 @@ def add_laezel_kiss_dragonborn_animation(d: bg3.dialog_object, t: bg3.timeline_o
     t.create_tl_shot('18c5bd4f-c066-4c52-8cdb-d8bbe1d8034e', '34.67', phase_duration, is_snapped_to_end = True)
 
 
-def add_laezel_kiss_short_animation(d: bg3.dialog_object, t: bg3.timeline_object, dialog_node_uuid: str) -> None:
+def create_lword_kiss_short_timeline(d: bg3.dialog_object, t: bg3.timeline_object, dialog_node_uuid: str) -> None:
 
     # t = bg3.timeline_object(files.get_file('Gustav', 'Public/GustavDev/Timeline/Generated/ShadowHeart_InParty2_Nested_ShadowheartKiss.lsf'), d)
 
@@ -1689,7 +1687,7 @@ def add_laezel_kiss_short_animation(d: bg3.dialog_object, t: bg3.timeline_object
     t.create_tl_shot('18c5bd4f-c066-4c52-8cdb-d8bbe1d8034e', '34.04', phase_duration, is_snapped_to_end = True)
 
 
-def add_laezel_kiss_dwarf_animation(d: bg3.dialog_object, t: bg3.timeline_object, dialog_node_uuid: str) -> None:
+def create_lword_kiss_dwarf_timeline(d: bg3.dialog_object, t: bg3.timeline_object, dialog_node_uuid: str) -> None:
 
     # t = bg3.timeline_object(files.get_file('Gustav', 'Public/GustavDev/Timeline/Generated/ShadowHeart_InParty2_Nested_ShadowheartKiss.lsf'), d)
 

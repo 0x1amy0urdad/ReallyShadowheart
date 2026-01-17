@@ -3,7 +3,7 @@ from __future__ import annotations
 import bg3moddinglib as bg3
 
 
-from .context import game_assets
+from .context import get_context
 from .flags import *
 
 def create_act3_sleep_cutscene_cine_node(
@@ -273,8 +273,7 @@ def patch_act3_camp(
     camera_uuid: str,
     scene_offset: tuple[float, float, float]
 ) -> None:
-    # d = bg3.dialog_object(files.get_file('Gustav', f'Mods/GustavDev/Story/DialogsBinary/Camp/{file_name}.lsf'))
-    # t = bg3.timeline_object(files.get_file('Gustav', f'Public/GustavDev/Timeline/Generated/{file_name}.lsf'), d)
+    game_assets = get_context().assets
 
     ab = game_assets.get_modded_dialog_asset_bundle(asset_name)
     d = bg3.dialog_object(ab.dialog)

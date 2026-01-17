@@ -21,10 +21,12 @@ from . import ea_goblin_camp
 from . import ea_grove
 from . import ea_putrid_bog
 from . import ea_wilderness
+from . import ea_wound_flare
 from . import end_game_epilogue_married
 from . import end_game_marriage_proposal
 from . import extras
 from . import fixes
+from . import flags
 from . import gale
 from . import greetings
 from . import hug_animations
