@@ -162,7 +162,7 @@ def cine_post_dj_selune_prayer_loop(
                 )),
             ))
 
-    phase_duration = '10.9'
+    phase_duration = '11.0'
     t.create_new_phase(dialog_node_uuid, phase_duration)
 
     t.create_tl_non_actor_node(
@@ -219,8 +219,8 @@ def cine_post_dj_selune_prayer_loop(
         '0.0',
         phase_duration,
         (
-            t.create_emotion_key('0.0', 32),
-            t.create_emotion_key('8.5', 32, 2),
+            t.create_emotion_key('0.0', 64),
+            t.create_emotion_key('8.5', 32),
         ),
         is_snapped_to_end = True)
     t.create_tl_actor_node(
@@ -299,6 +299,13 @@ def cine_post_dj_selune_prayer_loop(
         ),
         is_snapped_to_end = True)
 
+    t.create_tl_actor_node(bg3.timeline_object.SHOW_VISUAL, bg3.SPEAKER_ARNELL, '0.0', phase_duration, (
+        t.create_value_key(time = 0.0, interpolation_type = 3, value_name = 'ShowVisual', value = False),
+    ), is_snapped_to_end = True)
+    t.create_tl_actor_node(bg3.timeline_object.SHOW_VISUAL, bg3.SPEAKER_EMMELINE, '0.0', phase_duration, (
+        t.create_value_key(time = 0.0, interpolation_type = 3, value_name = 'ShowVisual', value = False),
+    ), is_snapped_to_end = True)
+
     # ca3baf92-e461-4229-8822-614a7d9c1971 --> Tav actor
     # ac8826d8-ddb4-46f3-9bdd-ca6cea70f73e --> Shadowheart actor
 
@@ -324,6 +331,7 @@ def cine_post_dj_selune_prayer_loop(
     camera0 = 'ca37294b-681b-4ae4-bcce-72541d827157'
     camera1 = 'ec978200-bbbb-4c97-ac87-f231fe4e5344'
     camera2 = 'f9cccdb9-0aa8-4a7b-b2e3-4fe68a512bee'
+    camera3 = '7920525e-55c0-48cf-bade-69ade1388499'
 
     t.create_tl_camera_dof(
         camera1,
@@ -463,45 +471,98 @@ def cine_post_dj_selune_prayer_loop(
             overlay_priority = 5)
 
     t.create_tl_shot(camera1, '0.0', '8.0')
+    t.create_tl_shot(camera2, '8.0', '10.0')
+
     # 80a7fed2-0492-4bd4-b9ca-80359eac65d9 Tav         --> Tav
     # b3f9b0b9-0652-4599-9ae0-4a4b421e76ce Tav         --> Tav
     # f9cccdb9-0aa8-4a7b-b2e3-4fe68a512bee Tav         --> Tav
     # 61f85839-b74b-4aa9-b651-2cff24788b2d Tav         --> Tav
     # 1164eb14-57d6-4b63-b76a-bb5efc0e0607 Tav         --> Tav
-    t.create_tl_shot(camera2, '8.0', '10.0')
+
+    # t.create_tl_transform(
+    #     camera1,
+    #     '8.0',
+    #     phase_duration,
+    #     (
+    #         (
+    #             # + right; - left
+    #             t.create_value_key(time = '0.0', value = '0.07', value_type = 'float', interpolation_type = 0),
+    #         ),
+    #         (
+    #             t.create_value_key(time = '0.0', value = '1.4', value_type = 'float', interpolation_type = 0),
+    #         ),
+    #         (
+    #             # + forward; - backward
+    #             t.create_value_key(time = '0.0', value = '6.5', value_type = 'float', interpolation_type = 0),
+    #         ),
+    #         (
+    #             # tilt down
+    #             t.create_value_key(time = '0.0', value = bg3.euler_to_quaternion(0.0, 7.0, 0.0, sequence = 'yxz'), interpolation_type = 0),
+    #         ),
+    #         (), ()
+    #     ),
+    #     is_snapped_to_end = True)
+    # t.create_tl_camera_fov(
+    #     camera1,
+    #     '8.0',
+    #     phase_duration,
+    #     (
+    #         t.create_value_key(time = '8.0', value_name = 'FoV', value = '35.0', value_type = 'float', interpolation_type = 0),
+    #     ),
+    #     is_snapped_to_end = True)
+
+
+    t.create_tl_camera_dof(
+        camera3,
+        '10.0',
+        phase_duration,
+        (
+            (
+                t.create_value_key(time = '10.0', value = '2.25', value_type = 'float', interpolation_type = 0),
+            ),
+            (
+                t.create_value_key(time = '10.0', value = '18.0', value_type = 'float', interpolation_type = 0),
+            ),
+            (
+                t.create_value_key(time = '10.0', value = '1.0', value_type = 'float', interpolation_type = 0),
+            ),
+            (), (), (), ()
+        ),
+        is_snapped_to_end = True)
     t.create_tl_transform(
-        camera1,
-        '8.0',
+        camera3,
+        '10.0',
         phase_duration,
         (
             (
                 # + right; - left
-                #t.create_value_key(time = '0.0', value = '0.05931377', value_type = 'float', interpolation_type = 0),
-                t.create_value_key(time = '0.0', value = '0.07', value_type = 'float', interpolation_type = 0),
+                t.create_value_key(time = '10.0', value = '-0.9', value_type = 'float', interpolation_type = 0),
             ),
             (
-                t.create_value_key(time = '0.0', value = '1.4', value_type = 'float', interpolation_type = 0),
+                t.create_value_key(time = '10.0', value = '1.0', value_type = 'float', interpolation_type = 0),
             ),
             (
                 # + forward; - backward
-                t.create_value_key(time = '0.0', value = '6.5', value_type = 'float', interpolation_type = 0),
+                #t.create_value_key(time = '10.0', value = '7.5', value_type = 'float', interpolation_type = 5),
+                t.create_value_key(time = '10.0', value = '12.0', value_type = 'float', interpolation_type = 5),
             ),
             (
                 # tilt down
-                t.create_value_key(time = '0.0', value = bg3.euler_to_quaternion(0.0, 7.0, 0.0, sequence = 'yxz'), interpolation_type = 0),
+                #t.create_value_key(time = '10.0', value = bg3.euler_to_quaternion(0.0, 7.0, 0.0, sequence = 'yxz'), interpolation_type = 5),
+                t.create_value_key(time = '10.0', value = bg3.euler_to_quaternion(150.0, 8.0, 0.0, sequence = 'yxz'), interpolation_type = 5),
             ),
             (), ()
         ),
         is_snapped_to_end = True)
     t.create_tl_camera_fov(
-        camera1,
-        '8.0',
+        camera3,
+        '10.0',
         phase_duration,
         (
-            t.create_value_key(time = '8.0', value_name = 'FoV', value = '35.0', value_type = 'float', interpolation_type = 0),
+            t.create_value_key(time = '10.0', value_name = 'FoV', value = '35.0', value_type = 'float', interpolation_type = 0),
         ),
         is_snapped_to_end = True)
-    t.create_tl_shot(camera1, '10.0', phase_duration, is_snapped_to_end = True)
+    t.create_tl_shot(camera3, '10.0', phase_duration, is_snapped_to_end = True)
 
 
 def cine_post_dj_selune_prayer_end(
@@ -516,6 +577,7 @@ def cine_post_dj_selune_prayer_end(
         [next_dialog_node_uuid])
 
     camera1 = 'ec978200-bbbb-4c97-ac87-f231fe4e5344'
+    camera2 = '7920525e-55c0-48cf-bade-69ade1388499'
 
     #phase_duration = '7.33' if called_her else '10.3'
     phase_duration = '3.5' if called_her else '8.5'
@@ -546,40 +608,72 @@ def cine_post_dj_selune_prayer_end(
         ),
         is_snapped_to_end = True)
 
-    t.create_tl_camera_fov(
-        camera1,
-        '0.0',
-        phase_duration,
-        (
-            t.create_value_key(time = '8.0', value_name = 'FoV', value = '35.0', value_type = 'float', interpolation_type = 0),
-        ),
-        is_snapped_to_end = True)
-    t.create_tl_transform(
-        camera1,
+    t.create_tl_camera_dof(
+        camera2,
         '0.0',
         phase_duration,
         (
             (
-                # + right; - left
-                #t.create_value_key(time = '0.0', value = '0.05931377', value_type = 'float', interpolation_type = 0),
-                t.create_value_key(time = '0.0', value = '0.07', value_type = 'float', interpolation_type = 0),
+                t.create_value_key(time = '0.0', value = '3.0', value_type = 'float', interpolation_type = 0),
             ),
             (
-                t.create_value_key(time = '0.0', value = '1.4', value_type = 'float', interpolation_type = 0),
+                t.create_value_key(time = '0.0', value = '18.0', value_type = 'float', interpolation_type = 0),
             ),
             (
-                # + forward; - backward
-                t.create_value_key(time = '0.0', value = '6.5', value_type = 'float', interpolation_type = 0),
+                t.create_value_key(time = '0.0', value = '1.0', value_type = 'float', interpolation_type = 0),
             ),
-            (
-                # tilt down
-                t.create_value_key(time = '0.0', value = bg3.euler_to_quaternion(0.0, 7.0, 0.0, sequence = 'yxz'), interpolation_type = 0),
-            ),
-            (), ()
+            (), (), (), ()
         ),
         is_snapped_to_end = True)
 
     if called_her:
+        t.create_tl_actor_node(bg3.timeline_object.EMOTION, bg3.SPEAKER_SHADOWHEART, '0.0', phase_duration, (
+            t.create_emotion_key(0.0, 256),
+            t.create_emotion_key(2.5, 32),
+            # t.create_emotion_key(3.0, 32),
+        ))
+        # t.create_tl_actor_node(bg3.timeline_object.SHOW_VISUAL, bg3.SPEAKER_ARNELL, '0.0', phase_duration, (
+        #     t.create_value_key(time = 3.4, interpolation_type = 3, value_name = 'ShowVisual', value = True),
+        # ), is_snapped_to_end = True)
+        # t.create_tl_actor_node(bg3.timeline_object.SHOW_VISUAL, bg3.SPEAKER_EMMELINE, '0.0', phase_duration, (
+        #     t.create_value_key(time = 3.4, interpolation_type = 3, value_name = 'ShowVisual', value = True),
+        # ), is_snapped_to_end = True)
+
+        # Shot 1
+        t.create_tl_camera_fov(
+            camera1,
+            '0.0',
+            '2.0',
+            (
+                t.create_value_key(time = '0.0', value_name = 'FoV', value = '35.0', value_type = 'float', interpolation_type = 0),
+                t.create_value_key(time = '2.0', value_name = 'FoV', value = '33.0', value_type = 'float', interpolation_type = 0),
+            ))
+        t.create_tl_transform(
+            camera1,
+            '0.0',
+            '2.0',
+            (
+                (
+                    # + right; - left
+                    #t.create_value_key(time = '0.0', value = '0.05931377', value_type = 'float', interpolation_type = 0),
+                    t.create_value_key(time = '0.0', value = '0.07', value_type = 'float', interpolation_type = 0),
+                ),
+                (
+                    t.create_value_key(time = '0.0', value = '1.4', value_type = 'float', interpolation_type = 0),
+                ),
+                (
+                    # + forward; - backward
+                    t.create_value_key(time = '0.0', value = '6.5', value_type = 'float', interpolation_type = 0),
+                ),
+                (
+                    # tilt down
+                    t.create_value_key(time = '0.0', value = bg3.euler_to_quaternion(0.0, 7.0, 0.0, sequence = 'yxz'), interpolation_type = 0),
+                ),
+                (), ()
+            ))
+        t.create_tl_shot(camera1, '0.0', '2.0')
+
+        # Animation
         t.create_tl_animation(
             bg3.SPEAKER_SHADOWHEART,
             '0.0',
@@ -590,7 +684,81 @@ def cine_post_dj_selune_prayer_end(
             fade_in = 1.0,
             fade_out = 2.0,
         )
+
+        # Shot 2
+        t.create_tl_camera_fov(
+            camera2,
+            '2.0',
+            phase_duration,
+            (
+                t.create_value_key(time = '2.0', value_name = 'FoV', value = '26.0', value_type = 'float', interpolation_type = 0),
+                t.create_value_key(time = phase_duration, value_name = 'FoV', value = '24.0', value_type = 'float', interpolation_type = 0),
+            ),
+            is_snapped_to_end = True)
+        t.create_tl_transform(
+            camera2,
+            '2.0',
+            phase_duration,
+            (
+                (
+                    # + right; - left
+                    t.create_value_key(time = '2.0', value = '-0.8', value_type = 'float', interpolation_type = 0),
+                ),
+                (
+                    t.create_value_key(time = '2.0', value = '1.8', value_type = 'float', interpolation_type = 0),
+                ),
+                (
+                    # + forward; - backward
+                    t.create_value_key(time = '2.0', value = '11.5', value_type = 'float', interpolation_type = 0),
+                ),
+                (
+                    # tilt down
+                    t.create_value_key(time = '2.0', value = bg3.euler_to_quaternion(155.0, 7.0, 0.0, sequence = 'yxz'), interpolation_type = 0),
+                ),
+                (), ()
+            ),
+            is_snapped_to_end = True)
+        t.create_tl_shot(camera2, '2.0', phase_duration, is_snapped_to_end = True)
+
     else:
+        t.create_tl_actor_node(bg3.timeline_object.EMOTION, bg3.SPEAKER_SHADOWHEART, '0.0', phase_duration, (
+            t.create_emotion_key(0.0, 256),
+            t.create_emotion_key(8.0, 32),
+        ))
+
+        t.create_tl_camera_fov(
+            camera1,
+            '0.0',
+            '6.5',
+            (
+                t.create_value_key(time = '0.0', value_name = 'FoV', value = '35.0', value_type = 'float', interpolation_type = 0),
+                t.create_value_key(time = '6.5', value_name = 'FoV', value = '32.0', value_type = 'float', interpolation_type = 0),
+            ))
+        t.create_tl_transform(
+            camera1,
+            '0.0',
+            '6.5',
+            (
+                (
+                    # + right; - left
+                    #t.create_value_key(time = '0.0', value = '0.05931377', value_type = 'float', interpolation_type = 0),
+                    t.create_value_key(time = '0.0', value = '0.07', value_type = 'float', interpolation_type = 0),
+                ),
+                (
+                    t.create_value_key(time = '0.0', value = '1.4', value_type = 'float', interpolation_type = 0),
+                ),
+                (
+                    # + forward; - backward
+                    t.create_value_key(time = '0.0', value = '6.5', value_type = 'float', interpolation_type = 0),
+                ),
+                (
+                    # tilt down
+                    t.create_value_key(time = '0.0', value = bg3.euler_to_quaternion(0.0, 7.0, 0.0, sequence = 'yxz'), interpolation_type = 0),
+                    t.create_value_key(time = '6.5', value = bg3.euler_to_quaternion(0.0, 10.0, 0.0, sequence = 'yxz'), interpolation_type = 0),
+                ),
+                (), ()
+            ))
+        t.create_tl_shot(camera1, '0.0', '6.5')
         t.create_tl_animation(
             bg3.SPEAKER_SHADOWHEART,
             '0.0',
@@ -613,6 +781,41 @@ def cine_post_dj_selune_prayer_end(
             fade_out = 2.0,
             enable_root_motion = True,
         )
+
+        # Shot 2
+        t.create_tl_camera_fov(
+            camera2,
+            '6.5',
+            phase_duration,
+            (
+                t.create_value_key(time = '6.5', value_name = 'FoV', value = '26.0', value_type = 'float', interpolation_type = 0),
+                t.create_value_key(time = phase_duration, value_name = 'FoV', value = '24.0', value_type = 'float', interpolation_type = 0),
+            ),
+            is_snapped_to_end = True)
+        t.create_tl_transform(
+            camera2,
+            '6.5',
+            phase_duration,
+            (
+                (
+                    # + right; - left
+                    t.create_value_key(time = '6.5', value = '-0.8', value_type = 'float', interpolation_type = 0),
+                ),
+                (
+                    t.create_value_key(time = '6.5', value = '1.8', value_type = 'float', interpolation_type = 0),
+                ),
+                (
+                    # + forward; - backward
+                    t.create_value_key(time = '6.5', value = '11.5', value_type = 'float', interpolation_type = 0),
+                ),
+                (
+                    # tilt down
+                    t.create_value_key(time = '6.5', value = bg3.euler_to_quaternion(155.0, 7.0, 0.0, sequence = 'yxz'), interpolation_type = 0),
+                ),
+                (), ()
+            ),
+            is_snapped_to_end = True)
+        t.create_tl_shot(camera2, '6.5', phase_duration, is_snapped_to_end = True)
 
 
 def create_daughter_tears_entry_point() -> None:

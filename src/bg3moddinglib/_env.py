@@ -5,9 +5,11 @@ import os
 import requests
 import shutil
 import time
+import traceback
 import zipfile
 
 from ._common import translate_path
+from ._logger import get_logger
 
 
 from typing import cast
@@ -50,8 +52,8 @@ class bg3_modding_env:
             modio_endpoint: str | None = None,
             modio_api_key: str | None = None,
             modio_api_token: str | None = None,
-            output_dir: str | None = None,
-            index_dir: str | None = None,
+            output_dir: str = "out",
+            index_dir: str = "index",
             skip_config: bool = False
     ) -> None:
         self.__env_root_path = env_root_path
@@ -78,9 +80,9 @@ class bg3_modding_env:
             self.__modio_api_key = modio_api_key
         if modio_api_token is not None and not self.__modio_api_token:
             self.__modio_api_token = modio_api_token
-        if output_dir is not None and not self.__output_path:
+        if not self.__output_path:
             self.__output_path = translate_path(os.path.join(self.__env_root_path, output_dir))
-        if index_dir is not None and not self.__index_path:
+        if not self.__index_path:
             self.__index_path = translate_path(os.path.join(self.__env_root_path, index_dir))
         self.__sanity_check()
 
@@ -146,7 +148,15 @@ class bg3_modding_env:
 
     def cleanup_output(self) -> None:
         if os.path.isdir(self.__output_path):
-            shutil.rmtree(self.__output_path)
+            try:
+                shutil.rmtree(self.__output_path)
+            except:
+                get_logger().error(f'bg3_modding_env.cleanup_output() failed due to exception: {traceback.format_exc()}')
+        if os.path.isdir(self.__output_path):
+            try:
+                shutil.rmtree(self.__output_path, ignore_errors = True)
+            except:
+                get_logger().error(f'bg3_modding_env.cleanup_output() failed due to exception: {traceback.format_exc()}')
         os.makedirs(self.__output_path)
 
     def __lslib_exists(self) -> bool:
@@ -221,14 +231,17 @@ class bg3_modding_env:
         except Exception as exc:
             raise RuntimeError(f"Failed to read configuration from {config_file_path}") from exc
 
+
     def __sanity_check(self) -> None:
         if not (os.path.isfile(os.path.join(self.__bg3_data_path, "Gustav.pak")) \
                 and os.path.isfile(os.path.join(self.__bg3_data_path, "Shared.pak")) \
                 and os.path.isfile(os.path.join(self.__bg3_data_path, "Engine.pak")) \
                 and os.path.isdir(os.path.join(self.__bg3_data_path, "Localization"))):
             raise RuntimeError("BG3 data files aren't found at " + self.__bg3_data_path)
-        if not os.path.isfile(self.__divine_exe):
-            raise RuntimeError("Divine.exe, lslib and other tools are not found at " + self.__lslib_path)
+        if not os.path.isfile(self.__divine_exe) or not os.path.isdir(self.__lslib_path):
+            raise RuntimeError("lslib and other tools are not found at " + self.__lslib_path)
+        if not self.__index_path:
+            raise RuntimeError("index path is not defined")
 
     @staticmethod
     def download_file(url: str, dest_file_path: str) -> None:

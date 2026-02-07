@@ -10,7 +10,7 @@ from base64 import b64encode, b64decode
 from typing import cast
 
 from ._dialog import dialog_object
-from ._common import new_random_uuid, set_bg3_attribute, get_bg3_attribute, get_required_bg3_attribute, has_bg3_attribute, remove_all_nodes
+from ._common import new_random_uuid, set_bg3_attribute, get_bg3_attribute, get_required_bg3_attribute, has_bg3_attribute, remove_all_nodes, to_compact_string
 from ._constants import *
 from ._files import game_file, game_files
 from ._loca import loca_object
@@ -550,7 +550,7 @@ class bg3_assets:
             set_bg3_attribute(scene_lsx_node, 'Identifier', internal_scene_uuid, attribute_type = 'guid')
 
         dialog_resource = self.load_dialog_resource(index_entry['dialog_bank_pak'], index_entry['dialog_bank_path'], original_dialog_uuid)
-        lsf_path = dialog_file.get_output_relative_path(self.__files.mod_name_uuid)
+        lsf_path = dialog_file.get_output_relative_path(self.__files)
         lsj_path = lsf_path.replace('/Story/DialogsBinary/', '/Story/Dialogs/')[:-4] + '.lsj'
         dialog_version = int(get_required_bg3_attribute(dialog_resource, '_OriginalFileVersion_')) + 2147483648 + 1
         set_bg3_attribute(dialog_resource, 'ID', new_dialog_uuid, attribute_type = 'FixedString')
@@ -560,7 +560,7 @@ class bg3_assets:
 
         if has_timeline:
             timeline_resource = self.__index.get_timeline_resource(original_timeline_uuid)
-            timeline_file_path = timeline_file.get_output_relative_path(self.__files.mod_name_uuid)
+            timeline_file_path = timeline_file.get_output_relative_path(self.__files)
             timeline_version = int(get_required_bg3_attribute(timeline_resource, '_OriginalFileVersion_')) + 2147483648 + 1
             set_bg3_attribute(timeline_resource, 'DialogResourceId', new_dialog_uuid, attribute_type = 'guid')
             set_bg3_attribute(timeline_resource, 'ID', new_timeline_uuid, attribute_type = 'FixedString')
@@ -588,16 +588,22 @@ class bg3_assets:
         return ab
 
 
-    def add_to_dialog_bank(self, dialog_resource: et.Element[str]) -> None:
+    def add_to_dialog_bank(self, dialog_resource: et.Element[str], f: game_file | None = None) -> None:
         dialog_uuid = get_required_bg3_attribute(dialog_resource, 'ID')
         if dialog_uuid not in self.__dialog_bank_uuids:
+            if f is not None:
+                lsf_dialog_path = f.get_output_relative_path(self.__files)
+                lsj_dialog_path = (lsf_dialog_path[:-4] + '.lsj').replace('/Story/DialogsBinary/', '/Story/Dialogs/')
+                set_bg3_attribute(dialog_resource, 'SourceFile', lsj_dialog_path)
             self.__get_dialog_bank_parent_node().append(dialog_resource)
             self.__dialog_bank_uuids.add(dialog_uuid)
 
 
-    def add_to_timeline_bank(self, timeline_resource: et.Element[str]) -> None:
+    def add_to_timeline_bank(self, timeline_resource: et.Element[str], f: game_file | None = None) -> None:
         timeline_uuid = get_required_bg3_attribute(timeline_resource, 'ID')
         if timeline_uuid not in self.__timeline_bank_uuids:
+            if f is not None:
+                set_bg3_attribute(timeline_resource, 'SourceFile', f.get_output_relative_path(self.__files))
             self.__get_timeline_bank_parent_node().append(timeline_resource)
             self.__timeline_bank_uuids.add(timeline_uuid)
 
@@ -641,6 +647,7 @@ class bg3_assets:
         for ab in self.__asset_bundles.values():
             d = dialog_object(ab.dialog)
             if not ab.timeline.is_empty:
+                print(ab.timeline.relative_file_path)
                 timeline_object(ab.timeline, d).post_process()
 
 

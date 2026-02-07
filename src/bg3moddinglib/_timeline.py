@@ -32,6 +32,13 @@ from ._types import XmlElement
 
 from typing import Iterable
 
+misplaced_timeline_nodes = list[tuple[str, str]]()
+
+
+def get_misplaced_timeline_nodes() -> tuple[tuple[str, str], ...]:
+    return tuple(misplaced_timeline_nodes)
+
+
 class timeline_phase:
     __index: int
     __dialog_node_uuid: str
@@ -117,14 +124,17 @@ class timeline_object:
     __effect_components_parent_node: et.Element
     __duration: dc.Decimal
     __original_duration: dc.Decimal
-    __phases_start_times: list[dc.Decimal]
-    __phases_end_times: list[dc.Decimal]
-    __phases_durations: list[dc.Decimal]
+    # __phases_start_times: list[dc.Decimal]
+    # __phases_end_times: list[dc.Decimal]
+    # __phases_durations: list[dc.Decimal]
+    __phases: list[timeline_phase]
+    __phases_by_dialog_uuid: dict[str, timeline_phase]
     __current_phase_start_time: dc.Decimal | None
     __current_phase_index: int | None
     __node_insertion_index: int | None
     __peanuts_uuids: list[str]
     __cameras_uuids: list[str]
+
 
     def __init__(self, gamefile: game_file, dialog: dialog_object) -> None:
         self.__file = gamefile
@@ -133,9 +143,11 @@ class timeline_object:
         if node is None:
             raise RuntimeError(f"file {gamefile.relative_file_path} doesn't contain a timeline object")
         self.__effect_components_parent_node = node
-        self.__phases_start_times = list[dc.Decimal]()
-        self.__phases_end_times = list[dc.Decimal]()
-        self.__phases_durations = list[dc.Decimal]()
+        # self.__phases_start_times = list[dc.Decimal]()
+        # self.__phases_end_times = list[dc.Decimal]()
+        # self.__phases_durations = list[dc.Decimal]()
+        self.__phases = list[timeline_phase]()
+        self.__phases_by_dialog_uuid = dict[str, timeline_phase]()
         self.__original_duration = self.scan_timeline()
         self.__current_phase_start_time = None
         self.__current_phase_index = None
@@ -147,29 +159,36 @@ class timeline_object:
             self.__peanuts_uuids.append(peanut_uuid)
         self.__cameras_uuids = list[str]()
 
+
     @property
     def timeline_file(self) -> game_file:
         return self.__file
+
 
     @property
     def filename(self) -> str:
         return self.__file.relative_file_path
 
+
     @property
     def duration(self) -> float:
         return float(self.__duration)
+
 
     @property
     def original_duration(self) -> float:
         return float(self.__original_duration)
 
+
     @property
     def all_effect_components(self) -> tuple[et.Element, ...]:
         return tuple(self.__effect_components_parent_node.findall('./node[@id="EffectComponent"]'))
 
+
     @property
     def xml(self) -> et.Element:
         return self.__file.root_node
+
 
     @staticmethod
     def __recurse_update_node_times(current_node: et.Element, time_delta: dc.Decimal) -> None:
@@ -181,17 +200,36 @@ class timeline_object:
         for child in children:
             timeline_object.__recurse_update_node_times(child, time_delta)
 
+
     def __add_combat_timeline_handler(self) -> None:
         node = self.__file.root_node.find('./region[@id="TimelineContent"]/node[@id="TimelineContent"]/children/node[@id="CombatTimelineHandlers"]/children')
         if node is None:
             raise RuntimeError('cannot find the CombatTimelineHandlers parent node')
         node.append(et.fromstring('<node id="CombatTimelineHandler"><attribute id="Priority" type="int32" value="0" /></node>'))
 
+
     def __update_phase_duration(self) -> None:
         effect_node = self.__file.root_node.find('./region[@id="TimelineContent"]/node[@id="TimelineContent"]/children/node[@id="Effect"]')
         if effect_node is None:
             raise RuntimeError(f"cannot find the 'Effect' node in {self.__file.relative_file_path}")
         set_bg3_attribute(effect_node, "Duration", str(self.__duration))
+
+
+    def __get_node_phase_index(self, node: XmlElement) -> int:
+        node_phase_idx = get_bg3_attribute(node, 'PhaseIndex')
+        if node_phase_idx is None:
+            node_phase_idx = 0
+        else:
+            node_phase_idx = int(node_phase_idx)
+        return node_phase_idx
+
+
+    def __get_node_start_time(self, tl_node: et.Element) -> dc.Decimal:
+        start_time = get_bg3_attribute(tl_node, 'StartTime')
+        if start_time is None:
+            return DECIMAL_ZERO
+        return decimal_from_str(start_time)
+
 
     def __find_node_insertion_index(self) -> None:
         if self.__current_phase_index == 0:
@@ -200,26 +238,17 @@ class timeline_object:
             self.__node_insertion_index = len(self.__effect_components_parent_node)
             for n in range(0, len(self.__effect_components_parent_node)):
                 node = self.__effect_components_parent_node[n]
-                node_phase_idx = get_bg3_attribute(node, 'PhaseIndex')
-                if node_phase_idx is None:
-                    node_phase_idx = 0
-                else:
-                    node_phase_idx = int(node_phase_idx)
+                node_phase_idx = self.__get_node_phase_index(node)
                 if self.__current_phase_index == node_phase_idx:
                     self.__node_insertion_index = n
                     break
 
-    def __get_tl_node_start_time(self, tl_node: et.Element) -> dc.Decimal:
-        start_time = get_bg3_attribute(tl_node, 'StartTime')
-        if start_time is None:
-            return DECIMAL_ZERO
-        return decimal_from_str(start_time)
 
     def insert_new_tl_node(self, tl_node: et.Element) -> None:
-        start_time = self.__get_tl_node_start_time(tl_node)
+        start_time = self.__get_node_start_time(tl_node)
         n = len(self.__effect_components_parent_node)
         if n > 0:
-            tail_node_start_time = self.__get_tl_node_start_time(self.__effect_components_parent_node[n - 1])
+            tail_node_start_time = self.__get_node_start_time(self.__effect_components_parent_node[n - 1])
         else:
             tail_node_start_time = DECIMAL_ZERO
         if start_time >= tail_node_start_time:
@@ -229,7 +258,7 @@ class timeline_object:
                 raise ValueError("self.__node_insertion_index is None")
             insert_pos = self.__node_insertion_index
             while insert_pos < n:
-                t = self.__get_tl_node_start_time(self.__effect_components_parent_node[insert_pos])
+                t = self.__get_node_start_time(self.__effect_components_parent_node[insert_pos])
                 if t > start_time:
                     break
                 insert_pos += 1
@@ -237,46 +266,88 @@ class timeline_object:
                 insert_pos -= 1
             self.__effect_components_parent_node.insert(insert_pos, tl_node)
 
+
     def scan_timeline(self) -> dc.Decimal:
         self.__duration = DECIMAL_ZERO
         effect_node = self.__file.root_node.find('./region[@id="TimelineContent"]/node[@id="TimelineContent"]/children/node[@id="Effect"]')
         if effect_node is None:
             raise RuntimeError(f"cannot determine duration of timeline {self.__file.relative_file_path}")
-        phases = effect_node.findall('./children/node[@id="Phases"]/children/node[@id="Phase"]')
-        self.__phases_start_times = list[dc.Decimal]()
-        for phase in phases:
-            phase_duration = decimal_from_str(get_required_bg3_attribute(phase, 'Duration'))
-            self.__phases_durations.append(phase_duration)
+
+        phases_start_times = list[dc.Decimal]()
+        phases_end_times = list[dc.Decimal]()
+        phases_durations = list[dc.Decimal]()
+        dialog_groups_lookup_table = dict[str, list[str]]()
+
+        phases_elements = effect_node.findall('./children/node[@id="Phases"]/children/node[@id="Phase"]')
+        timeline_phases = self.__file.root_node.findall('./region[@id="TimelineContent"]/node[@id="TimelineContent"]/children/node[@id="TimelinePhases"]/children/node[@id="Object"]/children/node[@id="Object"]')
         effect_components = effect_node.findall('./children/node[@id="EffectComponents"]/children/node[@id="EffectComponent"]')
 
-        timeline_duration = DECIMAL_ZERO        
-        for effect_component in effect_components:
-            phase_index = get_bg3_attribute(effect_component, 'PhaseIndex')
-            if phase_index is None:
-                effective_phase_index = 0
-            else:
-                effective_phase_index = int(phase_index)
-            start_time = get_bg3_attribute(effect_component, 'StartTime')
-            if start_time is None:
-                effective_start_time = DECIMAL_ZERO
-            else:
-                effective_start_time = decimal_from_str(start_time)
+        for phase in phases_elements:
+            phase_duration = decimal_from_str(get_required_bg3_attribute(phase, 'Duration'))
+            phases_durations.append(phase_duration)
+
+        timeline_duration = DECIMAL_ZERO
+        for i in range(0, len(effect_components)):
+            effect_component = effect_components[i]
+            phase_index = self.__get_node_phase_index(effect_component)
+
+            if i > 0 and (i + 1) < len(effect_components):
+                prev_effect_component = effect_components[i - 1]
+                next_effect_component = effect_components[i + 1]
+                if phase_index != self.__get_node_phase_index(prev_effect_component) and phase_index != self.__get_node_phase_index(next_effect_component):
+                    node_uuid = get_required_bg3_attribute(effect_component, 'ID')
+                    misplaced_timeline_nodes.append((node_uuid, self.filename))
+                    continue
+
+            start_time = self.__get_node_start_time(effect_component)
             end_time = decimal_from_str(get_required_bg3_attribute(effect_component, 'EndTime'))
-            if len(self.__phases_start_times) <= effective_phase_index:
-                self.__phases_start_times.append(effective_start_time)
-                self.__phases_end_times.append(end_time)
+
+            if len(phases_start_times) <= phase_index:
+                phases_start_times.append(start_time)
+                phases_end_times.append(end_time)
             else:
-                existing_start_time = self.__phases_start_times[effective_phase_index]
-                existing_end_time = self.__phases_end_times[effective_phase_index]
-                if existing_start_time > effective_start_time:
-                    self.__phases_start_times[effective_phase_index] = effective_start_time
+                existing_start_time = phases_start_times[phase_index]
+                existing_end_time = phases_end_times[phase_index]
+                if existing_start_time > start_time:
+                    phases_start_times[phase_index] = start_time
                 if existing_end_time < end_time:
-                    self.__phases_end_times[effective_phase_index] = end_time
+                    phases_end_times[phase_index] = end_time
             if timeline_duration < end_time:
                 timeline_duration = end_time
+
+            # check if the previous phase overlaps with the current phase, adjust boundaries if needed
+            if phase_index > 0:
+                if phases_start_times[phase_index] < phases_end_times[phase_index - 1]:
+                    phases_end_times[phase_index - 1] = phases_start_times[phase_index]
+
+        # for dialog groups, collect all dialog node uuids under the group uuids
+        for tl_phase in timeline_phases:
+            dialog_uuid = get_required_bg3_attribute(tl_phase, "MapKey")
+            phase_index = int(get_required_bg3_attribute(tl_phase, "MapValue"))
+            dialog_group_uuid = get_required_bg3_attribute(phases_elements[phase_index], "DialogNodeId")
+            if dialog_group_uuid in dialog_groups_lookup_table:
+                dialog_groups_lookup_table[dialog_group_uuid].append(dialog_uuid)
+            else:
+                dialog_groups_lookup_table[dialog_group_uuid] = [dialog_uuid]
+
+        # create phases
+        phases = list[timeline_phase]()
+        phases_by_dialog_uuid = dict[str, timeline_phase]()
+        for phase_index in range(0, len(phases_elements)):
+            phase = phases_elements[phase_index]
+            main_dialog_uuid = get_required_bg3_attribute(phases_elements[phase_index], "DialogNodeId")
+            group_dialogs_uuids = dialog_groups_lookup_table[main_dialog_uuid]
+            tl_phase = timeline_phase(phase_index, main_dialog_uuid, phases_start_times[phase_index], phases_end_times[phase_index], group_dialogs_uuids)
+            for dialog_uuid in group_dialogs_uuids:
+                phases_by_dialog_uuid[dialog_uuid] = tl_phase
+            phases.append(tl_phase)
+
+        self.__phases = phases
+        self.__phases_by_dialog_uuid = phases_by_dialog_uuid
         self.__duration = timeline_duration
         set_bg3_attribute(effect_node, "Duration", str(self.__duration))
         return self.__duration
+
 
     def get_timeline_actors(self, actor_type_id: str | Iterable[str] | None = None) -> dict[str, et.Element]:
         result = dict[str, et.Element]()
@@ -297,26 +368,31 @@ class timeline_object:
                 result[actor_uuid] = value
         return result
 
+
     def get_tl_node_actor_uuid(self, node: XmlElement) -> str | None:
         actor = node.find('./children/node[@id="Actor"]')
         if actor is not None:
             return get_bg3_attribute(actor, 'UUID')
 
+
     def get_timeline_actors_uuids(self, actor_type_id: str | Iterable[str] | None = None) -> tuple[str, ...]:
         return tuple(self.get_timeline_actors(actor_type_id).keys())
+
 
     def get_timeline_peanuts_uuids(self) -> tuple[str, ...]:
         return tuple(self.__peanuts_uuids)
 
+
     def get_phase_start_time(self, phase_index: int) -> dc.Decimal:
-        if phase_index >= len(self.__phases_start_times):
-            raise KeyError(f"phase index {phase_index} is out of bounds [0; {len(self.__phases_start_times)})")
-        return self.__phases_start_times[phase_index]
+        if phase_index >= len(self.__phases):
+            raise KeyError(f"phase index {phase_index} is out of bounds [0; {len(self.__phases)})")
+        return self.__phases[phase_index].start
+
 
     def get_phase_duration(self, phase_index: int) -> dc.Decimal:
-        if phase_index >= len(self.__phases_durations):
-            raise KeyError(f"phase index {phase_index} is out of bounds [0; {len(self.__phases_durations)})")
-        return self.__phases_durations[phase_index]
+        if phase_index >= len(self.__phases):
+            raise KeyError(f"phase index {phase_index} is out of bounds [0; {len(self.__phases)})")
+        return self.__phases[phase_index].duration
 
 
     def create_narrator_timeline_actor_data(self) -> None:
@@ -343,6 +419,56 @@ class timeline_object:
         timeline_actor_data_children.append(narrator_node)
 
 
+    def create_timeline_actor_data(
+            self,
+            actor_uuid: str,
+            actor_type_id: str,
+            actor_type: int,
+            default_stepout_delay: float,
+            resource_id: str | None = None,
+            light_id: str | None = None,
+            camera_id: str | None = None,
+            camera_attach_to: str | None = None,
+            camera_look_at: str | None = None,
+            speaker: int | None = None,
+            audience_slot: int | None = None,
+            scene_actor_type: int | None = None,
+            scene_actor_index: int | None = None,
+    ) -> None:
+        timeline_actor_data_children = self.__file.root_node.find('./region[@id="TimelineContent"]/node[@id="TimelineContent"]/children/node[@id="TimelineActorData"]/children/node[@id="TimelineActorData"]/children')
+        if timeline_actor_data_children is None:
+            raise RuntimeError(f'TimelineActorData is not found in timeline {self.__file.relative_file_path}')
+        node_xml = [
+            '<node id="Object" key="MapKey">',
+            f'<attribute id="MapKey" type="guid" value="{actor_uuid}" />',
+            '<children><node id="Value">',
+            f'<attribute id="ActorTypeId" type="FixedString" value="{actor_type_id}" />',
+            f'<attribute id="ActorType" type="uint8" value="{actor_type}" />',
+            f'<attribute id="DefaultStepOutDelay" type="float" value="{default_stepout_delay}" />',
+        ]
+        if resource_id is not None:
+            node_xml.append(f'<attribute id="ResourceId" type="guid" value="{resource_id}" />')
+        if light_id is not None:
+            node_xml.append(f'<attribute id="Light" type="guid" value="{light_id}" />')
+        if camera_id is not None:
+            node_xml.append(f'<attribute id="Camera" type="guid" value="{camera_id}" />')
+        if camera_attach_to is not None:
+            node_xml.append(f'<attribute id="AttachTo" type="guid" value="{camera_attach_to}" />')
+        if camera_look_at is not None:
+            node_xml.append(f'<attribute id="LookAt" type="guid" value="{camera_look_at}" />')
+        if speaker is not None:
+            node_xml.append(f'<attribute id="Speaker" type="int32" value="{speaker}" />')
+        if audience_slot is not None:
+            node_xml.append(f'<attribute id="AudienceSlot" type="int8" value="{audience_slot}" />')
+        if scene_actor_type is not None:
+            node_xml.append(f'<attribute id="SceneActorType" type="int8" value="{scene_actor_type}" />')
+        if scene_actor_index is not None:
+            node_xml.append(f'<attribute id="SceneActorIndex" type="int32" value="{scene_actor_index}" />')
+        node_xml.append('<children><node id="CompiledNodeSnapshots"><children><node id="ComponentMap" /></children></node></children></node></children></node>')
+        node = et.fromstring(''.join(node_xml))
+        timeline_actor_data_children.append(node)
+
+
     def create_new_phase(
             self,
             dialog_node_uuid: str,
@@ -351,6 +477,9 @@ class timeline_object:
             line_index: int | None = None,
             additional_nodes: Iterable[str] | None = None
     ) -> int:
+        if line_index is not None and additional_nodes is not None:
+            raise RuntimeError('unexpected: line_index and additional_nodes are mutually exclusive, however both arguments were given')
+
         phases_children = self.__file.root_node.find('./region[@id="TimelineContent"]/node[@id="TimelineContent"]/children/node[@id="Effect"]/children/node[@id="Phases"]/children')
         if phases_children is None:
             raise RuntimeError(f"cannot find 'Phases' in timeline {self.__file.relative_file_path}")
@@ -364,31 +493,43 @@ class timeline_object:
                 '<attribute id="PlayCount" type="int32" value="1" />' + \
                 f'<attribute id="DialogNodeId" type="guid" value="{dialog_node_uuid}" />' + \
 				'<children><node id="QuestionHoldAutomation" /></children></node>'
-        if line_index is None:
-            reference_id = dialog_node_uuid
-        else:
+        phases_children.append(et.fromstring(phase_xml))
+        
+        if line_index is not None:
             tag_texts = self.__dialog.get_tagged_texts(dialog_node_uuid)
             if line_index >= len(tag_texts) or line_index < 0:
                 raise IndexError(f"line index {line_index} is out of bounds [0; {len(tag_texts)})")
             reference_id = get_required_bg3_attribute(tag_texts[line_index], "CustomSequenceId")
-        timeline_phase_xml = f'<node id="Object" key="MapKey"><attribute id="MapKey" type="guid" value="{reference_id}" /><attribute id="MapValue" type="uint64" value="{phase_index}" /></node>'
-        phases_children.append(et.fromstring(phase_xml))
-        timeline_phases_children.append(et.fromstring(timeline_phase_xml))
-        if additional_nodes:
-            for additional_node in additional_nodes:
-                timeline_phase_xml = f'<node id="Object" key="MapKey"><attribute id="MapKey" type="guid" value="{additional_node}" /><attribute id="MapValue" type="uint64" value="{phase_index}" /></node>'
-                timeline_phases_children.append(et.fromstring(timeline_phase_xml))
+            dialog_nodes = [reference_id]
+        elif additional_nodes is not None:
+            dialog_nodes = set[str]()
+            dialog_nodes.add(dialog_node_uuid)
+            for node in additional_nodes:
+                dialog_nodes.add(node)
+        else:
+            dialog_nodes = [dialog_node_uuid]
 
         self.__current_phase_index = phase_index
         self.__current_phase_start_time = self.__duration
         self.__duration = self.__duration + effective_phase_duration
-        self.__phases_start_times.append(self.__current_phase_start_time)
-        self.__phases_durations.append(effective_phase_duration)
-        self.__phases_end_times.append(self.__duration)
+
+        tl_phase = timeline_phase(phase_index, dialog_node_uuid, self.__current_phase_start_time, self.__duration, dialog_nodes)
+        self.__phases.append(tl_phase)
+
+        for dialog_node in dialog_nodes:
+            self.__phases_by_dialog_uuid[dialog_node] = tl_phase
+            timeline_phase_xml = f'<node id="Object" key="MapKey"><attribute id="MapKey" type="guid" value="{dialog_node}" /><attribute id="MapValue" type="uint64" value="{phase_index}" /></node>'
+            timeline_phases_children.append(et.fromstring(timeline_phase_xml))
+
+        # self.__phases_start_times.append(self.__current_phase_start_time)
+        # self.__phases_durations.append(effective_phase_duration)
+        # self.__phases_end_times.append(self.__duration)
+        
         self.__find_node_insertion_index()
         self.__add_combat_timeline_handler()
         self.__update_phase_duration()
         return self.__current_phase_index
+
 
     def use_existing_phase(self, phase_id: str | int) -> timeline_phase:
         phase = self.get_timeline_phase(phase_id)
@@ -397,36 +538,32 @@ class timeline_object:
         self.__find_node_insertion_index()
         return phase
 
+
     def find_tl_node(self, node_uuid: str) -> et.Element:
         for node in self.all_effect_components:
             if get_bg3_attribute(node, 'ID') == node_uuid:
                 return node
         raise KeyError(f"node {node_uuid} doesn't exist in timeline {self.__file.relative_file_path}")
 
+
     def get_phase_by_tl_node(self, tl_node: et.Element | str) -> timeline_phase:
         if isinstance(tl_node, str):
             tl_node = self.find_effect_component(tl_node)
-        node_phase_idx = get_bg3_attribute(tl_node, 'PhaseIndex')
-        if node_phase_idx is None:
-            node_phase_idx = 0
-        else:
-            node_phase_idx = int(node_phase_idx)
+        node_phase_idx = self.__get_node_phase_index(tl_node)
         return self.get_timeline_phase(node_phase_idx)
+
 
     def find_tl_nodes_of_a_phase(self, phase_id: int | str) -> Iterable[et.Element]:
         result = list[et.Element]()
         phase = self.get_timeline_phase(phase_id)
         for node in self.all_effect_components:
-            node_phase_idx = get_bg3_attribute(node, 'PhaseIndex')
-            if node_phase_idx is None:
-                node_phase_idx = 0
-            else:
-                node_phase_idx = int(node_phase_idx)
+            node_phase_idx = self.__get_node_phase_index(node)
             if node_phase_idx == phase.index:
                 result.append(node)
             elif node_phase_idx > phase.index:
                 return result
         return result
+
 
     def get_effective_actor(self, actor_uuid: str) -> tuple[str, bool]:
         if actor_uuid == SPEAKER_NARRATOR:
@@ -450,6 +587,7 @@ class timeline_object:
                 peanut_override = False
         return effective_actor, peanut_override
 
+
     def get_tl_node_speaker_uuid(self, tl_node: et.Element) -> str | None:
         actor_node = tl_node.find('./children/node[@id="Actor"]')
         if actor_node is None:
@@ -463,6 +601,7 @@ class timeline_object:
                 return self.__dialog.get_speaker_by_index(int(speaker_index))
         return None
 
+
     def get_speaker_index(self, actor_uuid: str) -> int:
         speakers = self.__file.xml.findall('./region[@id="TimelineContent"]/node[@id="TimelineContent"]/children/node[@id="TimelineSpeakers"]/children/node[@id="TimelineSpeaker"]/children/node[@id="Object"][@key="MapKey"]')
         for speaker in speakers:
@@ -471,6 +610,7 @@ class timeline_object:
                 speaker_index = get_required_bg3_attribute(speaker, 'MapKey')
                 return int(speaker_index)
         raise RuntimeError(f'cannot find speaker actor {actor_uuid}')
+
 
     def clone_tl_node(
             self,
@@ -488,16 +628,11 @@ class timeline_object:
         elif not isinstance(source_node, et.Element):
             raise TypeError(f"unexpected type of 'source_node' argument: {type(source_node)}")
         new_node = et.fromstring(et.tostring(source_node))
-        phase_index = get_bg3_attribute(source_node, 'PhaseIndex')
-        val = get_bg3_attribute(source_node, 'StartTime')
-        source_node_start = DECIMAL_ZERO if val is None else decimal_from_str(val)
+        phase_index = self.__get_node_phase_index(source_node)
+        source_node_start = self.__get_node_start_time(source_node)
         source_node_end = decimal_from_str(get_required_bg3_attribute(source_node, 'EndTime'))
-        if phase_index is None:
-            phase_index = 0
-        else:
-            phase_index = int(phase_index)
-        source_phase_start = self.__phases_start_times[phase_index]
-        current_phase_duration = self.__phases_durations[self.__current_phase_index]
+        source_phase_start = self.__phases[phase_index].start
+        current_phase_duration = self.__phases[self.__current_phase_index].duration
         current_phase_end_time = self.__current_phase_start_time + current_phase_duration
 
         if entire_phase_node_duration:
@@ -538,6 +673,7 @@ class timeline_object:
                 set_bg3_attribute(actor_node, 'PeanutOverride', 'False', attribute_type = 'bool')
         return new_node
 
+
     def create_new_voice_phase_from_another(
             self,
             template_dialog_node_uuid: str,
@@ -554,8 +690,7 @@ class timeline_object:
         tl_phase = self.get_timeline_phase(template_dialog_node_uuid)
         phase_components = list[et.Element]()
         for effect_component in self.all_effect_components:
-            phase_index = get_bg3_attribute(effect_component, 'PhaseIndex')
-            phase_index = 0 if phase_index is None else int(phase_index)
+            phase_index = self.__get_node_phase_index(effect_component)
             if phase_index == tl_phase.index:
                 phase_components.append(effect_component)
         if phase_duration is None:
@@ -642,6 +777,7 @@ class timeline_object:
                         attitude_keys.append(self.create_attitude_key(attitude[0], attitude[1], attitude[2]))
                     self.create_tl_actor_node(timeline_object.ATTITUDE, speaker_uuid, '0.0', effective_phase_duration, attitude_keys)
 
+
     def create_new_cinematic_phase_from_another(
             self,
             template_dialog_node_uuid: str,
@@ -658,8 +794,7 @@ class timeline_object:
         tl_phase = self.get_timeline_phase(template_dialog_node_uuid)
         phase_components = list[et.Element]()
         for effect_component in self.all_effect_components:
-            phase_index = get_bg3_attribute(effect_component, 'PhaseIndex')
-            phase_index = 0 if phase_index is None else int(phase_index)
+            phase_index = self.__get_node_phase_index(effect_component)
             if phase_index == tl_phase.index:
                 phase_components.append(effect_component)
         if phase_duration is None:
@@ -712,7 +847,7 @@ class timeline_object:
                 new_effect_component = self.clone_tl_node(effect_component)
             #self.__effect_components_parent_node.append(new_effect_component)
             self.insert_new_tl_node(new_effect_component)
-        phase_duration = self.__phases_durations[self.__current_phase_index]
+        phase_duration = self.__phases[self.__current_phase_index].duration
         if emotions is not None:
             for speaker_uuid in emotions:
                 if speaker_uuid not in emotions_added:
@@ -729,6 +864,7 @@ class timeline_object:
                     self.create_tl_actor_node(timeline_object.ATTITUDE, speaker_uuid, DECIMAL_ZERO, phase_duration, attitude_keys)
         return phase_duration
 
+
     def copy_tl_nodes_to_current_phase(
             self,
             source_phase_id: int | str,
@@ -744,6 +880,7 @@ class timeline_object:
                 new_tl_node_id = new_random_uuid()
             new_tl_node = self.clone_tl_node(tl_node, new_node_uuid = new_tl_node_id)
             self.insert_new_tl_node(new_tl_node)
+
 
     def create_tl_actor_node(
             self,
@@ -801,6 +938,7 @@ class timeline_object:
         self.insert_new_tl_node(tl_node)
         return tl_node
 
+
     def create_tl_actor_nodes(
             self,
             node_type: str,
@@ -822,6 +960,7 @@ class timeline_object:
             is_snapped_to_end=is_snapped_to_end,
             is_mimicry=is_mimicry,
             peanut_override=peanut_override) for actor in actors]
+
 
     def create_tl_non_actor_node(
             self,
@@ -863,6 +1002,7 @@ class timeline_object:
         #self.__effect_components_parent_node.append(tl_node)
         self.insert_new_tl_node(tl_node)
         return tl_node
+
 
     def create_tl_voice(
             self,
@@ -944,6 +1084,7 @@ class timeline_object:
         self.insert_new_tl_node(tl_node)
         return tl_node
 
+
     def create_tl_show_armor(
             self,
             target_speaker: str,
@@ -1004,6 +1145,7 @@ class timeline_object:
         self.insert_new_tl_node(tl_node)
         return tl_node
 
+
     def create_tl_transform(
             self,
             actor: str,
@@ -1058,6 +1200,7 @@ class timeline_object:
         #self.__effect_components_parent_node.append(tl_node)
         self.insert_new_tl_node(tl_node)
         return tl_node
+
 
     def create_tl_shot(
             self,
@@ -1132,6 +1275,7 @@ class timeline_object:
         self.insert_new_tl_node(tl_node)
         return tl_node
 
+
     def create_tl_camera_dof(
             self,
             camera: int | str,
@@ -1191,6 +1335,7 @@ class timeline_object:
         #self.__effect_components_parent_node.append(tl_node)
         self.insert_new_tl_node(tl_node)
         return tl_node
+
 
     def create_tl_material(
             self,
@@ -1255,6 +1400,7 @@ class timeline_object:
         #self.__effect_components_parent_node.append(tl_node)
         self.insert_new_tl_node(tl_node)
         return tl_node
+
 
     def create_tl_animation(
             self,
@@ -1334,9 +1480,10 @@ class timeline_object:
             position: tuple[float, float, float],
             rotation: tuple[float, float, float, float]
     ) -> et.Element:
-        return et.fromstring(f'<node id="TargetTransform"><attribute id="Scale" type="float" value="{scale}" />' +
-                             f'<attribute id="Position" type="fvec3" value="{position[0]} {position[1]} {position[2]}" />' +
-                             f'<attribute id="RotationQuat" type="fvec4" value="{rotation[0]} {rotation[1]} {rotation[2]} {rotation[3]}" /></node>')
+        return et.fromstring(
+            f'<node id="TargetTransform"><attribute id="Scale" type="float" value="{scale}" />' +
+            f'<attribute id="Position" type="fvec3" value="{position[0]} {position[1]} {position[2]}" />' +
+            f'<attribute id="RotationQuat" type="fvec4" value="{rotation[0]} {rotation[1]} {rotation[2]} {rotation[3]}" /></node>')
 
 
     def create_tl_camera_fov(
@@ -1819,36 +1966,39 @@ class timeline_object:
             performance_fade = performance_fade,
             disable_mocap = disable_mocap)
 
-        self.create_tl_actor_node(timeline_object.LOOK_AT, speaker_player, DECIMAL_ZERO, phase_duration, (
-            self.create_look_at_key(
-                DECIMAL_ZERO,
-                target = look_at_player,
-                bone = 'Head_M',
-                turn_mode = 3,
-                turn_speed_multiplier = 0.3,
-                head_turn_speed_multiplier = 0.3,
-                weight = 0.3,
-                reset = True,
-                is_eye_look_at_enabled = True,
-                eye_look_at_target_id = speaker,
-                eye_look_at_bone = 'Head_M'
-            ),
-        ), is_snapped_to_end = True)
-        self.create_tl_actor_node(timeline_object.LOOK_AT, speaker, DECIMAL_ZERO, phase_duration, (
-            self.create_look_at_key(
-                DECIMAL_ZERO,
-                target = speaker_player,
-                bone = 'Head_M',
-                turn_mode = 3,
-                turn_speed_multiplier = 0.3,
-                head_turn_speed_multiplier = 0.3,
-                weight = 0.3,
-                reset = True,
-                is_eye_look_at_enabled = True,
-                eye_look_at_target_id = speaker_player,
-                eye_look_at_bone = 'Head_M'
-            ),
-        ), is_snapped_to_end = True)
+        if speaker == speaker_player and look_at_player == speaker:
+            self.create_tl_actor_node(timeline_object.LOOK_AT, speaker, DECIMAL_ZERO, phase_duration, (), is_snapped_to_end = True)
+        else:
+            self.create_tl_actor_node(timeline_object.LOOK_AT, speaker_player, DECIMAL_ZERO, phase_duration, (
+                self.create_look_at_key(
+                    DECIMAL_ZERO,
+                    target = look_at_player,
+                    bone = 'Head_M',
+                    turn_mode = 3,
+                    turn_speed_multiplier = 0.3,
+                    head_turn_speed_multiplier = 0.3,
+                    weight = 0.3,
+                    reset = True,
+                    is_eye_look_at_enabled = True,
+                    eye_look_at_target_id = speaker,
+                    eye_look_at_bone = 'Head_M'
+                ),
+            ), is_snapped_to_end = True)
+            self.create_tl_actor_node(timeline_object.LOOK_AT, speaker, DECIMAL_ZERO, phase_duration, (
+                self.create_look_at_key(
+                    DECIMAL_ZERO,
+                    target = speaker_player,
+                    bone = 'Head_M',
+                    turn_mode = 3,
+                    turn_speed_multiplier = 0.3,
+                    head_turn_speed_multiplier = 0.3,
+                    weight = 0.3,
+                    reset = True,
+                    is_eye_look_at_enabled = True,
+                    eye_look_at_target_id = speaker_player,
+                    eye_look_at_bone = 'Head_M'
+                ),
+            ), is_snapped_to_end = True)
 
         if emotions is not None:
             for target, emotion_records in emotions.items():
@@ -1898,11 +2048,7 @@ class timeline_object:
     def get_timeline_phase_index(self, dialog_node_uuid: str) -> int | None:
         tl_voice_nodes = self.find_effect_components(effect_component_types = 'TLVoice')
         for tl_voice in tl_voice_nodes:
-            phase_index = get_bg3_attribute(tl_voice, 'PhaseIndex')
-            if phase_index is None:
-                phase_index = 0
-            else:
-                phase_index = int(phase_index)
+            phase_index = self.__get_node_phase_index(tl_voice)
             if dialog_node_uuid == get_required_bg3_attribute(tl_voice, 'DialogNodeId') or dialog_node_uuid == get_required_bg3_attribute(tl_voice, 'ReferenceId'):
                 return phase_index
         timeline_phases = self.__file.root_node.findall('./region[@id="TimelineContent"]/node[@id="TimelineContent"]/children/node[@id="TimelinePhases"]/children/node[@id="Object"]/children/node[@id="Object"]')
@@ -1912,7 +2058,7 @@ class timeline_object:
         return None
 
     def get_number_of_phases(self) -> int:
-        return len(self.__phases_durations)
+        return len(self.__phases)
 
     def has_timeline_phase(self, dialog_uuid: str | int) -> bool:
         return self.__file.root_node.find(f'./region[@id="TimelineContent"]/node[@id="TimelineContent"]/children/node[@id="TimelinePhases"]/children/node[@id="Object"]/children/node[@id="Object"]/attribute[@id="MapKey"][@value="{dialog_uuid}"]') is not None
@@ -1921,29 +2067,36 @@ class timeline_object:
         return self.__file.root_node.find(f'./region[@id="TimelineContent"]/node[@id="TimelineContent"]/children/node[@id="Effect"]/children/node[@id="Phases"]/children/node[@id="Phase"]/attribute[@id="DialogNodeId"][@value="{dialog_uuid}"]') is not None
 
     def get_timeline_phase(self, phase_id: str | int) -> timeline_phase:
-        phases = self.__file.root_node.findall('./region[@id="TimelineContent"]/node[@id="TimelineContent"]/children/node[@id="Effect"]/children/node[@id="Phases"]/children/node[@id="Phase"]')
-        timeline_phases = self.__file.root_node.findall('./region[@id="TimelineContent"]/node[@id="TimelineContent"]/children/node[@id="TimelinePhases"]/children/node[@id="Object"]/children/node[@id="Object"]')
-        lookup_table = dict[str, list[str]]()
-        dialog_uuid = ''
-        phase_index = -1
+        if isinstance(phase_id, int):
+            if phase_id >= len(self.__phases):
+                raise KeyError(f"a phase with index {phase_id} doesn't exist in timeline {self.__file.relative_file_path}")
+            return self.__phases[phase_id]
+        if phase_id in self.__phases_by_dialog_uuid:
+            return self.__phases_by_dialog_uuid[phase_id]
+        raise KeyError(f"failed to find a phase with id {phase_id} in timeline {self.__file.relative_file_path}")
+        # phases = self.__file.root_node.findall('./region[@id="TimelineContent"]/node[@id="TimelineContent"]/children/node[@id="Effect"]/children/node[@id="Phases"]/children/node[@id="Phase"]')
+        # timeline_phases = self.__file.root_node.findall('./region[@id="TimelineContent"]/node[@id="TimelineContent"]/children/node[@id="TimelinePhases"]/children/node[@id="Object"]/children/node[@id="Object"]')
+        # lookup_table = dict[str, list[str]]()
+        # dialog_uuid = ''
+        # phase_index = -1
         
-        for tl_phase in timeline_phases:
-            map_key = get_required_bg3_attribute(tl_phase, "MapKey")
-            map_value = int(get_required_bg3_attribute(tl_phase, "MapValue"))
-            dialog_node_id = get_required_bg3_attribute(phases[map_value], "DialogNodeId")
-            if map_key != dialog_node_id:
-                if dialog_node_id in lookup_table:
-                    lookup_table[dialog_node_id].append(map_key)
-                else:
-                    lookup_table[dialog_node_id] = [map_key]
-            if (isinstance(phase_id, str) and map_key == phase_id) or (isinstance(phase_id, int) and map_value == phase_id):
-                dialog_uuid = dialog_node_id
-                phase_index = map_value
-        if dialog_uuid == '':
-            raise KeyError(f"failed to find a phase with id {phase_id} in timeline {self.__file.relative_file_path}")
-        if dialog_uuid in lookup_table:
-            return timeline_phase(phase_index, dialog_uuid, self.__phases_start_times[phase_index], self.__phases_end_times[phase_index], lookup_table[dialog_uuid])
-        return timeline_phase(phase_index, dialog_uuid, self.__phases_start_times[phase_index], self.__phases_end_times[phase_index])
+        # for tl_phase in timeline_phases:
+        #     map_key = get_required_bg3_attribute(tl_phase, "MapKey")
+        #     map_value = int(get_required_bg3_attribute(tl_phase, "MapValue"))
+        #     dialog_node_id = get_required_bg3_attribute(phases[map_value], "DialogNodeId")
+        #     if map_key != dialog_node_id:
+        #         if dialog_node_id in lookup_table:
+        #             lookup_table[dialog_node_id].append(map_key)
+        #         else:
+        #             lookup_table[dialog_node_id] = [map_key]
+        #     if (isinstance(phase_id, str) and map_key == phase_id) or (isinstance(phase_id, int) and map_value == phase_id):
+        #         dialog_uuid = dialog_node_id
+        #         phase_index = map_value
+        # if dialog_uuid == '':
+        #     raise KeyError(f"failed to find a phase with id {phase_id} in timeline {self.__file.relative_file_path}")
+        # if dialog_uuid in lookup_table:
+        #     return timeline_phase(phase_index, dialog_uuid, self.__phases_start_times[phase_index], self.__phases_end_times[phase_index], lookup_table[dialog_uuid])
+        # return timeline_phase(phase_index, dialog_uuid, self.__phases_start_times[phase_index], self.__phases_end_times[phase_index])
 
     def has_effect_component(self, effect_component_uuid: str) -> bool:
         effect_components = self.__effect_components_parent_node.find(f'./node[@id="EffectComponent"]/attribute[@ID="{effect_component_uuid}"]')
@@ -1981,11 +2134,7 @@ class timeline_object:
                 if actor_node is None or get_bg3_attribute(actor_node, "UUID") != effective_actor:
                     continue
             if phase_index is not None:
-                comp_phase_idx = get_bg3_attribute(effect_component, 'PhaseIndex')
-                if comp_phase_idx is None:
-                    comp_phase_idx = 0
-                else:
-                    comp_phase_idx = int(comp_phase_idx)
+                comp_phase_idx = self.__get_node_phase_index(effect_component)
                 if phase_index != comp_phase_idx:
                     continue
             result.append(effect_component)
@@ -2417,10 +2566,7 @@ class timeline_object:
         if tl_emo is None:
             raise RuntimeError(f'cannot find emoton node for speaker {speaker}')
 
-        start_time = get_bg3_attribute(tl_voice, 'StartTime')
-        t0 = DECIMAL_ZERO
-        if start_time is not None:
-            t0 = decimal_from_str(start_time)
+        t0 = self.__get_node_start_time(tl_voice)
         t1 = decimal_from_str(get_required_bg3_attribute(tl_voice, 'EndTime'))
 
         result = list[tuple[str, int, int]]()
@@ -2443,36 +2589,26 @@ class timeline_object:
             result.append((str(t), int(emotion), int(variation)))
         return result
 
+
     def get_node_duration(self, node_uuid: str) -> dc.Decimal:
         tl_node = self.find_effect_component(node_uuid)
-        start_time = get_bg3_attribute(tl_node, 'StartTime')
-        if start_time is None:
-            start_time = DECIMAL_ZERO
+        start_time = self.__get_node_start_time(tl_node)
         end_time = get_required_bg3_attribute(tl_node, 'EndTime')
-        return decimal_from_str(end_time) - decimal_from_str(start_time)
+        return decimal_from_str(end_time) - start_time
+
 
     def get_node_relative_start_time(self, node_uuid: str) -> dc.Decimal:
         tl_node = self.find_effect_component(node_uuid)
-        start_time = get_bg3_attribute(tl_node, 'StartTime')
-        phase_index = get_bg3_attribute(tl_node, 'PhaseIndex')
-        if phase_index is None:
-            phase_index = 0
-        else:
-            phase_index = int(phase_index)
-        if start_time is None:
-            start_time = DECIMAL_ZERO
-        else:
-            start_time = decimal_from_str(start_time) - self.get_timeline_phase(phase_index).start
+        start_time = self.__get_node_start_time(tl_node)
+        phase_index = self.__get_node_phase_index(tl_node)
+        start_time = start_time - self.get_timeline_phase(phase_index).start
         return start_time
+
 
     def get_node_relative_end_time(self, node_uuid: str) -> dc.Decimal:
         tl_node = self.find_effect_component(node_uuid)
         end_time = get_required_bg3_attribute(tl_node, 'EndTime')
-        phase_index = get_bg3_attribute(tl_node, 'PhaseIndex')
-        if phase_index is None:
-            phase_index = 0
-        else:
-            phase_index = int(phase_index)
+        phase_index = self.__get_node_phase_index(tl_node)
         end_time = decimal_from_str(end_time) - self.get_timeline_phase(phase_index).start
         return end_time
 
@@ -2519,13 +2655,10 @@ class timeline_object:
                 '</node>',
             ]))
 
+
     def get_emotions_keys(self, tl_node_uuid: str) -> tuple[tuple[str, int, int], ...]:
         ec = self.find_effect_component(tl_node_uuid)
-        start_time = get_bg3_attribute(ec, 'StartTime')
-        if isinstance(start_time, str):
-            start_time = decimal_from_str(start_time)
-        else:
-            start_time = decimal_from_str('0.0')
+        start_time = self.__get_node_start_time(ec)
         n = ec.find('./children/node[@id="Keys"]/children')
         if n is None:
             return ()
@@ -2550,6 +2683,7 @@ class timeline_object:
             result.append((str(time - start_time), emotion, variation))
         return tuple(result)
 
+
     def get_cameras(self, phase_id: str | int) -> dict[str, dict[str, str]]:
         result = dict[str, dict[str, str]]()
         scenecams = self.get_timeline_actors('scenecam')
@@ -2557,17 +2691,9 @@ class timeline_object:
         effect_components = self.__effect_components_parent_node.findall('./node[@id="EffectComponent"]')
         phase_start = None
         for node in effect_components:
-            phase_index = get_bg3_attribute(node, 'PhaseIndex')
-            if phase_index is None:
-                phase_index = 0
-            else:
-                phase_index = int(phase_index)
-            start_time = get_bg3_attribute(node, 'StartTime')
+            phase_index = self.__get_node_phase_index(node)
+            start_time = self.__get_node_start_time(node)
             end_time = decimal_from_str(get_required_bg3_attribute(node, 'EndTime'))
-            if start_time is None:
-                start_time = DECIMAL_ZERO
-            else:
-                start_time = decimal_from_str(start_time)
 
             if phase_index == tl_phase.index:
                 if phase_start is None:
@@ -2640,11 +2766,7 @@ class timeline_object:
             effect_component = effect_components[idx]
             idx -= 1
 
-            cur_phase_index = get_bg3_attribute(effect_component, 'PhaseIndex')
-            if cur_phase_index is None:
-                cur_phase_index = 0
-            else:
-                cur_phase_index = int(cur_phase_index)
+            cur_phase_index = self.__get_node_phase_index(effect_component)
             if phase_index == -1:
                 phase_index = cur_phase_index
             else:

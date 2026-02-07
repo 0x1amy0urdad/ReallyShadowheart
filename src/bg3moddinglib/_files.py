@@ -5,16 +5,18 @@ import hashlib
 import json
 import os
 import os.path
+import re
 import shutil
 import sys
 import time
 import xml.etree.ElementTree as et
 
+from collections import deque
 from typing import Callable
 
 from ._common import get_required_bg3_attribute, translate_path
 from ._meta_lsx import create_meta_lsx
-from ._tool import bg3_modding_tool
+from ._tool import LOCALE_CONVERSION_NEEDED, bg3_modding_tool
 
 type ElementTree = et.ElementTree[et.Element[str]]
 
@@ -53,6 +55,7 @@ class game_file:
         self.__mod_specific = mod_specific
         self.__rename_to = rename_to
         self.__xml = None
+        file_path = file_path.replace('\\', '/')
         if pak_name is not None:
             self.__source_pak = pak_name
             self.__relative_file_path = file_path
@@ -174,8 +177,12 @@ class game_file:
     def rename_to(self) -> str:
         return self.__rename_to
 
-    def get_output_relative_path(self, mod_name: str) -> str:
-        parts = self.__relative_file_path.replace("\\", "/").split("/")
+    @rename_to.setter
+    def rename_to(self, val: str) -> None:
+        self.__rename_to = val
+
+    def get_output_relative_path(self, files: game_files) -> str:
+        parts = self.__relative_file_path.split("/")
         n = len(parts)
         if self.__rename_to:
             s = parts[n - 1]
@@ -185,11 +192,24 @@ class game_file:
             ext = s[pos:]
             parts[n - 1] = self.__rename_to + ext
         if self.__mod_specific:
-            parts[1] = mod_name
+            parts[1] = files.mod_name_uuid
         return "/".join(parts)
 
     def replace_xml(self, new_content: ElementTree) -> None:
         self.__xml = new_content
+
+    def convert_to_system_locale(self) -> None:
+        queue = deque(self.__xml.getroot())
+        m = re.compile(r'[+-]?\d+\.\d+')
+        while queue:
+            elt = queue.popleft()
+            if elt.tag == 'attribute':
+                for attr_key, attr_val in elt.attrib.items():
+                    if m.match(attr_val):
+                        val = attr_val.replace('.', ',')
+                        elt.set(attr_key, val)
+            for child in elt:
+                queue.append(child)
 
 
 class game_files:
@@ -468,7 +488,7 @@ class game_files:
                 progress_callback(count, total_count, s)
 
             relative_file_path = translate_path(gf.relative_file_path)
-            output_relative_path = translate_path(gf.get_output_relative_path(self.__mod_name))
+            output_relative_path = translate_path(gf.get_output_relative_path(self))
             if verbose:
                 sys.stdout.write(f"Writing {output_relative_path} ")
             match gf.file_format:
@@ -477,6 +497,8 @@ class game_files:
                 case "lsf":
                     if verbose:
                         sys.stdout.write(" as lsf file .")
+                    if LOCALE_CONVERSION_NEEDED:
+                        gf.convert_to_system_locale()
                     et.indent(gf.xml.getroot())
                     if preview:
                         preview_file_path = os.path.join(preview_dir_path, output_relative_path) + '.lsx'
@@ -497,6 +519,8 @@ class game_files:
                 case "lsx":
                     if verbose:
                         sys.stdout.write(" as lsx file .")
+                    if LOCALE_CONVERSION_NEEDED:
+                        gf.convert_to_system_locale()
                     et.indent(gf.xml.getroot())
                     if preview:
                         preview_file_path = os.path.join(preview_dir_path, output_relative_path)

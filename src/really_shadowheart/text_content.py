@@ -117,7 +117,7 @@ def create_text_content() -> None:
         "hd3542486g7197g41c1g840bgdebcac83aae9": (1, "Shadowheart?"),
         "h0c3be373g5b8dg474cg9d83gb5c0541854da": (1, "Sha... Jenevelle?"),
         "h295f5410g87edg4ae8gacd9g0435674745c5": (1, "Jenevelle?"),
-        "h3a7c10c6g7b25g4695ga371g0a9504a60d9a": (1, "&lt;i&gt;Wait patiently.&lt;/i&gt;"),
+        "h3a7c10c6g7b25g4695ga371g0a9504a60d9a": (1, "&lt;i&gt;Let her finish praying.&lt;/i&gt;"),
         "h8d2f7d9ag2829g4d51gb7e1g026f4125b1d1": (1, "&lt;i&gt;Turn around and leave.&lt;/i&gt;"),
 
         #
@@ -372,6 +372,10 @@ def create_text_content() -> None:
         "h7fc2d5d7g33e5g4811g9541gcb3a9dbbdc4f": (1, "I'm worried it could hurt me. How dangerous is it?"),
         "ha4c29745g1474g400fgb120g867c851ba716": (1, "I don't like the look of it. I'll keep an eye on you, just in case."),
         "hce38ab83ga0afg4fdfg95c1gb4c3fa8fe151": (1, "Hmmm. I didn't have odd magical flares since I was infected."),
+        "hcecceb7cgb7aeg43e7g8873g087a01365ffb": (1, "No, I can't!"),
+        "ha8479154g2d18g4f9dg965eg526a925d6ead": (1, "*You feel that something true to you is wrested from you as punishment, with nothing given in return.*"),
+        "he0351a05gd8d8g4181gb288g0657784e18eb": (1, "What comes next? How about a hug for an old friend?"),
+        "h2ad3f4cag1b28g4df4gbd45g7632abdfa05f": (1, "Let me hug you, my good friend."),
     }
     loca = bg3.loca_object(files.add_new_file(files.get_loca_relative_path()))
     loca.add_lines(content)

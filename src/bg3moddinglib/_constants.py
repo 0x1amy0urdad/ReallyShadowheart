@@ -168,7 +168,8 @@ FLAG_ORI_Shadowheart_Knows_HasSeenWolfDream = 'f7e48f6a-bc8b-4941-8016-6622956c8
 FLAG_ORI_Shadowheart_State_NobleStalkMemory = 'd0d87954-6563-4e26-9f2c-4616e3cfeb0e' # Global flag
 FLAG_UND_MushroomHunter_State_HasMushroom = '7b86b816-a97c-4500-9398-ef4c7f344e0b' # Object flag. Set on Tav when Tav has the shroom.
 FLAG_LOW_SharGrotto_State_UnlockedFriendDialog = 'dd67ca1e-b36d-49d1-8822-6bb47ebfe2fe' # Global flag
-
+FLAG_LOW_SharGrotto_ShadowheartFriend_Even_ReminiscedConclusion = '92d0a83d-07e0-25f1-07cb-4f8cc59a4d17' # Object flag. Set on Shadowheart when she asked Nocturne about her past in the cloister.
+FLAG_ORI_Shadowheart_State_BecamePontiff = '4c521953-3277-4a59-9e3d-8e161916ed8b' # Global flag. Shadowheart is the new MS
 
 FLAG_CAMP_Shadowheart_State_HadNightsongMeeting = '10b74e80-a963-420f-8c2a-d518b6aae143' # Global flag
 FLAG_ORI_Shadowheart_Romance1_AfterCelebration_State_QueueInvitation = '2d7e1f5e-fee1-4732-a0a2-f1337cc5466c' # Global flag. Invitation to the waterfall romance cutscene
@@ -227,6 +228,9 @@ FLAG_HAV_TakingIsobel_Event_GiveOintment = 'efb6aed5-fd07-433b-b0c5-b980bf77bb2c
 
 # Quest flags
 FLAG_ORI_COM_Shadowheart_Travel_Memory_Suppressed = '0be0c177-16f7-4fe3-b878-ca87ca362657' # Quest flag: "Shadowheart told us that she had allowed her memory to be suppressed so she can serve Shar without compromising her."
+
+# Epilogue
+FLAG_EPI_Epilogue_State_ShadowheartPresent = '60d0df30-0d71-4cf9-8808-13c4612014b6'
 
 # Laezel
 FLAG_ORI_HadSexWithLaezel = '150c8ec7-fbd2-d040-9951-0c41c911c371' # Object flag. Slept with Laezel after the GoblinHunt celebrations in Act1

@@ -47,6 +47,7 @@ def create_shadowheart_voice_metadata() -> None:
     soundbank.add_voice_metadata('h0007426egdc1ag4c38gb98cgf14f12078b3a', 00.637)
     soundbank.add_voice_metadata('h93d2e7aeg716eg463fga1dag2f1110664d35', 01.710)
     soundbank.add_voice_metadata('h6e490525g7174g4ff1g98dagd0f6b4165d1f', 07.500)
+    soundbank.add_voice_metadata('hcecceb7cgb7aeg43e7g8873g087a01365ffb', 02.210)
 
 def create_creep_voice_metadata() -> None:
     soundbank = bg3.soundbank_object.create_new(get_context().files, bg3.SPEAKER_HALSIN)
@@ -61,6 +62,7 @@ def create_narrator_voice_metadata() -> None:
     soundbank.add_voice_metadata('hdb22dc77gf224g437fg920dg373b7e0434cd', 06.171)
     soundbank.add_voice_metadata('ha4f96cacg5afag4a09g8b54gaebdb8049a9b', 06.875)
     soundbank.add_voice_metadata('h20e0ce3bg8aceg4fa8gbb65g9c09297b9901', 09.347)
+    soundbank.add_voice_metadata('ha8479154g2d18g4f9dg965eg526a925d6ead', 08.274)
 
 def create_gale_voice_metadata() -> None:
     soundbank = bg3.soundbank_object.create_new(get_context().files, bg3.SPEAKER_GALE)

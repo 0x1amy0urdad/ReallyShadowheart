@@ -158,6 +158,29 @@ SetArmourSet((CHARACTER)S_LOW_ShadowheartFather_c12d561f-beae-4ef6-917e-0bec2f82
 SetArmourSet((CHARACTER)S_LOW_ShadowheartMother_d085272a-f1d0-4ff8-a498-80728030f83e, ARMOURSET.Vanity);
 
 
+// There were reports of Arnell and Emmeline not having their proper camp dialogs. This should remedy that.
+PROC
+PROC_ReallyShadowheart_ParentsDialogCheck()
+AND
+QRY_ReallyShadowheart_ParentsAreSaved()
+AND
+NOT DB_Dialogs(S_LOW_ShadowheartFather_c12d561f-beae-4ef6-917e-0bec2f829449, (DIALOGRESOURCE)CAMP_ShadowheartFather_215fdd40-89b6-fbd7-9a5b-a18d031cd0d4)
+THEN
+PROC_RemoveDialog(S_LOW_ShadowheartFather_c12d561f-beae-4ef6-917e-0bec2f829449);
+DB_Dialogs(S_LOW_ShadowheartFather_c12d561f-beae-4ef6-917e-0bec2f829449, (DIALOGRESOURCE)CAMP_ShadowheartFather_215fdd40-89b6-fbd7-9a5b-a18d031cd0d4);
+
+
+PROC
+PROC_ReallyShadowheart_ParentsDialogCheck()
+AND
+QRY_ReallyShadowheart_ParentsAreSaved()
+AND
+NOT DB_Dialogs(S_LOW_ShadowheartMother_d085272a-f1d0-4ff8-a498-80728030f83e, (DIALOGRESOURCE)CAMP_ShadowheartMother_88c80e2e-a203-0627-6c2a-12695a769c7e)
+THEN
+PROC_RemoveDialog(S_LOW_ShadowheartMother_d085272a-f1d0-4ff8-a498-80728030f83e);
+DB_Dialogs(S_LOW_ShadowheartMother_d085272a-f1d0-4ff8-a498-80728030f83e, (DIALOGRESOURCE)CAMP_ShadowheartMother_88c80e2e-a203-0627-6c2a-12695a769c7e);
+
+
 IF
 TeleportedToCamp(_Character)
 AND
@@ -167,6 +190,7 @@ QRY_ReallyShadowheart_ParentsAreSaved()
 THEN
 SetArmourSet((CHARACTER)S_LOW_ShadowheartFather_c12d561f-beae-4ef6-917e-0bec2f829449, ARMOURSET.Vanity);
 SetArmourSet((CHARACTER)S_LOW_ShadowheartMother_d085272a-f1d0-4ff8-a498-80728030f83e, ARMOURSET.Vanity);
+PROC_ReallyShadowheart_ParentsDialogCheck();
 
 
 // This will set up parents in camp and make them follow the party

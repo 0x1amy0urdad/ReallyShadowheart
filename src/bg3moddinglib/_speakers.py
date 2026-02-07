@@ -37,6 +37,7 @@ SPEAKER_HAARLEP     = '1867db0b-748c-94ae-c4f0-69cfd306c180'
 SPEAKER_SCELERITAS  = 'f3486165-268f-4e41-9e0c-51485dfdff10'
 SPEAKER_PLAYER      = 'e0d1ff71-04a8-4340-ae64-9684d846eb83'
 SPEAKER_NARRATOR    = 'a346318f-15b3-49ad-ab97-ddf8283dc339'
+SPEAKER_NOCTURNE    = '2c10ff0f-d2ff-4dcb-8f8b-c6f870044f5d'
 
 SPEAKER_NAME = {
     SPEAKER_PLAYER      : 'Player',
@@ -64,5 +65,6 @@ SPEAKER_NAME = {
     SPEAKER_GANDREL     : 'Gandrel',
     SPEAKER_JERGAL      : 'Jergal',
     SPEAKER_HAARLEP     : 'Haarlep',
-    SPEAKER_SCELERITAS  : 'Sceleritas Fel'
+    SPEAKER_SCELERITAS  : 'Sceleritas Fel',
+    SPEAKER_NOCTURNE    : 'Nocturne',
 }

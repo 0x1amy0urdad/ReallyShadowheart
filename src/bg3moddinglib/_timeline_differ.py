@@ -101,9 +101,13 @@ class timeline_differ:
         return result
 
     @staticmethod
-    def normalize_tl_node(node: XmlElement, phase_start: dc.Decimal) -> XmlElement:
+    def normalize_tl_node(node: XmlElement, phase_start: dc.Decimal, phase_duration: dc.Decimal | None = None) -> XmlElement:
         result = copy.deepcopy(node)
         start_time, end_time = timeline_differ.get_start_end_times(result)
+        if phase_duration is not None:
+            phase_end = phase_start + phase_duration
+            if end_time > phase_end:
+                end_time = phase_end
         if start_time > DECIMAL_ZERO:
             delete_bg3_attribute(result, 'StartTime')
         start_time -= phase_start
@@ -125,56 +129,34 @@ class timeline_differ:
     @staticmethod
     def convert_to_phases(t: timeline_object) -> normalized_tl_phases:
         result = normalized_tl_phases()
-        effect_node = t.xml.find('./region[@id="TimelineContent"]/node[@id="TimelineContent"]/children/node[@id="Effect"]')
-        if effect_node is None:
-            raise RuntimeError('bad timeline format, "Effect" node is not found')
-        # timeline_phases = t.xml.findall('./region[@id="TimelineContent"]/node[@id="TimelineContent"]/children/node[@id="TimelinePhases"]/children/node[@id="Object"]/children/node[@id="Object"]')
-        # if len(timeline_phases) == 0:
-        #     raise RuntimeError('bad timeline format, "TimelinePhases" node is not found')
-        phases = effect_node.findall('./children/node[@id="Phases"]/children/node[@id="Phase"]')
-        if len(phases) == 0:
-            raise RuntimeError('bad timeline format, "Phases" node is not found')
-        effect_comps = effect_node.findall('./children/node[@id="EffectComponents"]/children/node[@id="EffectComponent"]')
-        if len(effect_comps) == 0:
-            raise RuntimeError('bad timeline format, "EffectComponents" node is not found')
-        for phase in phases:
-            duration = get_required_bg3_attribute(phase, 'Duration')
-            dialog_uuid = get_required_bg3_attribute(phase, 'DialogNodeId')
-            ntp = normalized_tl_phase(phase_duration = decimal_from_str(duration), phase_index = len(result.phases))
-            result.phases.append(ntp)
-            result.phases_by_dialog[dialog_uuid] = ntp
-        for effect_comp in effect_comps:
-            phase_index = get_bg3_attribute(effect_comp, 'PhaseIndex')
-            if phase_index is None:
-                phase_index = 0
+        # effect_node = t.xml.find('./region[@id="TimelineContent"]/node[@id="TimelineContent"]/children/node[@id="Effect"]')
+        # if effect_node is None:
+        #     raise RuntimeError('bad timeline format, "Effect" node is not found')
+        # phases = effect_node.findall('./children/node[@id="Phases"]/children/node[@id="Phase"]')
+        # if len(phases) == 0:
+        #     raise RuntimeError('bad timeline format, "Phases" node is not found')
+        # effect_comps = effect_node.findall('./children/node[@id="EffectComponents"]/children/node[@id="EffectComponent"]')
+        # if len(effect_comps) == 0:
+        #     raise RuntimeError('bad timeline format, "EffectComponents" node is not found')
+        # phase_start = DECIMAL_ZERO
+        # for phase in phases:
+        #     duration = get_required_bg3_attribute(phase, 'Duration')
+        #     dialog_uuid = get_required_bg3_attribute(phase, 'DialogNodeId')
+        #     ntp = normalized_tl_phase(phase_start = phase_start, phase_duration = decimal_from_str(duration), phase_index = len(result.phases))
+        #     result.phases.append(ntp)
+        #     result.phases_by_dialog[dialog_uuid] = ntp
+
+        for effect_comp in t.all_effect_components:
+            tl_phase = t.get_phase_by_tl_node(effect_comp)
+            if tl_phase.index >= len(result.phases):
+                ntp = normalized_tl_phase(phase_start = tl_phase.start, phase_duration = tl_phase.duration, phase_index = tl_phase.index)
+                result.phases.append(ntp)
+                result.phases_by_dialog[tl_phase.dialog_node_uuid] = ntp
             else:
-                phase_index = int(phase_index)
-            start_time, _ = timeline_differ.get_start_end_times(effect_comp)
-            ntp = result.phases[phase_index]
-            if ntp.phase_start > start_time:
-                ntp.phase_start = start_time            
+                ntp = result.phases[tl_phase.index]
             node_uuid = get_required_bg3_attribute(effect_comp, 'ID')
             ntp.effects_by_uuid[node_uuid] = len(ntp.effects)
-            ntp.effects.append(timeline_differ.normalize_tl_node(effect_comp, ntp.phase_start))
-
-        # The following is done in timeline_differ.normalize_tl_node()
-        # for ntp in result.phases:
-        #     for tl_node in ntp.effects:
-        #         start_time, end_time = timeline_differ.get_start_end_times(tl_node)
-        #         if start_time > DECIMAL_ZERO:
-        #             delete_bg3_attribute(tl_node, 'StartTime')
-        #         start_time -= ntp.phase_start
-        #         end_time -= ntp.phase_start
-        #         if start_time > DECIMAL_ZERO:
-        #             set_bg3_attribute(tl_node, 'StartTime', str(start_time))
-        #         set_bg3_attribute(tl_node, 'EndTime', str(end_time))
-        #         keys = timeline_differ.find_keys(tl_node)
-        #         for key in keys:
-        #             time_attr = get_bg3_attribute(key, 'Time')
-        #             if time_attr is not None:
-        #                 time_val = decimal_from_str(time_attr)
-        #                 time_val -= ntp.phase_start
-        #                 set_bg3_attribute(key, 'Time', str(time_val))
+            ntp.effects.append(timeline_differ.normalize_tl_node(effect_comp, ntp.phase_start, ntp.phase_duration))
 
         return result
 

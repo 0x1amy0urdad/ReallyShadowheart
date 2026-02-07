@@ -56,7 +56,7 @@ from ._scene import scene_object
 from ._skillchecks import difficulty_class, difficulty_classes
 from ._soundbank import soundbank_object
 from ._string_keys import string_key, string_keys
-from ._timeline import timeline_object, timeline_phase
+from ._timeline import get_misplaced_timeline_nodes, timeline_object, timeline_phase
 from ._timeline_differ import normalized_tl_phase, normalized_tl_phases, timeline_differ
 from ._tags import (
     create_tags,
@@ -64,7 +64,7 @@ from ._tags import (
     tag_object,
     tag_registry,
 )
-from ._tool import bg3_modding_tool, DOTNET_INITIALIZED
+from ._tool import bg3_modding_tool, DOTNET_INITIALIZED, LOCALE_CONVERSION_NEEDED
 from ._types import XmlElement
 
 import xml.etree.ElementTree as et

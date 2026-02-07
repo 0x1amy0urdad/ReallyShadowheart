@@ -1503,7 +1503,7 @@ def create_hermit_crab_timeline(d: bg3.dialog_object, t: bg3.timeline_object) ->
     t.create_tl_actor_node(bg3.timeline_object.PLAY_EFFECT, 'cbcc553f-5eb6-409a-856b-2cce6eac271e', '0.0', phase_duration, (), is_snapped_to_end = True)
     t.create_tl_animation(
         ACTOR_HERMIT_CRAB,
-        '0.0', '6.92',
+        '0.0', phase_duration,
         'a5305f77-4ea9-f17d-0eb5-54efede733a7',
         '20259bf4-b466-4460-8510-a9eb96d6d691',
         animation_play_start_offset = 0.98,

@@ -56,6 +56,8 @@ ASSETS : dict[str, dict[str, str]] = {
     'EPI_Epilogue_Halsin': {},
     'EPI_Epilogue_GodGale': {},
     'EPI_Epilogue_Astarion_Lord': {},
+    'EPI_Epilogue_FinalToast': {},
+    'END_BrainBattle_FinalDecision_Nested_EvilDurge': {},
 
     # Cloister
     'LOW_HouseOfGrief_OM_Shadowheart_COM': {},
@@ -63,6 +65,9 @@ ASSETS : dict[str, dict[str, str]] = {
     'LOW_SharGrotto_ViconiaDefeated_OM_Shadowheart_COM': {},
     'LOW_SharGrotto_ParentsFate_OM_Shadowheart_COM': {},
     'LOW_SharGrotto_FamiliarFace_OM_Shadowheart_AOM_OOM': {},
+    'LOW_SharGrotto_FamiliarFace_OM_Shadowheart_COM': {},
+    'LOW_SharGrotto_MemoryMirror': {},
+    'LOW_SharGrotto_ShadowheartFriend': {},
 
     # Tutorial
     'TUT_TransformChamber_PodLock': {},

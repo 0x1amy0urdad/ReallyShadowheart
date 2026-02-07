@@ -1024,6 +1024,7 @@ def patch_shadowheart_path_tags() -> None:
         'LOW_StormshoreTabernacle_MystraShrine_OM_Gale_COM': (True, True),
         'LOW_StormshoreTabernacle_MystraShrine_OM_Gale_AOM_OOM': (True, True),
         'LOW_SharGrotto_FamiliarFace_OM_Shadowheart_AOM_OOM': (True, True),
+        'LOW_SharGrotto_FamiliarFace_OM_Shadowheart_COM': (True, True),
         'WYR_KillDirectorGortash_Ceremony': (True, True),
         'EPI_Epilogue_Astarion_Lord': (True, True),
         'END_GameFinale_DeathofKarlach': (True, True),
@@ -1089,6 +1090,156 @@ def patch_shadowheart_path_tags() -> None:
         )),
         bg3.flag_group('Tag', (
             bg3.flag(Really_Shar_Path.tag_uuid, True, speaker_idx_shadowheart),
+        )),
+    ))
+
+    ################################################################################################
+    # Dialog: ShadowHeart_InPartyEND
+    # Fix: ...I don't think Lady Shar would approve of a mind flayer leading her flock.
+    ################################################################################################
+
+    ab = game_assets.get_modded_dialog_asset_bundle('ShadowHeart_InPartyEND')
+    d = bg3.dialog_object(ab.dialog)
+
+    speaker_idx_shadowheart = d.get_speaker_slot_index(bg3.SPEAKER_SHADOWHEART)
+    speaker_idx_tav = d.get_speaker_slot_index(bg3.SPEAKER_PLAYER)
+
+    # I'd offer to take the plunge, but, well... somehow, I don't think Lady Shar would approve of a mind flayer leading her flock.
+    d.set_dialog_flags('8af10cef-82c6-4982-98e1-b90b6849fd0f', checkflags = (
+        bg3.flag_group('Global', (
+            bg3.flag(Shadowheart_Turned_Away_From_Shar.uuid, False, None),
+        )),
+    ))
+
+    ################################################################################################
+    # Dialog: Minthara_InParty_Nested_PartyMemberThoughts
+    # Fix: It would have been better for us had she embraced Shar, and claimed the power of the goddess.
+    ################################################################################################
+
+    ab = game_assets.get_modded_dialog_asset_bundle('Minthara_InParty_Nested_PartyMemberThoughts')
+    d = bg3.dialog_object(ab.dialog)
+
+    speaker_idx_tav = d.get_speaker_slot_index(bg3.SPEAKER_PLAYER)
+
+    d.set_dialog_flags('bce95bf5-84ab-4530-9f38-17c02501ba5c', checkflags = (
+        bg3.flag_group('Global', (
+            bg3.flag(Shadowheart_Turned_Away_From_Shar.uuid, True, None),
+        )),
+    ))
+    # The following creates two 'question' nodes:
+    # one is when Tav is not a sharran but Shadowheart is a sharran yet
+    # another one is when Tav is sharran but Shadowheart is no longer a sharran
+    d.set_dialog_flags('6592ec65-2474-410f-b438-8d6b473e6a1c', checkflags = (
+        bg3.flag_group('Global', (
+            bg3.flag(Shadowheart_Turned_Away_From_Shar.uuid, False, None),
+        )),
+        bg3.flag_group('Tag', (
+            bg3.flag(bg3.GOD_SHAR, False, speaker_idx_tav),
+        ))
+    ))
+    # I agree - she worships the wrong god.
+    d.create_standard_dialog_node(
+        '33fc2a70-2252-4cef-9837-6627a0bcaf31',
+        bg3.SPEAKER_PLAYER,
+        ['64b9711f-feb2-439a-a726-f72d2380da6d'],
+        bg3.text_content('h387da20cg362dg4b98gba10g680cc8c1984b', 1),
+        constructor = bg3.dialog_object.QUESTION,
+        checkflags = (
+            bg3.flag_group('Global', (
+                bg3.flag(Shadowheart_Turned_Away_From_Shar.uuid, True, None),
+            )),
+            bg3.flag_group('Tag', (
+                bg3.flag(bg3.GOD_SHAR, True, speaker_idx_tav),
+            ))
+        ))
+    d.add_child_dialog_node('a566bbc2-e093-4926-9b6c-ab1a5e53fcde', '33fc2a70-2252-4cef-9837-6627a0bcaf31', 0)
+
+    ################################################################################################
+    # Dialog: EPI_Epilogue_Minsc
+    # Fix: Shadowheart, foul Sharran. Trust no woman who makes an enemy of the moon.
+    ################################################################################################
+
+    ab = game_assets.get_modded_dialog_asset_bundle('EPI_Epilogue_Minsc')
+    d = bg3.dialog_object(ab.dialog)
+
+    speaker_idx_player = d.get_speaker_slot_index(bg3.SPEAKER_PLAYER)
+
+
+    # Shadowheart! Two gods tugged at her soul, but she managed to keep it for all herself in the end. Wait, Boo - did she do something with her hair...?
+    d.set_dialog_flags('321fcb71-3611-10b6-00a1-4527ef1b1215', checkflags = (
+        bg3.flag_group('Global', (
+            bg3.flag(Shadowheart_Turned_Away_From_Shar.uuid, True, None),
+            bg3.flag(bg3.FLAG_EPI_Epilogue_State_ShadowheartPresent, True, None),
+        )),
+        bg3.flag_group('Tag', (
+            bg3.flag(bg3.TAG_REALLY_SHADOWHEART, False, speaker_idx_player),
+        )),
+    ))
+
+    # Shadowheart, foul Sharran. Trust no woman who makes an enemy of the moon.
+    d.set_dialog_flags('fb5df842-4494-9dbb-68bb-60c5cf26f59f', checkflags = (
+        bg3.flag_group('Global', (
+            bg3.flag(Shadowheart_Turned_Away_From_Shar.uuid, False, None),
+            bg3.flag(bg3.FLAG_EPI_Epilogue_State_ShadowheartPresent, True, None),
+        )),
+        bg3.flag_group('Tag', (
+            bg3.flag(bg3.TAG_REALLY_SHADOWHEART, False, speaker_idx_player),
+        )),
+    ))
+
+    ################################################################################################
+    # Dialog: END_BrainBattle_FinalDecision_Nested_EvilDurge
+    # Fix: I... I'm coming to you, Lady Shar. Embrace me.
+    ################################################################################################
+
+    ab = game_assets.get_modded_dialog_asset_bundle('END_BrainBattle_FinalDecision_Nested_EvilDurge')
+    d = bg3.dialog_object(ab.dialog)
+
+    # I... I'm coming to you, Lady Shar. Embrace me.
+    d.set_dialog_flags(
+        'c5340dd2-0571-7c94-18e6-5eff6bc1545e',
+        checkflags = (
+            bg3.flag_group('Global', (
+                bg3.flag(Shadowheart_Turned_Away_From_Shar.uuid, False, None),
+            )),
+            bg3.flag_group('Object', (
+                bg3.flag(bg3.FLAG_ORI_State_PartneredWithShadowheart, True, 1),
+            )),
+            bg3.flag_group('Tag', (
+                bg3.flag(bg3.TAG_REALLY_SHADOWHEART, True, 15),
+            ))),
+        setflags = (
+            bg3.flag_group('Object', (
+                # END_General_State_InclusionExcluded_98c42fdb-7511-72c1-3861-a9232a4c40f7
+                bg3.flag('98c42fdb-7511-72c1-3861-a9232a4c40f7', True, 15),
+            )),
+        ))
+
+    ################################################################################################
+    # Dialog: EPI_Epilogue_FinalToast
+    # Fix: To finding what was lost.
+    ################################################################################################
+
+    ab = game_assets.get_modded_dialog_asset_bundle('EPI_Epilogue_FinalToast')
+    d = bg3.dialog_object(ab.dialog)
+
+    # To finding what was lost.
+    d.set_dialog_flags('fc77e312-79a2-ed4f-9bfb-3039764daae2', checkflags = (
+        bg3.flag_group('Global', (
+            bg3.flag(Shadowheart_Turned_Away_From_Shar.uuid, True, None),
+        )),
+        bg3.flag_group('Tag', (
+            bg3.flag(bg3.TAG_REALLY_SHADOWHEART, True, 1),
+        )),
+    ))
+
+    # To all those we lost on the way.
+    d.set_dialog_flags('2a07f5d5-6601-1eac-c421-7841f74c612a', checkflags = (
+        bg3.flag_group('Global', (
+            bg3.flag(Shadowheart_Turned_Away_From_Shar.uuid, False, None),
+        )),
+        bg3.flag_group('Tag', (
+            bg3.flag(bg3.TAG_REALLY_SHADOWHEART, True, 1),
         )),
     ))
 

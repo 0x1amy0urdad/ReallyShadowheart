@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import bg3moddinglib as bg3
 
+from .common import create_hug_timeline
 from .context import get_context
 from .flags import *
 
@@ -709,7 +710,398 @@ def make_late_redemption_easier() -> None:
     d.add_child_dialog_node(i_have_to_do_it_node_uuid, disadv_theyre_your_parents_node_uuid)
 
 
+def patch_memory_mirror() -> None:
+    game_assets = get_context().assets
+
+    ########################################################################################
+    # LOW_SharGrotto_MemoryMirror.lsf
+    ########################################################################################
+
+    ab = game_assets.get_modded_dialog_asset_bundle('LOW_SharGrotto_MemoryMirror')
+    d = bg3.dialog_object(ab.dialog)
+    t = bg3.timeline_object(ab.timeline, d)
+
+    WOUND_FLARE = '11ca42d3-a0f0-4316-b7f7-d1811baf6f9e'
+    WOUND_FLARE_RESOURCE = '83f6b073-e460-ffc1-bbf3-7589cfe00be4'
+
+    t.create_timeline_actor_data(WOUND_FLARE, 'effect', 4, 0.034766685, resource_id = WOUND_FLARE_RESOURCE)
+
+
+    speaker_idx_tav = d.get_speaker_slot_index(bg3.SPEAKER_PLAYER)
+    speaker_idx_shadowheart = d.get_speaker_slot_index(bg3.SPEAKER_SHADOWHEART)
+
+    blooming_romance_node_uuid = 'cab8cb8f-3e1d-497b-af02-29aed6d3ae05' # existing node
+    something_true_to_you_is_wrested_from_you_node_uuid = '18fccd9d-b475-495f-950c-0f12a4c566f8' # existing node
+
+    no_i_cant_node_uuid = '08554a94-14c5-4c76-a3a9-fe0a800e0f34'
+    wound_flare_node_uuid = 'e46e44d3-81c3-4083-9fdc-ccda6fb96a9a'
+    punishment_node_uuid = '224cea89-f254-4658-b1b0-961b21b65f59'
+
+    # 0 the mirror
+    # 1 the player (Shadowheart)
+    # 2 the companion (Shadowheart)
+    # c2e7d53f-aebb-4a61-a225-e1446445cf64 1 -> 1
+    # 70257049-f8f8-4a06-8b79-63dbbbf2bd69 1 -> 1
+    # 28c3f905-46ca-4170-9d17-9691b0b3db9a 0 -> 1
+    # 1b6feaab-60a3-444f-bd79-f995494230aa 0 -> 1
+    # 99d83cc1-122c-42e5-8039-da66689e28a0 0 -> 1
+    # d505a2bc-91d1-45ba-809a-40907294513b 1 -> 0
+    # 3563e381-85bf-4f89-bbf3-aa451034ac44 1 -> 0
+    # ea352122-543b-4059-adf7-4e9a9c8789a9 2 -> 2
+    # 5181e511-a335-4de4-9364-d0fec72bace7 2 -> 2
+
+    # No, I can't!
+    d.create_standard_dialog_node(
+        no_i_cant_node_uuid,
+        bg3.SPEAKER_PLAYER,
+        [wound_flare_node_uuid],
+        bg3.text_content('hcecceb7cgb7aeg43e7g8873g087a01365ffb', 1),
+        checkflags = (
+            bg3.flag_group('Tag', (
+                bg3.flag(bg3.TAG_REALLY_SHADOWHEART, True, speaker_idx_tav),
+            )),
+        ))
+    t.create_simple_dialog_answer_phase(
+        bg3.SPEAKER_PLAYER,
+        '2.21',
+        no_i_cant_node_uuid,
+        ((None, '70257049-f8f8-4a06-8b79-63dbbbf2bd69'),),
+        emotions = {
+            bg3.SPEAKER_PLAYER: (('0.0', 8, None), ('1.01', 64, 2), ('2.0', 32, None))
+        },
+    )
+    d.delete_all_children_dialog_nodes(blooming_romance_node_uuid)
+    d.add_child_dialog_node(blooming_romance_node_uuid, no_i_cant_node_uuid)
+
+    #
+    # Wound flare
+    #
+    d.create_cinematic_dialog_node(wound_flare_node_uuid, [punishment_node_uuid])
+
+    phase_duration = '7.44' #'7.94' # 1.09 --> effect offset
+    t.create_new_phase(wound_flare_node_uuid, phase_duration)
+
+    t.create_tl_actor_node(bg3.timeline_object.EMOTION, bg3.SPEAKER_PLAYER, '0.0', phase_duration, (
+        t.create_emotion_key('0.0', 8, 2),
+        t.create_emotion_key('1.08', 16, 23),
+        t.create_emotion_key('4.43', 64, 2),
+        t.create_emotion_key('6.23', 32),
+    ), is_snapped_to_end = True)
+
+    t.create_tl_actor_node(bg3.timeline_object.EMOTION, bg3.PEANUT_SLOT_0, '0.0', phase_duration, (
+        t.create_emotion_key('0.0', 4, 2),
+        t.create_emotion_key('2.01', 64, 2),
+        t.create_emotion_key('3.43', 32, 1),
+        t.create_emotion_key('7.23', 32),
+    ), is_snapped_to_end = True)
+    t.create_tl_actor_node(bg3.timeline_object.EMOTION, bg3.PEANUT_SLOT_1, '0.0', phase_duration, (
+        t.create_emotion_key('0.0', 4, 2),
+        t.create_emotion_key('2.21', 64, 2),
+        t.create_emotion_key('4.3', 32, 1),
+        t.create_emotion_key('6.8', 32),
+    ), is_snapped_to_end = True)
+    t.create_tl_actor_node(bg3.timeline_object.EMOTION, bg3.PEANUT_SLOT_2, '0.0', phase_duration, (
+        t.create_emotion_key('0.0', 4, 2),
+        t.create_emotion_key('2.51', 64, 2),
+        t.create_emotion_key('4.8', 32, 1),
+        t.create_emotion_key('6.53', 32),
+    ), is_snapped_to_end = True)
+
+    t.create_tl_actor_node(bg3.timeline_object.LOOK_AT, bg3.SPEAKER_PLAYER, '0.0', phase_duration, (
+        t.create_look_at_key(
+            '0.0',
+            turn_mode = 3,
+            turn_speed_multiplier = 0.01,
+            head_turn_speed_multiplier = 0.01,
+            weight = 1.0,
+            reset = True,
+            look_at_mode = 1,
+        ),
+        t.create_look_at_key(
+            '1.8',
+            target = bg3.SPEAKER_PLAYER,
+            bone = 'Dummy_R_Hand',
+            turn_mode = 3,
+            tracking_mode = 1,
+            turn_speed_multiplier = 0.01,
+            head_turn_speed_multiplier = 0.01,
+            weight = 0.0,
+            safe_zone_angle = 80,
+            head_safe_zone_angle = 80,
+            # offset = (-0.959, 0.473, 0.048),
+            look_at_mode = 1,
+            eye_look_at_bone = 'Dummy_R_Hand'
+        ),
+        t.create_look_at_key(
+            '4.05',
+            target = bg3.SPEAKER_PLAYER,
+            bone = 'Dummy_R_Hand',
+            turn_mode = 3,
+            tracking_mode = 1,
+            turn_speed_multiplier = 0.3,
+            head_turn_speed_multiplier = 0.3,
+            weight = 0.0,
+            safe_zone_angle = 80,
+            head_safe_zone_angle = 80,
+            look_at_mode = 1,
+            eye_look_at_bone = 'Dummy_R_Hand'
+        ),
+        t.create_look_at_key(
+            '7.2', #'7.5',
+            turn_mode = 3,
+            turn_speed_multiplier = 0.3,
+            head_turn_speed_multiplier = 0.3,
+            weight = 1.0,
+            offset = (-0.959, 0.473, 0.048),
+            look_at_mode = 1,
+        ),
+    ), is_snapped_to_end = True)
+    # t.create_tl_actor_node(bg3.timeline_object.LOOK_AT, bg3.SPEAKER_PLAYER, '6.23', phase_duration, (), is_snapped_to_end = True)
+
+    t.create_tl_actor_node(bg3.timeline_object.LOOK_AT, bg3.PEANUT_SLOT_0, '0.0', phase_duration, (
+        t.create_look_at_key(
+            '0.0',
+            target = bg3.SPEAKER_PLAYER,
+            bone = 'Head_M',
+            turn_mode = 3,
+            turn_speed_multiplier = 0.3,
+            head_turn_speed_multiplier = 0.3,
+            weight = 0.0,
+            reset = True,
+            eye_look_at_bone = 'Head_M',
+        ),
+    ), is_snapped_to_end = True)
+    t.create_tl_actor_node(bg3.timeline_object.LOOK_AT, bg3.PEANUT_SLOT_1, '0.0', phase_duration, (
+        t.create_look_at_key(
+            '0.0',
+            target = bg3.SPEAKER_PLAYER,
+            bone = 'Head_M',
+            turn_mode = 3,
+            turn_speed_multiplier = 0.3,
+            head_turn_speed_multiplier = 0.3,
+            weight = 0.0,
+            reset = True,
+            eye_look_at_bone = 'Head_M',
+        ),
+    ), is_snapped_to_end = True)
+    t.create_tl_actor_node(bg3.timeline_object.LOOK_AT, bg3.PEANUT_SLOT_2, '0.0', phase_duration, (
+        t.create_look_at_key(
+            '0.0',
+            target = bg3.SPEAKER_PLAYER,
+            bone = 'Head_M',
+            turn_mode = 3,
+            turn_speed_multiplier = 0.3,
+            head_turn_speed_multiplier = 0.3,
+            weight = 0.0,
+            reset = True,
+            eye_look_at_bone = 'Head_M',
+        ),
+    ), is_snapped_to_end = True)
+
+    t.create_tl_actor_node(bg3.timeline_object.SOUND, bg3.SPEAKER_PLAYER, '0.0', phase_duration, (
+        t.create_sound_event_key('1.76', sound_event_id = '54aeecb4-e5be-428d-8fe9-2a769c1eb153')
+    ), is_snapped_to_end = True)
+    t.create_tl_actor_node(bg3.timeline_object.PLAY_EFFECT, WOUND_FLARE, '0.0', phase_duration, (
+        t.create_value_key(time = '1.7', value_name = 'PlayEffect', value = True, interpolation_type = 3),
+        t.create_value_key(time = '7.35', value_name = 'PlayEffect', value = False, interpolation_type = 3),
+    ), is_snapped_to_end = True)
+    t.create_tl_actor_node(bg3.timeline_object.PLAY_EFFECT_PHASE, WOUND_FLARE, '0.0', phase_duration, (
+        t.create_value_key(time = '5.38', value_name = 'EffectPhase', value_type = 'int32', value = 2, interpolation_type = 3),
+    ), is_snapped_to_end = True)
+    t.create_tl_transform(WOUND_FLARE, '0.0', phase_duration, (
+        (
+            t.create_value_key(time = '0.0', value = 0.0, interpolation_type = 3),
+        ),
+        (
+            t.create_value_key(time = '0.0', value = 0.0, interpolation_type = 3),
+        ),
+        (
+            t.create_value_key(time = '0.0', value = 0.0, interpolation_type = 3),
+        ),
+        (
+            t.create_value_key(time = '0.0', value = (0, 0, 0, 1), interpolation_type = 3),
+        ),
+        (),
+        (
+            t.create_frame_of_reference_key(0.0, 3, bg3.SPEAKER_PLAYER, 'Dummy_R_Hand', False, False),
+        )
+    ), is_snapped_to_end = True)
+    t.create_tl_material(bg3.SPEAKER_PLAYER, '0.0', phase_duration, 'f64b7447-3c6d-4e59-bf61-6e9cd3c2dd0e', (
+        t.create_material_parameter('MaskRadius', (
+            t.create_value_key(time = '0.3', interpolation_type = 2, value = 0.0),
+            t.create_value_key(time = '0.82', interpolation_type = 2, value = 0.05),
+            t.create_value_key(time = '7.24', interpolation_type = 2, value = 0.05),
+            t.create_value_key(time = '7.3', interpolation_type = 2, value = 0.0),
+        ))
+    ), (), is_snapped_to_end = True)
+    t.create_tl_animation(
+        bg3.SPEAKER_PLAYER,
+        '0.0',
+        phase_duration,
+        'aa4840a2-adb1-b777-9da0-16741f58dbc8',
+        '223e18c1-4bfa-4d91-881f-9427036b0594',
+        fade_in = 0.7,
+        fade_out = 1.6,
+        enable_root_motion = True,
+        is_mirrored = True,
+        is_snapped_to_end = True)
+
+    t.create_tl_shot('28c3f905-46ca-4170-9d17-9691b0b3db9a', '0.0', '2.3')
+    t.create_tl_camera_fov('c2e7d53f-aebb-4a61-a225-e1446445cf64', '2.3', phase_duration, (
+        t.create_value_key(time = '2.3', value_name = 'FoV', value = '45.0', value_type = 'float', interpolation_type = 0),
+    ), is_snapped_to_end=True)
+    t.create_tl_shot('c2e7d53f-aebb-4a61-a225-e1446445cf64', '2.3', '4.5')
+    t.create_tl_shot('28c3f905-46ca-4170-9d17-9691b0b3db9a', '4.5', phase_duration, is_snapped_to_end = True)
+
+    #
+    # *You feel that something true to you is wrested from you as punishment, with nothing given in return.*
+    #
+    d.create_standard_dialog_node(
+        punishment_node_uuid,
+        bg3.SPEAKER_NARRATOR,
+        [],
+        bg3.text_content('ha8479154g2d18g4f9dg965eg526a925d6ead', 1),
+        end_node = True
+    )
+    phase_duration = t.create_new_cinematic_phase_from_another(
+        something_true_to_you_is_wrested_from_you_node_uuid,
+        punishment_node_uuid,
+        skip_tl_nodes=['TLVoice']
+    )
+    t.create_tl_actor_node(bg3.timeline_object.LOOK_AT, bg3.SPEAKER_PLAYER, '0.0', phase_duration, (), is_snapped_to_end = True)
+    t.create_tl_voice(
+        bg3.SPEAKER_NARRATOR,
+        '0.0',
+        '8.274',
+        punishment_node_uuid
+    )
+    
+
+    game_assets.append_dependency_to_timeline('reallyshadowheart_low_shargrotto_memorymirror', WOUND_FLARE)
+    game_assets.append_dependency_to_timeline('reallyshadowheart_low_shargrotto_memorymirror', '83f6b073-e460-ffc1-bbf3-7589cfe00be4') # effect resource
+    game_assets.append_dependency_to_timeline('reallyshadowheart_low_shargrotto_memorymirror', '54aeecb4-e5be-428d-8fe9-2a769c1eb153') # sound
+    game_assets.append_dependency_to_timeline('reallyshadowheart_low_shargrotto_memorymirror', 'aa4840a2-adb1-b777-9da0-16741f58dbc8') # animation
+
+
+def patch_nocturne_dialog() -> None:
+    game_assets = get_context().assets
+
+    ########################################################################################
+    # LOW_SharGrotto_ShadowheartFriend.lsf
+    ########################################################################################
+    
+    ab = game_assets.get_modded_dialog_asset_bundle('LOW_SharGrotto_ShadowheartFriend')
+    d = bg3.dialog_object(ab.dialog)
+    t = bg3.timeline_object(ab.timeline, d)
+
+    speaker_idx_player = d.get_speaker_slot_index(bg3.SPEAKER_PLAYER)
+
+    a_hug_for_the_old_friend_node_uuid = 'a29722f6-2fc5-46e0-9a4e-9f147564e7e8'
+    a_hug_for_the_old_friend2_node_uuid = 'd832899f-cd21-423d-b746-35cb9ea2dbf8'
+    let_me_hug_you_node_uuid = 'a85d315d-766f-44cc-a160-0f8b23953bb4'
+    hug_cine_node_uuid = '3b7399dc-9b25-4e6f-ba99-803003fcb3d3'
+    jump_back_node_uuid = 'fce9adfa-d93b-4aa2-aa0e-c11d4a8c3cf7'
+    alias_any_time_node_uuid = 'ee6eb23c-3bae-436a-b293-1e1c43613ead'
+
+    do_you_seek_to_trade_node_uuid = 'c80554db-2603-f982-2927-20bc138f2cf1' # existing node
+    any_time_node_uuid = '3b779edb-0d29-330e-5b38-426774a362fa' # existing node
+
+    # How about a hug for an old friend?
+    d.create_standard_dialog_node(
+        a_hug_for_the_old_friend_node_uuid,
+        bg3.SPEAKER_PLAYER,
+        [hug_cine_node_uuid],
+        bg3.text_content('he0351a05gd8d8g4181gb288g0657784e18eb', 1),
+        constructor = bg3.dialog_object.QUESTION,
+        show_once = True,
+        checkflags = (
+            bg3.flag_group('Global', (
+                bg3.flag(Shadowheart_Turned_Away_From_Shar.uuid, False, None),
+                bg3.flag(bg3.FLAG_ORI_Shadowheart_State_BecamePontiff, False, None),
+                bg3.flag(bg3.FLAG_ORI_Shadowheart_State_NobleStalkMemory, True, None),
+            )),
+            bg3.flag_group('Tag', (
+                bg3.flag(bg3.TAG_REALLY_SHADOWHEART, True, speaker_idx_player),
+            ))
+        ))
+
+    # How about a hug for an old friend?
+    d.create_standard_dialog_node(
+        a_hug_for_the_old_friend2_node_uuid,
+        bg3.SPEAKER_PLAYER,
+        [hug_cine_node_uuid],
+        bg3.text_content('he0351a05gd8d8g4181gb288g0657784e18eb', 1),
+        constructor = bg3.dialog_object.QUESTION,
+        show_once = True,
+        checkflags = (
+            bg3.flag_group('Global', (
+                bg3.flag(bg3.FLAG_ORI_Shadowheart_State_BecamePontiff, False, None),
+                bg3.flag(bg3.FLAG_ORI_Shadowheart_State_NobleStalkMemory, False, None),
+            )),
+            bg3.flag_group('Dialog', (
+                bg3.flag(bg3.FLAG_LOW_SharGrotto_ShadowheartFriend_Even_ReminiscedConclusion, True, speaker_idx_player),
+            )),
+            bg3.flag_group('Tag', (
+                bg3.flag(bg3.TAG_REALLY_SHADOWHEART, True, speaker_idx_player),
+            ))
+        ))
+
+    # Let me hug you, my good friend.
+    d.create_standard_dialog_node(
+        let_me_hug_you_node_uuid,
+        bg3.SPEAKER_PLAYER,
+        [hug_cine_node_uuid],
+        bg3.text_content('h2ad3f4cag1b28g4df4gbd45g7632abdfa05f', 1),
+        constructor = bg3.dialog_object.QUESTION,
+        show_once = True,
+        checkflags = (
+            bg3.flag_group('Global', (
+                bg3.flag(Shadowheart_Turned_Away_From_Shar.uuid, True, None),
+                bg3.flag(bg3.FLAG_ORI_Shadowheart_State_NobleStalkMemory, True, None),
+            )),
+            bg3.flag_group('Tag', (
+                bg3.flag(bg3.TAG_REALLY_SHADOWHEART, True, speaker_idx_player),
+            ))
+        ))
+
+    d.create_cinematic_dialog_node(hug_cine_node_uuid, [alias_any_time_node_uuid])
+    d.create_alias_dialog_node(
+        alias_any_time_node_uuid,
+        any_time_node_uuid,
+        [jump_back_node_uuid],
+    )
+    d.create_jump_dialog_node(jump_back_node_uuid, do_you_seek_to_trade_node_uuid, 2)
+
+    # 9faaf85d-e42d-4086-a6fb-2c86b72b1bd0 Nocturne    -> Nocturne
+    # aa5af432-e3c7-4230-af44-c23e3e0dc44a Nocturne    -> Nocturne
+    # a828ebbe-28f6-479b-9f09-ffae170a1e57 Shadowheart -> Shadowheart
+    # 6f067cf1-9283-4e69-9f72-6602d4d29ba2 Shadowheart -> Shadowheart
+    # 68d596c3-1378-4d1b-8321-56ad711576f5 Shadowheart -> Shadowheart
+    # 55e6029f-c1c6-4cd2-8dae-748f0dee036c Shadowheart -> Nocturne
+    # a541b4b9-2ac0-46d0-a28b-a70971e8b882 Shadowheart -> Nocturne
+    # b395f4c4-f9b3-467b-9094-7a4b720e0a39 Shadowheart -> Nocturne
+    # ad5c28f0-479b-417f-9f62-2fde75e146f6 Nocturne    -> Shadowheart
+    # 40eba2ec-210c-4f24-8e0b-43e4b355978a Nocturne    -> Shadowheart
+    # 63eaaabc-d34b-4700-910b-d495fc1dd331 Nocturne    -> Shadowheart
+
+    create_hug_timeline(
+        hug_cine_node_uuid,
+        t,
+        bg3.SPEAKER_PLAYER,
+        bg3.SPEAKER_NOCTURNE,
+        'ad5c28f0-479b-417f-9f62-2fde75e146f6',
+        '55e6029f-c1c6-4cd2-8dae-748f0dee036c',
+        '6f067cf1-9283-4e69-9f72-6602d4d29ba2',
+        '40eba2ec-210c-4f24-8e0b-43e4b355978a',
+    )
+
+    d.add_child_dialog_node(do_you_seek_to_trade_node_uuid, a_hug_for_the_old_friend_node_uuid, 0)
+    d.add_child_dialog_node(do_you_seek_to_trade_node_uuid, let_me_hug_you_node_uuid, 0)
+
+
 bg3.add_build_procedure('patch_cloister_events', patch_cloister_events)
 bg3.add_build_procedure('patch_conversation_with_viconia', patch_conversation_with_viconia)
 bg3.add_build_procedure('patch_conversation_with_mirie', patch_conversation_with_mirie)
 bg3.add_build_procedure('make_late_redemption_easier', make_late_redemption_easier)
+bg3.add_build_procedure('patch_memory_mirror', patch_memory_mirror)
+bg3.add_build_procedure('patch_nocturne_dialog', patch_nocturne_dialog)

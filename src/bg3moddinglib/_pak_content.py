@@ -113,28 +113,31 @@ class pak_content:
     __assets: bg3_assets
     __index: dialog_index
     __tool: bg3_modding_tool
-    __file_path: str
+    __pak_file_path: str
     __pak_files: tuple[str, ...]
     __content_bundles: dict[str, content_bundle]
     __dialog_bank: dict[str, XmlElement]
     __timeline_bank: dict[str, XmlElement]
+    __meta_lsx: XmlElement | None
 
     def __init__(self, a: bg3_assets, file_path: str) -> None:
         self.__assets = a
         self.__index = a.index
         self.__tool = a.files.tool
-        self.__file_path = file_path
+        self.__pak_file_path = file_path
         self.__pak_files = ()
         self.__content_bundles = dict[str, content_bundle]()
         self.__dialog_bank = dict[str, XmlElement]()
         self.__timeline_bank = dict[str, XmlElement]()
+        self.__meta_lsx = None
         self.initialize()
 
 
     def initialize(self) -> None:
-        self.__pak_files = tuple(self.__tool.list(self.__file_path))
+        self.__pak_files = tuple(self.__tool.list(self.__pak_file_path))
         cb : content_bundle
         content_bundles = dict[str, content_bundle]()
+
         for file_path in self.__pak_files:
             if file_path.startswith('Public/'):
                 if '/Content/' in file_path and file_path.endswith('.lsf'):
@@ -175,6 +178,10 @@ class pak_content:
                 else:
                     cb = content_bundles[filename]
                 cb.dialog_file = file_path
+            elif file_path.startswith('Mods/') and file_path.endswith('/meta.lsx'):
+                meta_lsx = self.__assets.tool.unpack(self.__pak_file_path, file_path)
+                self.__meta_lsx = et.parse(meta_lsx).getroot()
+
         for fn, cb in content_bundles.items():
             if fn in self.__dialog_bank:
                 dialog_res = self.__dialog_bank[fn]
@@ -200,7 +207,7 @@ class pak_content:
 
     @property
     def file_path(self) -> str:
-        return self.__file_path
+        return self.__pak_file_path
 
     @property
     def files(self) -> tuple[str, ...]:
@@ -209,6 +216,10 @@ class pak_content:
     @property
     def content_index(self) -> tuple[str, ...]:
         return tuple(self.__content_bundles.keys())
+
+    @property
+    def meta_lsx(self) -> XmlElement | None:
+        return self.__meta_lsx
 
     def has_content_bundle(self, dialog_uuid: str) -> bool:
         return dialog_uuid.lower() in self.__content_bundles
@@ -225,16 +236,24 @@ class pak_content:
             return self.__dialog_bank[dialog_id]
         raise KeyError(f'dialog not found in the bank: {dialog_id}')
 
+    def get_dialog_name(self, dialog_id: str) -> str:
+        dialog_id = dialog_id.lower()
+        if dialog_id in self.__dialog_bank:
+            res = self.__dialog_bank[dialog_id]
+            source_file = get_required_bg3_attribute(res, 'SourceFile')
+            return os.path.basename(source_file).lower()[:-4]
+        raise KeyError(f'dialog not found in the bank: {dialog_id}')
+
     def get_timeline_resource(self, timeline_id: str) -> XmlElement:
         timeline_id = timeline_id.lower()
         if timeline_id in self.__timeline_bank:
             return self.__timeline_bank[timeline_id]
-        raise KeyError(f'dialog not found in the bank: {timeline_id}')
+        raise KeyError(f'timeline not found in the bank: {timeline_id}')
 
     def get_dialog_object(self, dialog_uuid: str) -> dialog_object:
         cb = self.get_content_bundle(dialog_uuid)
         if cb.dialog_file:
-            gf = self.__assets.files.get_file(self.__file_path, cb.dialog_file, exclude_from_build = True)
+            gf = self.__assets.files.get_file(self.__pak_file_path, cb.dialog_file, exclude_from_build = True)
         else:
             dialog_name = self.__assets.index.get_dialog_name(dialog_uuid)
             e = self.__assets.index.get_entry(dialog_name)
@@ -246,7 +265,7 @@ class pak_content:
     def get_timeline_object(self, dialog_uuid: str) -> timeline_object:
         cb = self.get_content_bundle(dialog_uuid)
         if cb.timeline_file:
-            gf = self.__assets.files.get_file(self.__file_path, cb.timeline_file, exclude_from_build = True)
+            gf = self.__assets.files.get_file(self.__pak_file_path, cb.timeline_file, exclude_from_build = True)
         else:
             dialog_name = self.__assets.index.get_dialog_name(dialog_uuid)
             e = self.__assets.index.get_entry(dialog_name)
@@ -257,7 +276,7 @@ class pak_content:
         return timeline_object(gf, self.get_dialog_object(dialog_uuid))
 
     def __read_dialog_bank_lsf(self, lsf_path: str) -> None:
-        gf = game_file(self.__tool, lsf_path, pak_name = self.__file_path)
+        gf = game_file(self.__tool, lsf_path, pak_name = self.__pak_file_path)
         resources = gf.xml.getroot().findall('./region[@id="DialogBank"]/node[@id="DialogBank"]/children/node[@id="Resource"]')
         for resource in resources:
             dialog_file_uuid = get_required_bg3_attribute(resource, 'ID').lower()
@@ -267,7 +286,7 @@ class pak_content:
             self.__dialog_bank[filename.lower()] = resource
         
     def __read_timeline_bank_lsf(self, lsf_path: str) -> None:
-        gf = game_file(self.__tool, lsf_path, pak_name = self.__file_path)
+        gf = game_file(self.__tool, lsf_path, pak_name = self.__pak_file_path)
         resources = gf.xml.getroot().findall('./region[@id="TimelineBank"]/node[@id="TimelineBank"]/children/node[@id="Resource"]')
         for resource in resources:
             timeline_file_uuid = get_required_bg3_attribute(resource, 'ID').lower()

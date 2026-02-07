@@ -42,5 +42,5 @@ def setup_console_logger() -> None:
 def get_logger() -> logging.Logger:
     global logger
     if logger is None:
-        raise RuntimeError('Logger is not initialized yet')
+        setup_logger('bg3moddinglib')
     return logger

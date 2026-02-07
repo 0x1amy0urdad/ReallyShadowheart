@@ -684,6 +684,15 @@ Nightsong_Fate_Tav_Does_Not_Interfere = bg3.flag_factory(
 Nightsong_Fate_Is_This_Truly_What_You_Want = bg3.flag_factory(
     'Nightsong_Fate_Is_This_Truly_What_You_Want', bg3.OBJECT_FLAG, flag_uuid='ba398a88-b473-45b3-9402-be941164647c', description='Tav asked Shadowhearts if that was really what she wanted in Nightsong Prison.')
 
+
+# End game dialog: the last kiss and the last hug are mutually exclusive
+Shadowheart_EndGame_LastKiss = bg3.flag_factory(
+    'Shadowheart_EndGame_LastKiss', bg3.OBJECT_FLAG, flag_uuid='6c4e7ef2-c19e-4c3f-a8cc-a17f4d823d34', description='Tav told Shadowheart this might be the last chance to kiss her')
+
+Shadowheart_EndGame_LastHug = bg3.flag_factory(
+    'Shadowheart_EndGame_LastHug', bg3.OBJECT_FLAG, flag_uuid='6f75111c-dec7-47c7-9b10-317d595b36d5', description='Tav told Shadowheart this might be the last chance to hug her')
+
+
 # Shadowheart wound flare event
 Shadowheart_Wound_Flare_Event_Mentioned_Tadpole = bg3.flag_factory(
     'Shadowheart_Wound_Flare_Event_Mentioned_Tadpole', bg3.OBJECT_FLAG, flag_uuid='80629d74-d8d5-4108-a7f8-23c1f900fe8e', description='Shadowheart mentioned tadpole in the conversation')

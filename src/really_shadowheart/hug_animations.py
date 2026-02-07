@@ -513,27 +513,34 @@ def create_hugs_timeline() -> None:
         ),
     ), is_snapped_to_end = True, is_mimicry = True)
 
-    t.create_tl_non_actor_node(bg3.timeline_object.SWITCH_LOCATION, '0.0', phase_duration, (), is_snapped_to_end = True)
+    t.create_tl_actor_node(bg3.timeline_object.PHYSICS, bg3.SPEAKER_PLAYER, '0.0', phase_duration, (
+        t.create_value_key(time = 0.0, interpolation_type = 3, value_name = 'InverseKinematics', value = False),
+    ), is_snapped_to_end = True)
+    t.create_tl_actor_node(bg3.timeline_object.PHYSICS, bg3.SPEAKER_SHADOWHEART, '0.0', phase_duration, (
+        t.create_value_key(time = 0.0, interpolation_type = 3, value_name = 'InverseKinematics', value = False),
+    ), is_snapped_to_end = True)
+
+    #t.create_tl_non_actor_node(bg3.timeline_object.SWITCH_LOCATION, '0.0', phase_duration, (), is_snapped_to_end = True)
 
     # Place Shadowheart
     t.create_tl_transform(bg3.SPEAKER_SHADOWHEART, '0.0', phase_duration, (
         (
             #t.create_value_key(time = 0.0, interpolation_type = 5, value = 0.10027611),
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = -0.282674465),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = -0.282674465),
         ),
         (
             #t.create_value_key(time = 0.0, interpolation_type = 5, value = 2.3841858e-07),
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = 0.0),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = 0.0),
         ),
         (
             #t.create_value_key(time = 0.0, interpolation_type = 5, value = 9.4698734),
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = 0.5080471000000006),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = 0.5080471),
         ),
         (
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = (0.0, -0.24996054, 0.0, 0.96825606)),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = (0.0, -0.24996054, 0.0, 0.96825606)),
         ),
         (
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = 1.0),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = 1.0),
         ),
         (),
     ), is_snapped_to_end = True)
@@ -541,21 +548,21 @@ def create_hugs_timeline() -> None:
     t.create_tl_transform(bg3.SPEAKER_PLAYER, '0.0', phase_duration, (
         (
             #t.create_value_key(time = 0.0, interpolation_type = 5, value = 0.66562504),
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = 0.282674465),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = 0.282674465),
         ),
         (
             #t.create_value_key(time = 0.0, interpolation_type = 5, value = 3.5762787e-07),
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = 0.0),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = 0.0),
         ),
         (
             #t.create_value_key(time = 0.0, interpolation_type = 5, value = 8.4537792),
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = -0.5080471000000006),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = -0.5080471),
         ),
         (
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = (0.0, 0.96666896, 0.0, 0.25602978)),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = (0.0, 0.96666896, 0.0, 0.25602978)),
         ),
         (
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = 1.0),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = 1.0),
         ),
         (),
     ), is_snapped_to_end = True)
@@ -751,27 +758,34 @@ def create_hugs_timeline() -> None:
         ),
     ), is_snapped_to_end = True, is_mimicry = True)
 
-    t.create_tl_non_actor_node(bg3.timeline_object.SWITCH_LOCATION, '0.0', phase_duration, (), is_snapped_to_end = True)
+    #t.create_tl_non_actor_node(bg3.timeline_object.SWITCH_LOCATION, '0.0', phase_duration, (), is_snapped_to_end = True)
+
+    t.create_tl_actor_node(bg3.timeline_object.PHYSICS, bg3.SPEAKER_PLAYER, '0.0', phase_duration, (
+        t.create_value_key(time = 0.0, interpolation_type = 3, value_name = 'InverseKinematics', value = False),
+    ), is_snapped_to_end = True)
+    t.create_tl_actor_node(bg3.timeline_object.PHYSICS, bg3.SPEAKER_SHADOWHEART, '0.0', phase_duration, (
+        t.create_value_key(time = 0.0, interpolation_type = 3, value_name = 'InverseKinematics', value = False),
+    ), is_snapped_to_end = True)
 
     # Place Shadowheart
     t.create_tl_transform(bg3.SPEAKER_SHADOWHEART, '0.0', phase_duration, (
         (
             #t.create_value_key(time = 0.0, interpolation_type = 5, value = 0.10027611),
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = -0.282674465),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = -0.282674465),
         ),
         (
             #t.create_value_key(time = 0.0, interpolation_type = 5, value = 2.3841858e-07),
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = 0.0),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = 0.0),
         ),
         (
             #t.create_value_key(time = 0.0, interpolation_type = 5, value = 9.4698734),
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = 0.5080471000000006),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = 0.5080471),
         ),
         (
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = (0.0, -0.24996054, 0.0, 0.96825606)),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = (0.0, -0.24996054, 0.0, 0.96825606)),
         ),
         (
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = 1.0),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = 1.0),
         ),
         (),
     ), is_snapped_to_end = True)
@@ -779,21 +793,21 @@ def create_hugs_timeline() -> None:
     t.create_tl_transform(bg3.SPEAKER_PLAYER, '0.0', phase_duration, (
         (
             #t.create_value_key(time = 0.0, interpolation_type = 5, value = 0.66562504),
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = 0.282674465),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = 0.282674465),
         ),
         (
             #t.create_value_key(time = 0.0, interpolation_type = 5, value = 3.5762787e-07),
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = 0.0),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = 0.0),
         ),
         (
             #t.create_value_key(time = 0.0, interpolation_type = 5, value = 8.4537792),
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = -0.5080471000000006),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = -0.5080471),
         ),
         (
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = (0.0, 0.96666896, 0.0, 0.25602978)),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = (0.0, 0.96666896, 0.0, 0.25602978)),
         ),
         (
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = 1.0),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = 1.0),
         ),
         (),
     ), is_snapped_to_end = True)
@@ -999,21 +1013,21 @@ def create_hugs_timeline() -> None:
     t.create_tl_transform(bg3.SPEAKER_SHADOWHEART, '0.0', phase_duration, (
         (
             #t.create_value_key(time = 0.0, interpolation_type = 5, value = 0.35311571),
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = -0.13836698),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = -0.13836698),
         ),
         (
             #t.create_value_key(time = 0.0, interpolation_type = 5, value = 2.3841858e-07),
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = 0.0),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = 0.0),
         ),
         (
             #t.create_value_key(time = 0.0, interpolation_type = 5, value = 9.1730099),
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = 0.36940669999999987),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = 0.3694067),
         ),
         (
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = (0.0, -0.20995708, 0.0, 0.9777106)),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = (0.0, -0.20995708, 0.0, 0.9777106)),
         ),
         (
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = 1.0),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = 1.0),
         ),
         (),
     ), is_snapped_to_end = True)
@@ -1021,21 +1035,21 @@ def create_hugs_timeline() -> None:
     t.create_tl_transform(bg3.SPEAKER_PLAYER, '0.0', phase_duration, (
         (
             #t.create_value_key(time = 0.0, interpolation_type = 5, value = 0.62984967),
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = 0.13836698),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = 0.13836698),
         ),
         (
             #t.create_value_key(time = 0.0, interpolation_type = 5, value = 3.5762787e-07),
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = 0.0),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = 0.0),
         ),
         (
             #t.create_value_key(time = 0.0, interpolation_type = 5, value = 8.4341965),
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = -0.36940669999999987),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = -0.3694067),
         ),
         (
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = (0.0, 0.98319805, 0.0, 0.18254192)),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = (0.0, 0.98319805, 0.0, 0.18254192)),
         ),
         (
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = 1.0),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = 1.0),
         ),
         (),
     ), is_snapped_to_end = True)
@@ -1112,21 +1126,21 @@ def create_hugs_timeline() -> None:
     t.create_tl_transform(bg3.SPEAKER_SHADOWHEART, '0.0', phase_duration, (
         (
             #t.create_value_key(time = 0.0, interpolation_type = 5, value = 0.35311571),
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = -0.13836698),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = -0.13836698),
         ),
         (
             #t.create_value_key(time = 0.0, interpolation_type = 5, value = 2.3841858e-07),
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = 0.0),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = 0.0),
         ),
         (
             #t.create_value_key(time = 0.0, interpolation_type = 5, value = 9.1730099),
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = 0.36940669999999987),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = 0.36940669999999987),
         ),
         (
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = (0.0, -0.20995708, 0.0, 0.9777106)),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = (0.0, -0.20995708, 0.0, 0.9777106)),
         ),
         (
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = 1.0),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = 1.0),
         ),
         (),
     ), is_snapped_to_end = True)
@@ -1134,21 +1148,21 @@ def create_hugs_timeline() -> None:
     t.create_tl_transform(bg3.SPEAKER_PLAYER, '0.0', phase_duration, (
         (
             #t.create_value_key(time = 0.0, interpolation_type = 5, value = 0.62984967),
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = 0.13836698),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = 0.13836698),
         ),
         (
             #t.create_value_key(time = 0.0, interpolation_type = 5, value = 3.5762787e-07),
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = 0.0),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = 0.0),
         ),
         (
             #t.create_value_key(time = 0.0, interpolation_type = 5, value = 8.4341965),
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = -0.36940669999999987),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = -0.36940669999999987),
         ),
         (
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = (0.0, 0.98319805, 0.0, 0.18254192)),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = (0.0, 0.98319805, 0.0, 0.18254192)),
         ),
         (
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = 1.0),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = 1.0),
         ),
         (),
     ), is_snapped_to_end = True)
@@ -1223,21 +1237,21 @@ def create_hugs_timeline() -> None:
     t.create_tl_transform(bg3.SPEAKER_SHADOWHEART, '0.0', phase_duration, (
         (
             #t.create_value_key(time = 0.0, interpolation_type = 5, value = 0.35311571),
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = -0.13836698),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = -0.13836698),
         ),
         (
             #t.create_value_key(time = 0.0, interpolation_type = 5, value = 2.3841858e-07),
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = 0.0),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = 0.0),
         ),
         (
             #t.create_value_key(time = 0.0, interpolation_type = 5, value = 9.1730099),
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = 0.36940669999999987),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = 0.36940669999999987),
         ),
         (
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = (0.0, -0.20995708, 0.0, 0.9777106)),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = (0.0, -0.20995708, 0.0, 0.9777106)),
         ),
         (
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = 1.0),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = 1.0),
         ),
         (),
     ), is_snapped_to_end = True)
@@ -1245,21 +1259,21 @@ def create_hugs_timeline() -> None:
     t.create_tl_transform(bg3.SPEAKER_PLAYER, '0.0', phase_duration, (
         (
             #t.create_value_key(time = 0.0, interpolation_type = 5, value = 0.62984967),
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = 0.13836698),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = 0.13836698),
         ),
         (
             #t.create_value_key(time = 0.0, interpolation_type = 5, value = 3.5762787e-07),
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = 0.0),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = 0.0),
         ),
         (
             #t.create_value_key(time = 0.0, interpolation_type = 5, value = 8.4341965),
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = -0.36940669999999987),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = -0.36940669999999987),
         ),
         (
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = (0.0, 0.98319805, 0.0, 0.18254192)),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = (0.0, 0.98319805, 0.0, 0.18254192)),
         ),
         (
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = 1.0),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = 1.0),
         ),
         (),
     ), is_snapped_to_end = True)
@@ -1338,21 +1352,21 @@ def create_hugs_timeline() -> None:
     t.create_tl_transform(bg3.SPEAKER_SHADOWHEART, '0.0', phase_duration, (
         (
             #t.create_value_key(time = 0.0, interpolation_type = 5, value = 0.35311571),
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = -0.13836698),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = -0.13836698),
         ),
         (
             #t.create_value_key(time = 0.0, interpolation_type = 5, value = 2.3841858e-07),
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = 0.0),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = 0.0),
         ),
         (
             #t.create_value_key(time = 0.0, interpolation_type = 5, value = 9.1730099),
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = 0.36940669999999987),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = 0.36940669999999987),
         ),
         (
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = (0.0, -0.20995708, 0.0, 0.9777106)),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = (0.0, -0.20995708, 0.0, 0.9777106)),
         ),
         (
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = 1.0),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = 1.0),
         ),
         (),
     ), is_snapped_to_end = True)
@@ -1360,21 +1374,21 @@ def create_hugs_timeline() -> None:
     t.create_tl_transform(bg3.SPEAKER_PLAYER, '0.0', phase_duration, (
         (
             #t.create_value_key(time = 0.0, interpolation_type = 5, value = 0.62984967),
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = 0.13836698),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = 0.13836698),
         ),
         (
             #t.create_value_key(time = 0.0, interpolation_type = 5, value = 3.5762787e-07),
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = 0.0),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = 0.0),
         ),
         (
             #t.create_value_key(time = 0.0, interpolation_type = 5, value = 8.4341965),
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = -0.36940669999999987),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = -0.36940669999999987),
         ),
         (
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = (0.0, 0.98319805, 0.0, 0.18254192)),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = (0.0, 0.98319805, 0.0, 0.18254192)),
         ),
         (
-            t.create_value_key(time = 0.0, interpolation_type = 5, value = 1.0),
+            t.create_value_key(time = 0.0, interpolation_type = 0, value = 1.0),
         ),
         (),
     ), is_snapped_to_end = True)

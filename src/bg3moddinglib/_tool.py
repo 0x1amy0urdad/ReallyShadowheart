@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import locale
 import os
 import os.path
 import shutil
@@ -11,6 +12,9 @@ from typing import cast
 
 from ._common import translate_path
 from ._env import bg3_modding_env
+
+locale.setlocale(locale.LC_ALL, '')
+LOCALE_CONVERSION_NEEDED = locale.localeconv()["decimal_point"] == ','
 
 def initialize_dot_net() -> bool:
     try:
@@ -42,24 +46,31 @@ PAK_KEYS = dict[str, str]()
 PAK_CACHE = dict[str, dict[str, object]]()
 
 class bg3_modding_tool:
-    __work_dir: str
     __env: bg3_modding_env
+    __work_dir: str
+    __toolkit_present: bool
+    __decimal_comma: bool
 
     def __init__(self, env: bg3_modding_env) -> None:
         self.__env = env
         self.__work_dir = os.path.join(env.env_root_path, "build")
+        self.__toolkit_present = env.bg3_toolkit_path and os.path.isdir(env.bg3_toolkit_path)
         if os.path.isdir(self.__work_dir):
             shutil.rmtree(self.__work_dir)
         os.makedirs(self.__work_dir)
         global LSLIB_INITIALIZED
         if not LSLIB_INITIALIZED:
             lib_path = os.path.join(env.lslib_path, 'Packed', 'Tools')
+
             sys.path.append(lib_path)
-            sys.path.append(env.bg3_toolkit_path)
+            if self.__toolkit_present:
+                sys.path.append(env.bg3_toolkit_path)
+
             import clr
             clr.AddReference("System.IO") # type: ignore
             clr.AddReference("LSLib") # type: ignore
-            clr.AddReference("Modio") # type: ignore
+            if self.__toolkit_present:
+                clr.AddReference("Modio") # type: ignore
             LSLIB_INITIALIZED = True
 
     def __get_package(self, pak_path: str) -> dict[str, object]:
@@ -90,25 +101,25 @@ class bg3_modding_tool:
             pak_files = PAK_CACHE[key]
         return pak_files
 
-    def __convert(self, src_path: str, dest_path: str) -> None: # type: ignore
+    def __convert(self, src_path: str, dest_path: str) -> None:
         try:
-            from LSLib.LS import ResourceConversionParameters, ResourceLoadParameters, ResourceUtils
-            from LSLib.LS.Enums import Game
+            from LSLib.LS import ResourceConversionParameters, ResourceLoadParameters, ResourceUtils # type: ignore
+            from LSLib.LS.Enums import Game # type: ignore
 
-            res_fmt = ResourceUtils.ExtensionToResourceFormat(dest_path)
-            conv_params = ResourceConversionParameters.FromGameVersion(Game.BaldursGate3)
-            load_params = ResourceLoadParameters.FromGameVersion(Game.BaldursGate3)
-            resource = ResourceUtils.LoadResource(src_path, load_params)
-            ResourceUtils.SaveResource(resource, dest_path, res_fmt, conv_params)
+            res_fmt = ResourceUtils.ExtensionToResourceFormat(dest_path) # type: ignore
+            conv_params = ResourceConversionParameters.FromGameVersion(Game.BaldursGate3) # type: ignore
+            load_params = ResourceLoadParameters.FromGameVersion(Game.BaldursGate3) # type: ignore
+            resource = ResourceUtils.LoadResource(src_path, load_params) # type: ignore
+            ResourceUtils.SaveResource(resource, dest_path, res_fmt, conv_params) # type: ignore
         except BaseException as exc:
             raise RuntimeError(f'Conversion of "{src_path}" to "{dest_path}" failed.') from exc
 
-    def __convert_loca(self, src_path: str, dest_path: str) -> None: # type: ignore
+    def __convert_loca(self, src_path: str, dest_path: str) -> None:
         try:
-            from LSLib.LS import LocaUtils
+            from LSLib.LS import LocaUtils # type: ignore
 
-            loca = LocaUtils.Load(src_path)
-            LocaUtils.Save(loca, dest_path)
+            loca = LocaUtils.Load(src_path) # type: ignore
+            LocaUtils.Save(loca, dest_path) # type: ignore
         except BaseException as exc:
             raise RuntimeError(f'Conversion of "{src_path}" to "{dest_path}" failed.') from exc
 
@@ -119,6 +130,10 @@ class bg3_modding_tool:
     @property
     def env(self) -> bg3_modding_env:
         return self.__env
+
+    @property
+    def toolkit_present(self) -> bool:
+        return self.__toolkit_present
 
     def get_file_path(self, relative_file_path: str) -> str:
         return os.path.join(self.__work_dir, "unpacked", translate_path(relative_file_path))
@@ -210,28 +225,30 @@ class bg3_modding_tool:
             mod_version: tuple[int, int, int, int],
             pak_file_path: str,
             mod_publish_handle: int
-    ) -> str: # type: ignore
+    ) -> str:
+        if not self.__toolkit_present:
+            raise RuntimeError(f'cannot upload {pak_file_path} because BG3 modding toolkit is not present')
         pak_name = '_'.join((mod_name, mod_uuid))
         mod_zip_file_path = pak_file_path + '.zip'
         with zipfile.ZipFile(mod_zip_file_path, 'w', compression = zipfile.ZIP_DEFLATED) as zipf:
-            zipf.write(pak_name, arcname = pak_name)
+            zipf.write(pak_file_path, arcname = pak_name)
         try:
-            from System import Uri
-            from System.IO import FileInfo
-            from Modio import Client, Credentials, EditFile, NewFile
-            modio_uri = Uri(self.__env.modio_endpoint)
-            modio_credentials = Credentials(self.__env.modio_api_key, self.__env.modio_api_token)
-            modio_client = Client(modio_uri, modio_credentials)
-            modio_game_client = modio_client.Games[6715]
-            modio_mod_client = modio_game_client.Mods[mod_publish_handle]
-            modio_files_client = modio_mod_client.Files
-            file_info = FileInfo(mod_zip_file_path)
-            modio_new_file = NewFile(file_info)
-            modio_file = modio_files_client.Add(modio_new_file).Result
-            modio_edit_file = EditFile()
-            modio_edit_file.Version = f'{mod_version[0]}.{mod_version[1]}.{mod_version[2]}.{mod_version[3]}'
-            modio_files_client.Edit(modio_file.Id, modio_edit_file).Result
-            return modio_file.Download.BinaryUrl.AbsoluteUri
+            from System import Uri # type: ignore
+            from System.IO import FileInfo # type: ignore
+            from Modio import Client, Credentials, EditFile, NewFile # type: ignore
+            modio_uri = Uri(self.__env.modio_endpoint) # type: ignore
+            modio_credentials = Credentials(self.__env.modio_api_key, self.__env.modio_api_token) # type: ignore
+            modio_client = Client(modio_uri, modio_credentials) # type: ignore
+            modio_game_client = modio_client.Games[6715] # type: ignore
+            modio_mod_client = modio_game_client.Mods[mod_publish_handle] # type: ignore
+            modio_files_client = modio_mod_client.Files # type: ignore
+            file_info = FileInfo(mod_zip_file_path) # type: ignore
+            modio_new_file = NewFile(file_info) # type: ignore
+            modio_file = modio_files_client.Add(modio_new_file).Result # type: ignore
+            modio_edit_file = EditFile() # type: ignore
+            modio_edit_file.Version = f'{mod_version[0]}.{mod_version[1]}.{mod_version[2]}.{mod_version[3]}' # type: ignore
+            modio_files_client.Edit(modio_file.Id, modio_edit_file).Result # type: ignore
+            return modio_file.Download.BinaryUrl.AbsoluteUri # type: ignore
         except BaseException as exc:
             raise RuntimeError(f"Failed to upload {pak_file_path}") from exc
 

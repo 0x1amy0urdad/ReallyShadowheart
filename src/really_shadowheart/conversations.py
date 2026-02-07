@@ -2835,6 +2835,107 @@ def patch_shadowheart_wolf_memory_response() -> None:
     d.add_root_node_after(it_all_stems_from_that_childhood_memory_node_uuid, fear_of_wolves_shar_arc_node_uuid)
     d.remove_root_node(it_all_stems_from_that_childhood_memory_node_uuid)
 
+
+def patch_endgame_dialog() -> None:
+    game_assets = get_context().assets
+
+    ab = game_assets.get_modded_dialog_asset_bundle('ShadowHeart_InPartyEND')
+    d = bg3.dialog_object(ab.dialog)
+
+    speaker_idx_tav = d.get_speaker_slot_index(bg3.SPEAKER_PLAYER)
+    speaker_idx_shadowheart = d.get_speaker_slot_index(bg3.SPEAKER_SHADOWHEART)
+
+    # High Hall. There's nowhere else to go... This is where it all ends, my love.
+    d.set_dialog_flags('ca3b8599-5599-46e4-807d-f78ddfd56bb3', setflags = (
+        bg3.flag_group('Object', (
+            bg3.flag(Shadowheart_EndGame_LastKiss.uuid, False, speaker_idx_tav),
+            bg3.flag(Shadowheart_EndGame_LastHug.uuid, False, speaker_idx_tav),
+        )),
+    ))
+
+    # High Hall. There's nowhere else to go... This is where it all ends.
+    d.set_dialog_flags('e4b18e7c-4c4e-4336-8b82-9e525718afb7', setflags = (
+        bg3.flag_group('Object', (
+            bg3.flag(Shadowheart_EndGame_LastKiss.uuid, False, speaker_idx_tav),
+            bg3.flag(Shadowheart_EndGame_LastHug.uuid, False, speaker_idx_tav),
+        )),
+    ))
+
+    # There I was, thinking we were finally about to put an end to all this. Too good to be true, I suppose.
+    d.set_dialog_flags('5601ae37-6b1b-44b4-8e2d-1714c98feb71', setflags = (
+        bg3.flag_group('Object', (
+            bg3.flag(Shadowheart_EndGame_LastKiss.uuid, False, speaker_idx_tav),
+            bg3.flag(Shadowheart_EndGame_LastHug.uuid, False, speaker_idx_tav),
+        )),
+    ))
+
+    # 87841dea-8643-41f0-8518-87fe1c5980d2
+    d.set_dialog_flags('87841dea-8643-41f0-8518-87fe1c5980d2', setflags = (
+        bg3.flag_group('Object', (
+            bg3.flag(Shadowheart_EndGame_LastKiss.uuid, False, speaker_idx_tav),
+            bg3.flag(Shadowheart_EndGame_LastHug.uuid, False, speaker_idx_tav),
+        )),
+    ))
+
+    # The belly of the beast. The sooner we kill this thing, the better.
+    d.set_dialog_flags('b8b40a35-0449-4981-ad70-67e73c84d393', setflags = (
+        bg3.flag_group('Object', (
+            bg3.flag(Shadowheart_EndGame_LastKiss.uuid, False, speaker_idx_tav),
+            bg3.flag(Shadowheart_EndGame_LastHug.uuid, False, speaker_idx_tav),
+        )),
+    ))
+
+
+    # I'll need a long soak in a bath to rid myself of the feeling of this place. Can I count on you to scrub my back?
+    d.delete_child_dialog_node('87841dea-8643-41f0-8518-87fe1c5980d2', 'c86eff3e-3f14-40d3-a26c-da413011c2af')
+    # Good. Something for us to look forward to, once all's said and done.
+    d.add_child_dialog_node('81abb99f-ede2-be2a-826e-d2cef0b2a1b8', 'c86eff3e-3f14-40d3-a26c-da413011c2af')
+    # If you like. Good thing your practical streak is one of the things I love about you.
+    d.add_child_dialog_node('2df02a84-6198-4ba6-a863-79132187dd9a', 'c86eff3e-3f14-40d3-a26c-da413011c2af')
+
+
+    # This could be it. How about a hug, while we still have the chance?
+    d.set_dialog_flags(
+        '8d268bf7-9fcd-80fe-2d1f-594958d91b22',
+        checkflags = (
+            bg3.flag_group('Global', (
+                bg3.flag(Shadowheart_Turned_Away_From_Shar.uuid, True, None),
+            )),
+            bg3.flag_group('Object', (
+                bg3.flag(bg3.FLAG_Approval_AtLeast_60_For_Sp2, True, speaker_idx_shadowheart),
+                bg3.flag(Shadowheart_EndGame_LastHug.uuid, False, speaker_idx_tav),
+                bg3.flag(Shadowheart_EndGame_LastKiss.uuid, False, speaker_idx_tav),
+            )),
+            bg3.flag_group('Tag', (
+                bg3.flag(bg3.TAG_FULL_CEREMORPH, False, speaker_idx_tav),
+            ))
+        ),
+        setflags = (
+            bg3.flag_group('Object', (
+                bg3.flag(Shadowheart_EndGame_LastHug.uuid, True, speaker_idx_tav),
+            )),
+        ))
+
+    # This could be my last chance to kiss you.
+    d.set_dialog_flags(
+        'b2add411-643f-4322-b26c-737b14636cdd',
+        checkflags = (
+            bg3.flag_group('Object', (
+                bg3.flag(bg3.FLAG_ORI_State_PartneredWithShadowheart, True, speaker_idx_tav),
+                bg3.flag(Shadowheart_EndGame_LastHug.uuid, False, speaker_idx_tav),
+                bg3.flag(Shadowheart_EndGame_LastKiss.uuid, False, speaker_idx_tav),
+            )),
+            bg3.flag_group('Tag', (
+                bg3.flag(bg3.TAG_FULL_CEREMORPH, False, speaker_idx_tav),
+            ))
+        ),
+        setflags = (
+            bg3.flag_group('Object', (
+                bg3.flag(Shadowheart_EndGame_LastKiss.uuid, True, speaker_idx_tav),
+            )),
+        ))
+
+
 # def create_durge_voice_line() -> None:
 #     d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Companions/ShadowHeart_InParty2.lsf'))
 #     t = bg3.timeline_object(files.get_file('Gustav', 'Public/GustavDev/Timeline/Generated/ShadowHeart_InParty2.lsf'), d)
@@ -2877,5 +2978,6 @@ bg3.add_build_procedure('create_hug_her_memories_conversation', create_hug_her_m
 bg3.add_build_procedure('patch_reactions_to_crusher', patch_reactions_to_crusher)
 bg3.add_build_procedure('create_gauntlet_conversation', create_gauntlet_conversation)
 bg3.add_build_procedure('patch_shadowheart_wolf_memory_response', patch_shadowheart_wolf_memory_response)
+bg3.add_build_procedure('patch_endgame_dialog', patch_endgame_dialog)
 #add_build_procedure('create_durge_voice_line', create_durge_voice_line)
 

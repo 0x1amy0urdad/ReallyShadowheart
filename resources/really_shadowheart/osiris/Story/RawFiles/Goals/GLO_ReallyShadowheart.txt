@@ -15,13 +15,6 @@ DB_ReallyShadowheart_RandomKisses((FLAG)Shadowheart_Kiss4_a8602f0b-a938-43da-84f
 DB_ReallyShadowheart_RandomKisses((FLAG)Shadowheart_Kiss5_22724bd2-4601-41d7-8237-e0c309e36a72);
 DB_ReallyShadowheart_RandomKisses((FLAG)Shadowheart_Kiss6_9fc10afa-147c-4f8e-b5a4-f20bcbaa6360);
 
-DB_ReallyShadowheart_Kisses((FLAG)ORI_ShadowheartKiss_VersionA_f2781286-e51c-443f-b1a3-cea4ba95ccf9);
-DB_ReallyShadowheart_Kisses((FLAG)ORI_ShadowheartKiss_VersionB_815a0406-7c85-4107-b704-439320fb7f0b);
-DB_ReallyShadowheart_Kisses((FLAG)ORI_ShadowheartKiss_VersionC_c07bfea6-3d37-48f3-aefc-6eb1749b117f);
-DB_ReallyShadowheart_Kisses((FLAG)ORI_ShadowheartKiss_VersionD_db362653-5649-4f1d-bc43-32b85fd42c0e);
-DB_ReallyShadowheart_Kisses((FLAG)ORI_ShadowheartKiss_VersionE_ec79178f-2c18-4a71-b147-7b254439e5b2);
-DB_ReallyShadowheart_Kisses((FLAG)ORI_ShadowheartKiss_VersionF_321d447c-5298-4a5c-82de-f884ba4757d4);
-
 NOT DB_ReallyShadowheart_PartneredWithShadowheart((CHARACTER)Noone_00000000-0000-0000-0000-000000000000);
 
 NOT DB_ReallyShadowheart_IrregularBehavior(0);
@@ -37,6 +30,12 @@ NOT DB_ReallyShadowheart_PostCloisterCrisisPending(0);
 NOT DB_ReallyShadowheart_GameStarted(0);
 
 NOT DB_ReallyShadowheart_LoveProtects((CHARACTER)NULL_00000000-0000-0000-0000-000000000000, (CHARACTER)NULL_00000000-0000-0000-0000-000000000000);
+
+NOT DB_ReallyShadowheart_ApprovalRating((CHARACTER)NULL_00000000-0000-0000-0000-000000000000, (CHARACTER)NULL_00000000-0000-0000-0000-000000000000, 0);
+
+NOT DB_ReallyShadowheart_ApprovalRatingsCopied(0);
+
+NOT DB_ReallyShadowheart_ApprovalRatingsRestored(0);
 KBSECTION
 //////////////////////////////////////////////////////////////////////////
 //
@@ -281,19 +280,6 @@ DB_ReallyShadowheart_RandomKisses((FLAG)Shadowheart_Kiss3_8c6a2843-23aa-4ec8-852
 DB_ReallyShadowheart_RandomKisses((FLAG)Shadowheart_Kiss4_a8602f0b-a938-43da-84f5-57e31279d3a7);
 DB_ReallyShadowheart_RandomKisses((FLAG)Shadowheart_Kiss5_22724bd2-4601-41d7-8237-e0c309e36a72);
 DB_ReallyShadowheart_RandomKisses((FLAG)Shadowheart_Kiss6_9fc10afa-147c-4f8e-b5a4-f20bcbaa6360);
-
-PROC
-PROC_ReallyShadowheart_InitDBKisses()
-AND
-NOT DB_ReallyShadowheart_Kisses(_)
-THEN
-DB_ReallyShadowheart_Kisses((FLAG)ORI_ShadowheartKiss_VersionA_f2781286-e51c-443f-b1a3-cea4ba95ccf9);
-DB_ReallyShadowheart_Kisses((FLAG)ORI_ShadowheartKiss_VersionB_815a0406-7c85-4107-b704-439320fb7f0b);
-DB_ReallyShadowheart_Kisses((FLAG)ORI_ShadowheartKiss_VersionC_c07bfea6-3d37-48f3-aefc-6eb1749b117f);
-DB_ReallyShadowheart_Kisses((FLAG)ORI_ShadowheartKiss_VersionD_db362653-5649-4f1d-bc43-32b85fd42c0e);
-DB_ReallyShadowheart_Kisses((FLAG)ORI_ShadowheartKiss_VersionE_ec79178f-2c18-4a71-b147-7b254439e5b2);
-DB_ReallyShadowheart_Kisses((FLAG)ORI_ShadowheartKiss_VersionF_321d447c-5298-4a5c-82de-f884ba4757d4);
-
 
 // Bootstrap procedure: schedule a kiss when a new game session starts
 PROC
@@ -766,7 +752,10 @@ SetFlag(Shadowheart_LongRest_Before_More_Sandcastles_fec1c849-c9b6-47ab-9dd4-84a
 PROC
 PROC_ReallyShadowheart_ProceedingToEndGame()
 THEN
+// Stop PDA events
 SetFlag((FLAG)Shadowheart_Stop_PDA_Trigger_67edac2b-7bdf-4ace-a7fe-94854825e2df, (CHARACTER)S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+// Copy approval ratings to fix the end game zero approval bug
+PROC_ReallyShadowheart_CopyApprovalRatings();
 
 
 // This prevents the creepy guy from being an ally if he was kicked out of the party
@@ -1190,27 +1179,10 @@ PROC_GlobalSetFlagAndCache((FLAG)Shadowheart_FemTav_Greeting1_47eff024-f577-495a
 
 
 // Kisses
-// Before choosing a kiss, clean up all the flags
 IF
 FlagSet((FLAG)ORI_ShadowheartKiss_StartRandom_7495e78c-9e70-4ea9-95eb-17fde7f94b7c, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _)
-AND
-DB_ReallyShadowheart_Kisses(_KissFlag)
 THEN
-ClearFlag(_KissFlag, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
-
-// Choose a kiss
-IF
-FlagSet((FLAG)ORI_ShadowheartKiss_StartRandom_7495e78c-9e70-4ea9-95eb-17fde7f94b7c, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _)
-AND
-QRY_GetRandom("DB_ReallyShadowheart_Kisses", 1, "DB_ReallyShadowheart_Kiss")
-AND
-DB_ReallyShadowheart_Kiss((FLAG)_KissFlag)
-AND
-DB_ReallyShadowheart_Kisses((FLAG)_KissFlag)
-THEN
-NOT DB_ReallyShadowheart_Kiss(_KissFlag);
-SetFlag(_KissFlag, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
-ClearFlag(ORI_ShadowheartKiss_StartRandom_7495e78c-9e70-4ea9-95eb-17fde7f94b7c, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+PROC_ReallyShadowheart_PickRandomKiss();
 
 
 // Loot Viconia's stuff
@@ -1527,6 +1499,8 @@ PROC_ReallyShadowheart_GameStarted()
 AND
 DB_Avatars(_Avatar)
 AND
+NOT GetRegion(_Avatar, "TUT_Avernus_C")
+AND
 DB_PartOfTheTeam((CHARACTER)S_Player_Shadowheart_3ed74f06-3c60-42dc-83f6-f034cb47c679)
 AND
 GetFlag((FLAG)TUT_TransformChamber_State_FreedShadowheart_c3980ab3-9370-4c2d-9c76-38aff5fe575a, _Avatar, 1)
@@ -1542,6 +1516,8 @@ PROC
 PROC_ReallyShadowheart_GameStarted()
 AND
 DB_Avatars(_Avatar)
+AND
+NOT GetRegion(_Avatar, "TUT_Avernus_C")
 AND
 DB_PartOfTheTeam((CHARACTER)S_Player_Shadowheart_3ed74f06-3c60-42dc-83f6-f034cb47c679)
 AND
@@ -1626,6 +1602,11 @@ THEN
 TimerLaunch("Timer_ReallyShadowheart_LoveProtects", 1000);
 
 IF
+LevelLoaded(_)
+THEN
+TimerLaunch("Timer_ReallyShadowheart_LoveProtects", 1000);
+
+IF
 TimerFinished("Timer_ReallyShadowheart_LoveProtects")
 AND
 DB_ReallyShadowheart_LoveProtects(_Tav, _Partner)
@@ -1688,6 +1669,63 @@ AND
 _Partner != _Companion
 THEN
 PROC_ReallyShadowheart_ZethinoDisapproval(_Tav, _Partner);
+
+//
+// End game: workaround for the zero approval bug
+//
+PROC
+PROC_ReallyShadowheart_CopyApprovalRatings()
+AND
+NOT DB_ReallyShadowheart_ApprovalRatingsCopied(1)
+AND
+DB_ApprovalRating(_Character, _Avatar, _Approval)
+THEN
+DB_ReallyShadowheart_ApprovalRating(_Character, _Avatar, _Approval);
+DB_ReallyShadowheart_ApprovalRatingsCopied(1);
+
+// This restores approval ratings if they were copied.
+PROC
+PROC_ReallyShadowheart_RestoreApprovalRatings()
+AND
+DB_ReallyShadowheart_ApprovalRatingsCopied(1)
+AND
+NOT DB_ReallyShadowheart_ApprovalRatingsRestored(1)
+AND
+DB_ApprovalRating(_Character, _Avatar, _Approval)
+AND
+NOT DB_ReallyShadowheart_ApprovalRating(_Character, _Avatar, _Approval)
+THEN
+NOT DB_ApprovalRating(_Character, _Avatar, _Approval);
+DB_ReallyShadowheart_ApprovalRatingsRestored(1);
+
+// This restores approval ratings if they were not copied.
+PROC
+PROC_ReallyShadowheart_RestoreApprovalRatings()
+AND
+NOT DB_ReallyShadowheart_ApprovalRatingsCopied(1)
+AND
+NOT DB_ReallyShadowheart_ApprovalRatingsRestored(1)
+AND
+DB_ApprovalRating(_Character, _Avatar, _Approval1)
+AND
+DB_ApprovalRating(_Character, _Avatar, _Approval2)
+AND
+_Approval1 != _Approval2
+AND
+_Approval2 == 0
+THEN
+NOT DB_ApprovalRating(_Character, _Avatar, _Approval2);
+DB_ReallyShadowheart_ApprovalRatingsRestored(1);
+
+IF
+LevelLoaded("END_Main")
+THEN
+TimerLaunch("ReallyShadowheart_RestoreApprovalRatings", 1000);
+
+IF
+TimerFinished("ReallyShadowheart_RestoreApprovalRatings")
+THEN
+PROC_ReallyShadowheart_RestoreApprovalRatings();
 EXITSECTION
 
 ENDEXITSECTION
