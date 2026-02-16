@@ -20,6 +20,7 @@ from ._common import (
 )
 from ._constants import *
 from ._dialog import dialog_object
+from ._env import bg3_modding_env
 from ._files import game_file
 from ._flags import flag_registry
 from ._journal import journal
@@ -29,6 +30,7 @@ from ._skillchecks import difficulty_classes
 from ._soundbank import soundbank_object
 from ._tags import tag_registry
 from ._timeline import timeline_object
+from ._tool import bg3_modding_tool, initialize_dot_net
 
 
 PAD = ' ' * 4
@@ -1370,10 +1372,11 @@ class dialog_to_html:
                 print_and_write(log_file, f'{datetime.datetime.now().astimezone()} failed to determine the number of available CPU cores, falling back to single threaded mode')
                 self.convert_dialogs_to_html()
                 return
-            parts = list[tuple[dialog_to_html, list[str]]]()
+            parts = list[tuple[bg3_modding_env, list[str]]]()
             print_and_write(log_file, f'{datetime.datetime.now().astimezone()} running in a pool of {cpu_count} processes')
+            env = self.__assets.tool.env
             for i in range(0, cpu_count):
-                part = (dialog_to_html(self.__assets), list[str]())
+                part = (env, list[str]())
                 parts.append(part)
                 print_and_write(log_file, f'{datetime.datetime.now().astimezone()} created part {i + 1}')
                 log_file.flush()
@@ -1668,42 +1671,60 @@ def convert_dialogs_to_html_mp(args: tuple[object, ...]) -> list[str]:
     pid = os.getpid()
     if len(args) != 2:
         return [f'[{pid}] expected 2 arguments, got {len(args)}']
-    dth = args[0]
+    env = args[0]
     dialog_names = args[1]
-    if not isinstance(dth, dialog_to_html):
-        return [f'[{pid}] expected dialog_to_html as the 1st argument, got {type(dth)}']
+    if not isinstance(env, bg3_modding_env):
+        return [f'[{pid}] expected bg3_modding_env as the 1st argument, got {type(dth)}']
     if not isinstance(dialog_names, list):
         return [f'[{pid}] expected list as the 2nd argument, got {type(dialog_names)}']
+
     result = list[str]()
-    log_file = os.path.join(dth.assets.tool.env.env_root_path, f'dialog_parser_mp_{os.getpid()}.log')
+    log_file = os.path.join(env.env_root_path, f'dialog_parser_mp_{os.getpid()}.log')
     processed = 1
     total = len(dialog_names)
     gt = time.time()
     failed_dialogs = []
     with open(log_file, 'wt', encoding='utf-8', errors='replace') as log_file:
-        for dialog_name in dialog_names:
-            try:
-                if not isinstance(dialog_name, str):
-                    msg = f'[{pid}]  expected str list element, got {type(dialog_name)}'
+        try:
+            print_and_write(log_file, 'initializing .NET')
+            initialize_dot_net()
+            print_and_write(log_file, '.NET initialized')
+
+            t = bg3_modding_tool(env)
+            print_and_write(log_file, 'bg3_modding_tool created')
+            f = game_files(t)
+            print_and_write(log_file, 'game_files created')
+            a = bg3_assets(f)
+            print_and_write(log_file, 'bg3_assets created')
+            dth = dialog_to_html(a)
+            print_and_write(log_file, 'dialog_to_html created')
+
+            for dialog_name in dialog_names:
+                try:
+                    if not isinstance(dialog_name, str):
+                        msg = f'[{pid}]  expected str list element, got {type(dialog_name)}'
+                        print_and_write(log_file, f'{datetime.datetime.now().astimezone()} {msg}')
+                        return [msg]
+                    t = time.time()
+                    dth.convert_dialog_to_html(dialog_name)
+                    t = time.time() - t
+                    msg = f'[{pid}] [{processed}/{total}] converted {dialog_name} in {t} seconds'
+                    result.append(msg)
                     print_and_write(log_file, f'{datetime.datetime.now().astimezone()} {msg}')
-                    return [msg]
-                t = time.time()
-                dth.convert_dialog_to_html(dialog_name)
-                t = time.time() - t
-                msg = f'[{pid}] [{processed}/{total}] converted {dialog_name} in {t} seconds'
-                result.append(msg)
-                print_and_write(log_file, f'{datetime.datetime.now().astimezone()} {msg}')
-            except:
-                failed_dialogs.append(dialog_name)
-                msg = f'[{pid}] [{processed}/{total}] failed to convert {dialog_name}'
-                result.append(msg)
-                print_and_write(log_file, f'{datetime.datetime.now().astimezone()} {msg}')
-                t, ex, tb = sys.exc_info()
-                print_and_write(log_file, traceback.format_exception(t, ex, tb))
-            processed += 1
-            log_file.flush()
-        gt = time.time() - gt
-        print_and_write(log_file, f'[{pid}] completed conversion of {processed} dialogs in {gt} seconds, number of failures {len(failed_dialogs)}')
-        for failed_dialog in failed_dialogs:
-            print_and_write(log_file, f'[{pid}] failed to convert: {failed_dialog}')
+                except:
+                    failed_dialogs.append(dialog_name)
+                    msg = f'[{pid}] [{processed}/{total}] failed to convert {dialog_name}'
+                    result.append(msg)
+                    print_and_write(log_file, f'{datetime.datetime.now().astimezone()} {msg}')
+                    t, ex, tb = sys.exc_info()
+                    print_and_write(log_file, traceback.format_exception(t, ex, tb))
+                processed += 1
+                log_file.flush()
+            gt = time.time() - gt
+            print_and_write(log_file, f'[{pid}] completed conversion of {processed} dialogs in {gt} seconds, number of failures {len(failed_dialogs)}')
+            for failed_dialog in failed_dialogs:
+                print_and_write(log_file, f'[{pid}] failed to convert: {failed_dialog}')
+        except:
+            print_and_write(log_file, traceback.format_exception(t, ex, tb))
+
     return result

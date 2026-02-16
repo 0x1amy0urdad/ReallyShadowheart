@@ -305,11 +305,12 @@ def create_text_content() -> None:
         "hcce3a355g2e43g4231g94fdg0d16de9a5cb8": (1, "No... it can't be true..."),
         "h79ae6514g939dg49eega50eg86bbf7381a35": (1, "I... it's difficult for me to talk about..."),
         "hd0509e5dgee24g4e38g9e53gd72e5795cba6": (1, "Checking in on me? I'm right where I'm supposed to be - with the man I love."),
+        "h1f3bda87g7e54g4da4g8304g697a9499621a": (1, "Checking in on me? I'm right where I'm supposed to be - with the woman I love."),
         "hfee6d489g9f92g4b08gad5egcde430d9f6e3": (1, "&lt;i&gt;Wipe a happy tear and kiss her.&lt;/i&gt;"),
         "heb4bc4d7g7624g48b7g8200g7c599b41938f": (1, "We should take your parents with us to the next party, if Withers calls us again."),
         "h6af6d9f8gede1g482fg8cc6g0cecb08e0cfa": (1, "Wait, are we... expecting? Do you really mean that?"),
         "haadd3e89g0eeeg4514g9cf2g3a73b36b9f98": (1, "Did you just say that we are expecting?!"),
-        "h8e6de288g61c0g4ff3g8e6dga6505c33e960": (1, "Did you just say Selûne heard our prayers? Am I an expectant spouse now?"),
+        "h8e6de288g61c0g4ff3g8e6dga6505c33e960": (1, "Did you just say Selûne blessed us with a baby?"),
         "hab27fa75ge385g4d81g8b81gca48789e9a7b": (1, "I do hope your parents would step in and help us with our new trouble..."),
         "h460ba56dgd453g4e9cgbd11g1a7133b34cbe": (1, "Children are source of trouble, do you know that?"),
         "hcb948f33g2863g49d1g8074g267265978b66": (1, "&lt;i&gt;Pay no attention to that and move on to other matters.&lt;/i&gt;"),
@@ -376,6 +377,10 @@ def create_text_content() -> None:
         "ha8479154g2d18g4f9dg965eg526a925d6ead": (1, "*You feel that something true to you is wrested from you as punishment, with nothing given in return.*"),
         "he0351a05gd8d8g4181gb288g0657784e18eb": (1, "What comes next? How about a hug for an old friend?"),
         "h2ad3f4cag1b28g4df4gbd45g7632abdfa05f": (1, "Let me hug you, my good friend."),
+        "h527425b6g1174g4464g8c4agee5e5c11dec8": (1, "Seeing our old friends reminds me of how we started. I'm so happy to be with you."),
+        "h19109ca4g50aeg4fbfgb8c7gb3c5c346c4be": (1, "Whatever you say, I love hearing it. I bet you like it too."),
+        "h1730cc90gbc9bg48a8ga048gb8ea1f2b7308": (1, "But then she released me - banished me more like. She said I was an outcast, that all of her children would know me and revile me."),
+        "h5619467cg3efdg46f9g8d0ag07b984beb997": (1, "I'm alone.")
     }
     loca = bg3.loca_object(files.add_new_file(files.get_loca_relative_path()))
     loca.add_lines(content)

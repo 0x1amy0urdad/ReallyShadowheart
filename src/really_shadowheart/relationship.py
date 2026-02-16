@@ -4451,6 +4451,167 @@ def patch_post_shadowfell_conversation() -> None:
     speaker_idx_tav = d.get_speaker_slot_index(bg3.SPEAKER_PLAYER)
 
     ###########################################################################
+    # This adds "I'm alone" to the post-Shadowfell conversation
+    ###########################################################################
+
+    # narrator_node_uuid = 'a466408b-7abd-a35a-004f-2d9c0a8c8e55' # existing node
+    # im_alone_node_uuid = '663e025c-5a30-46c4-a143-6016b7897e28'
+
+    # # I'm alone.
+    # d.create_standard_dialog_node(
+    #     im_alone_node_uuid,
+    #     bg3.SPEAKER_SHADOWHEART,
+    #     d.get_children_nodes_uuids(narrator_node_uuid),
+    #     bg3.text_content('h5619467cg3efdg46f9g8d0ag07b984beb997', 1)
+    # )
+    # t.create_simple_dialog_answer_phase(
+    #     bg3.SPEAKER_SHADOWHEART,
+    #     '5.0',
+    #     im_alone_node_uuid,
+    #     (('4.5', 'b934444c-2692-449e-811b-1730ba96b5b8'), (None, '82528b8d-561a-4888-b311-a048fef73338')),
+    #     fade_in = 0.0,
+    #     fade_out = 1.0,
+    #     performance_fade = 1.0,
+    #     emotions = {
+    #         bg3.SPEAKER_SHADOWHEART: (('0.0', 32, 24), ('3.2', 32, 2), ('4.85', 32, 1)),
+    #         bg3.SPEAKER_PLAYER: (('0.0', 32, None),)
+    #     }
+    # )
+
+    # d.delete_all_children_dialog_nodes(narrator_node_uuid)
+    # d.add_child_dialog_node(narrator_node_uuid, im_alone_node_uuid)
+
+    worse_than_failed_her_i_defied_her_node_uuid = 'c6e63398-cd0b-41b6-a652-e4ca1307faae' # existing node
+    narrator_node_uuid = 'a466408b-7abd-a35a-004f-2d9c0a8c8e55' # existing node
+
+    i_tried_to_leave_but_shar_blocked_me_node_uuid = '77f9e2db-cf05-4a71-b11c-cd4b6c182f00'
+    it_felt_like_i_was_suffering_the_agony_of_a_thousand_people_node_uuid = 'eb9c54ba-955a-4e94-9283-72e4e490ade3'
+    but_then_she_released_me_banished_me_more_like_node_uuid = 'd6499a47-cceb-40a7-b678-aea70832241d'
+    narrator_shadowheart_looks_distraught_node_uuid = '7aa405c3-6ef5-4465-9759-61e90c578fe0'
+    im_alone_node_uuid = '663e025c-5a30-46c4-a143-6016b7897e28'
+
+    d.delete_all_children_dialog_nodes(worse_than_failed_her_i_defied_her_node_uuid)
+    d.add_child_dialog_node(worse_than_failed_her_i_defied_her_node_uuid, i_tried_to_leave_but_shar_blocked_me_node_uuid)
+
+    # I tried to leave... but Shar blocked me. Punished me for failing her. I thought I knew the limit of pain that the incurable wound could inflict, but I had no idea.
+    d.create_standard_dialog_node(
+        i_tried_to_leave_but_shar_blocked_me_node_uuid,
+        bg3.SPEAKER_SHADOWHEART,
+        [it_felt_like_i_was_suffering_the_agony_of_a_thousand_people_node_uuid],
+        bg3.text_content('h48b83d9ega1e7g4c4cga3d8gd2736a7d1c97', 1)
+    )
+    t.create_simple_dialog_answer_phase(
+        bg3.SPEAKER_SHADOWHEART,
+        '15.629',
+        i_tried_to_leave_but_shar_blocked_me_node_uuid,
+        ((None, 'e5095bfb-9cc8-42ca-980a-b8b94ee9240d'),),
+        fade_in = 2.0,
+        fade_out = 0.0,
+        performance_fade = 2.0,
+        phase_duration = '16.129',
+        emotions = {
+            bg3.SPEAKER_SHADOWHEART: (('0.0', 2048, None), ('5.21', 2048, 1),),
+            bg3.SPEAKER_PLAYER: (('0.0', 32, None),)
+        }
+    )
+
+    # It felt like I was suffering the agony of a thousand people, all at once. My blood was boiling, my hair was on fire. I thought I'd claw my own face off with the pain...
+    d.create_standard_dialog_node(
+        it_felt_like_i_was_suffering_the_agony_of_a_thousand_people_node_uuid,
+        bg3.SPEAKER_SHADOWHEART,
+        [but_then_she_released_me_banished_me_more_like_node_uuid],
+        bg3.text_content('h050fc911g522ag46c5ga717gd7b7d115b181', 1)
+    )
+    t.create_simple_dialog_answer_phase(
+        bg3.SPEAKER_SHADOWHEART,
+        '12.105',
+        it_felt_like_i_was_suffering_the_agony_of_a_thousand_people_node_uuid,
+        ((None, 'b934444c-2692-449e-811b-1730ba96b5b8'),),
+        fade_in = 2.0,
+        fade_out = 0.0,
+        performance_fade = 2.0,
+        phase_duration = '12.61',
+        emotions = {
+            bg3.SPEAKER_SHADOWHEART: (('0.0', 2048, 1), ('9.8', 32, None),),
+            bg3.SPEAKER_PLAYER: (('0.0', 32, None),)
+        }
+    )
+
+    # But then she released me - banished me more like. She said I was an outcast, that all of her children would know me and revile me.
+    d.create_standard_dialog_node(
+        but_then_she_released_me_banished_me_more_like_node_uuid,
+        bg3.SPEAKER_SHADOWHEART,
+        [im_alone_node_uuid],
+        bg3.text_content('h1730cc90gbc9bg48a8ga048gb8ea1f2b7308', 1)
+    )
+    t.create_simple_dialog_answer_phase(
+        bg3.SPEAKER_SHADOWHEART,
+        '13.479',
+        but_then_she_released_me_banished_me_more_like_node_uuid,
+        ((None, 'e5095bfb-9cc8-42ca-980a-b8b94ee9240d'),),
+        fade_in = 2.0,
+        fade_out = 0.0,
+        performance_fade = 2.0,
+        phase_duration = '14.18',
+        emotions = {
+            bg3.SPEAKER_SHADOWHEART: (('0.0', 32, None), ('3.08', 2048, None), ('12.55', 2048, 1)),
+            bg3.SPEAKER_PLAYER: (('0.0', 32, None),)
+        }
+    )
+
+    # I'm alone.
+    d.create_standard_dialog_node(
+        im_alone_node_uuid,
+        bg3.SPEAKER_SHADOWHEART,
+        [narrator_shadowheart_looks_distraught_node_uuid],
+        bg3.text_content('h5619467cg3efdg46f9g8d0ag07b984beb997', 1)
+    )
+    t.create_simple_dialog_answer_phase(
+        bg3.SPEAKER_SHADOWHEART,
+        '5.0',
+        im_alone_node_uuid,
+        (('4.5', 'b934444c-2692-449e-811b-1730ba96b5b8'), (None, '82528b8d-561a-4888-b311-a048fef73338')),
+        fade_in = 0.0,
+        fade_out = 1.0,
+        performance_fade = 1.0,
+        emotions = {
+            bg3.SPEAKER_SHADOWHEART: (('0.0', 32, 24), ('3.2', 32, 2), ('4.85', 32, 1)),
+            bg3.SPEAKER_PLAYER: (('0.0', 32, None), ('4.8', 32, 2))
+        },
+        attitudes = {
+            bg3.SPEAKER_PLAYER: (
+                ('4.7', bg3.ATTITUDE_DIAG_Pose_Lean_L_01, bg3.ATTITUDE_DIAG_T_Pose, 3),
+            ),
+        },
+        phase_duration = '6.5'
+    )
+
+    # *Shadowheart looks distraught - abandoned by her goddess and all former allies. And as for her divine magic...? Admitting who empowers her now may break her spirit for good.*
+    d.create_standard_dialog_node(
+        narrator_shadowheart_looks_distraught_node_uuid,
+        bg3.SPEAKER_NARRATOR,
+        d.get_children_nodes_uuids(narrator_node_uuid),
+        bg3.text_content('h83f13963g6d05g40a8ga692gaf880f6dd6e0', 1)
+    )
+    t.create_simple_dialog_answer_phase(
+        bg3.SPEAKER_NARRATOR,
+        '13.807',
+        narrator_shadowheart_looks_distraught_node_uuid,
+        (('6.886', 'b934444c-2692-449e-811b-1730ba96b5b8'), (None, 'faad05c6-c7d0-4a90-9b9b-668ecab5e6b2')),
+        fade_in = 2.0,
+        fade_out = 0.0,
+        performance_fade = 2.0,
+        emotions = {
+            bg3.SPEAKER_SHADOWHEART: (('0.0', 32, None),),
+            bg3.SPEAKER_PLAYER: (('0.0', 32, None),)
+        }
+    )
+
+    # smooth the transition
+    tl_voice = t.find_effect_component('36c670c3-ec65-4885-9c45-f344e1a5fa97')
+    bg3.set_bg3_attribute(tl_voice, 'FadeOut', 2.0, attribute_type = 'double')
+
+    ###########################################################################
     # This adds a new Tav's response
     ###########################################################################
 
@@ -4502,6 +4663,10 @@ def patch_post_shadowfell_conversation() -> None:
     ))
 
     d.add_child_dialog_node(now_and_always_node_uuid, i_love_you_node_uuid, 0)
+
+    # Replace camera in the node that follows to hide a glitch in Tav's pose
+    # It wasn't too long ago that I could never imagine smiling again... shows what I know.
+    t.edit_tl_shot('495d484d-40ac-426b-b088-720a46af130e', camera_uuid = 'ff50ec8e-d4ad-4e67-acb4-567576ba65bb')
 
 
 def create_night_orchid_scene() -> None:

@@ -1243,6 +1243,21 @@ def patch_shadowheart_path_tags() -> None:
         )),
     ))
 
+    ################################################################################################
+    # Dialog: ORI_Shadowheart_PAD_WoundFlareUp
+    # Fix: added missed flag
+    ################################################################################################
+
+    ab = game_assets.get_modded_dialog_asset_bundle('ORI_Shadowheart_PAD_WoundFlareUp')
+    d = bg3.dialog_object(ab.dialog)
+
+    d.add_dialog_flags('39550862-1d2c-dfd4-fa4a-25cbb3c691f0', checkflags = (
+        bg3.flag_group('Local', (
+            bg3.flag('acb60269-f7af-1673-2490-c805f5d4359e', True, None),
+        )),
+    ))
+    
+
 
 bg3.add_build_procedure('fix_nightsong_fate_dialog', fix_nightsong_fate_dialog)
 bg3.add_build_procedure('patch_nightsong_fate_dialog', patch_nightsong_fate_dialog)

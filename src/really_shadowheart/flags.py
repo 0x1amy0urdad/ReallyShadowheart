@@ -297,9 +297,21 @@ Tav_Shadowheart_Marriage_Mentioned = bg3.flag_factory(
 Tav_Shadowheart_Grandchildren_Mentioned = bg3.flag_factory(
     'Tav_Shadowheart_Grandchildren_Mentioned', bg3.LOCAL_FLAG, flag_uuid='89a8ddee-6dce-46a0-9ca4-7a67feca6735', description="Shadowheart told Tav she's expecting")
 
-# Tav_Shadowheart_Epilogue_Convesation_Happened flag
-Tav_Shadowheart_Epilogue_Convesation_Happened = bg3.flag_factory(
-    'Tav_Shadowheart_Epilogue_Convesation_Happened', bg3.LOCAL_FLAG, flag_uuid='4bb8d67c-e81c-47fa-b911-5ec8f191650e', description="Tav spoke to Shadowheart at the Epilogue party")
+# Tav_Shadowheart_Epilogue_Convesation_1 flag
+Tav_Shadowheart_Epilogue_Convesation_1 = bg3.flag_factory(
+    'Tav_Shadowheart_Epilogue_Convesation_1', bg3.LOCAL_FLAG, flag_uuid='4bb8d67c-e81c-47fa-b911-5ec8f191650e', description="Shadowheart and Tav speak for the 1st time at the Epilogue party")
+
+# Tav_Shadowheart_Epilogue_Convesation_2 flag
+Tav_Shadowheart_Epilogue_Convesation_2 = bg3.flag_factory(
+    'Tav_Shadowheart_Epilogue_Convesation_2', bg3.LOCAL_FLAG, flag_uuid='bc1905bf-4503-4535-900e-b370873d1b64', description="Shadowheart and Tav speak for the 2nd time at the Epilogue party")
+
+# Tav_Shadowheart_Epilogue_Convesation_3 flag
+Tav_Shadowheart_Epilogue_Convesation_3 = bg3.flag_factory(
+    'Tav_Shadowheart_Epilogue_Convesation_3', bg3.LOCAL_FLAG, flag_uuid='370870a4-6522-4a0a-9e7b-56cb7f61dde8', description="Shadowheart and Tav speak for the 3rd (or more) time at the Epilogue party")
+
+# Tav_Shadowheart_Epilogue_Convesation_Voice flag
+Tav_Shadowheart_Epilogue_Convesation_Voice = bg3.flag_factory(
+    'Tav_Shadowheart_Epilogue_Convesation_Voice', bg3.LOCAL_FLAG, flag_uuid='12c9bc29-dc0e-413a-8816-569bbc903000', description="A lead to the God's favourite princess line.")
 
 # Parents_Change_Clothes flag
 Parents_Change_Clothes = bg3.flag_factory(

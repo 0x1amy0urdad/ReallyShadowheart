@@ -35,6 +35,8 @@ def initialize_dot_net() -> bool:
         set_runtime(get_coreclr())
 
         import clr
+        global LSLIB_INITIALIZED
+        LSLIB_INITIALIZED = False
     except:
         return False
     return True
@@ -49,7 +51,6 @@ class bg3_modding_tool:
     __env: bg3_modding_env
     __work_dir: str
     __toolkit_present: bool
-    __decimal_comma: bool
 
     def __init__(self, env: bg3_modding_env) -> None:
         self.__env = env
@@ -228,7 +229,7 @@ class bg3_modding_tool:
     ) -> str:
         if not self.__toolkit_present:
             raise RuntimeError(f'cannot upload {pak_file_path} because BG3 modding toolkit is not present')
-        pak_name = '_'.join((mod_name, mod_uuid))
+        pak_name = f'{mod_name}_{mod_uuid}.pak'
         mod_zip_file_path = pak_file_path + '.zip'
         with zipfile.ZipFile(mod_zip_file_path, 'w', compression = zipfile.ZIP_DEFLATED) as zipf:
             zipf.write(pak_file_path, arcname = pak_name)

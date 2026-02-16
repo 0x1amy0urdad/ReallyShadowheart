@@ -171,6 +171,12 @@ FLAG_LOW_SharGrotto_State_UnlockedFriendDialog = 'dd67ca1e-b36d-49d1-8822-6bb47e
 FLAG_LOW_SharGrotto_ShadowheartFriend_Even_ReminiscedConclusion = '92d0a83d-07e0-25f1-07cb-4f8cc59a4d17' # Object flag. Set on Shadowheart when she asked Nocturne about her past in the cloister.
 FLAG_ORI_Shadowheart_State_BecamePontiff = '4c521953-3277-4a59-9e3d-8e161916ed8b' # Global flag. Shadowheart is the new MS
 
+FLAG_EPI_Epilogue_Shadowheart_State_ToldDadJoke = 'fcf6da5c-15d4-33b7-73ee-f98118ea749e' # Object flag. Set on Tav when Shadowheart tells them the 1st Dad joke.
+FLAG_EPI_Epilogue_Shadowheart_State_ToldSecondJoke = '9bb4b064-dca9-a322-cced-693b2ad5cd45' # Object flag. Set on Tav when Shadowheart tells them the 2nd Dad joke.
+FLAG_EPI_Epilogue_Shadowheart_State_Hasmet = '7ca3c49e-ba45-9662-986d-aea64a47add7' # Object flag. Set on Tav when they speak to Shadowheart for the 1st time.
+FLAG_EPI_Epilogue_Shadowheart_State_Hasmet2 = 'ef68426a-a31f-f521-535c-5af447777c10' # Object flag. Set on Tav when they speak to Shadowheart for the 2nd time.
+FLAG_EPI_Epilogue_Shadowheart_State_Hasmet3 = '6327c37e-761e-bbd4-d09e-f1ed6b6a5da1' # Object flag. Set on Tav when they speak to Shadowheart for the 3rd time.
+
 FLAG_CAMP_Shadowheart_State_HadNightsongMeeting = '10b74e80-a963-420f-8c2a-d518b6aae143' # Global flag
 FLAG_ORI_Shadowheart_Romance1_AfterCelebration_State_QueueInvitation = '2d7e1f5e-fee1-4732-a0a2-f1337cc5466c' # Global flag. Invitation to the waterfall romance cutscene
 FLAG_CAMP_GoblinHuntCelebration_SD_ROM_NightWithShadowheart_State_Happened = '96508d74-26f3-c8a1-da78-b17c10a5ef11' # Global flag. Waterfall date has happened
@@ -188,6 +194,7 @@ FLAG_LOW_Grotto_State_ViconiaDefeated = '8e27eb4e-8d52-4966-8aa4-e658ff595097' #
 FLAG_ORI_Shadowheart_Knows_PersonalInfo = 'abbc836e-07f0-4951-bb7b-beac52d91b2a' # Global flag. Tav knows Shadowheart likes Night Orchids and cannot swim
 FLAG_ORI_State_ShadowheartIsDating = '3b35c15c-465a-433b-876d-0717287629b3' # Global flag. Shadowheart is dating someone.
 FLAG_ORI_Shadowheart_State_WasHugged = 'a9e3314f-8255-48dc-a764-37ea96d86924' # Global flag. Shadowheart was hugged by someone
+FLAG_ORI_Shadowheart_Event_GiveNightOrchid = 'b732f49f-880c-4d51-bc11-2358c04b8b10' # Object flag. Set on Shadowheart when Tav gives her a Night Orched
 FLAG_ORI_Shadowheart_State_IncurableWound_AskedHelp = '9ae22761-cb46-4d4d-9738-c134c39d150f' # Global flag. Players asked Shadowheart if they could help with her incurable wound
 FLAG_ORI_Shadowheart_State_AbortedSkinnydipping = '26e83a93-8999-4488-83ee-a93d1ccd5cac' # Global flag. Aborted skinny dipping
 FLAG_ORI_Shadowheart_State_ParentPoints_TeacherGrave = '600ca39c-5887-4657-bf4c-d417cc3d146b' # Global flag.

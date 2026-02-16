@@ -262,8 +262,8 @@ class timeline_object:
                 if t > start_time:
                     break
                 insert_pos += 1
-            if insert_pos > 0:
-                insert_pos -= 1
+            # if insert_pos > 0:
+            #     insert_pos -= 1
             self.__effect_components_parent_node.insert(insert_pos, tl_node)
 
 
@@ -1966,7 +1966,7 @@ class timeline_object:
             performance_fade = performance_fade,
             disable_mocap = disable_mocap)
 
-        if speaker == speaker_player and look_at_player == speaker:
+        if (speaker == SPEAKER_NARRATOR) or (speaker == speaker_player and look_at_player == speaker):
             self.create_tl_actor_node(timeline_object.LOOK_AT, speaker, DECIMAL_ZERO, phase_duration, (), is_snapped_to_end = True)
         else:
             self.create_tl_actor_node(timeline_object.LOOK_AT, speaker_player, DECIMAL_ZERO, phase_duration, (
@@ -2018,13 +2018,14 @@ class timeline_object:
                             attitude_record[2],
                             interpolation_type = interpolation_type))
                 self.create_tl_actor_node(timeline_object.ATTITUDE, target, start, end, attitude_keys, is_snapped_to_end = True)
-        else:
+        elif speaker != SPEAKER_NARRATOR:
             self.create_tl_actor_node(timeline_object.ATTITUDE, speaker, start, end, (
                 self.create_attitude_key(start, ATTITUDE_DIAG_Pose_Stand_R_Forward_01, ATTITUDE_DIAG_T_Pose),
             ), is_snapped_to_end = True)
-            self.create_tl_actor_node(timeline_object.ATTITUDE, speaker_player, start, end, (
-                self.create_attitude_key(start, ATTITUDE_DIAG_Pose_Stand_L_Forward_01, ATTITUDE_DIAG_T_Pose),
-            ), is_snapped_to_end = True)
+            if speaker_player != speaker:
+                self.create_tl_actor_node(timeline_object.ATTITUDE, speaker_player, start, end, (
+                    self.create_attitude_key(start, ATTITUDE_DIAG_Pose_Stand_L_Forward_01, ATTITUDE_DIAG_T_Pose),
+                ), is_snapped_to_end = True)
         shot_start = start
         for shot in shots:
             if shot_start >= end:

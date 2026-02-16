@@ -48,7 +48,7 @@ def patch_scene(ab: bg3.dialog_asset_bundle) -> None:
     dy = bg3.decimal_from(0)
     dz = bg3.decimal_from_str(tav_position[2]) - bg3.decimal_from_str(z)
 
-    n =0
+    n = 0
     for i in range(1, 6):
         # 4 is peanut
         if s.get_actor_type(i) == 4:
@@ -90,6 +90,30 @@ def patch_timeline(ab: bg3.dialog_asset_bundle) -> None:
 
     d = bg3.dialog_object(ab.dialog)
     t = bg3.timeline_object(ab.timeline, d)
+
+    # 9974e28d-4f08-42cc-af1b-a97cf237dc52 Shadowheart -> Shadowheart
+    # 607c7d71-f1da-4780-a74b-d2564677b8d4 Shadowheart -> Shadowheart
+    # 34b01a33-dc71-46a0-a581-6cea0c216755 Shadowheart -> Shadowheart
+    # 70ebd7c1-ef6d-4578-942c-3fff7954128d Shadowheart -> Shadowheart
+    # 7c2f7fc4-66d5-4690-8d6d-82427fe7cb6f Shadowheart -> Shadowheart
+
+    # 123339bd-8058-4cce-8684-3f51ef48dd29 Shadowheart -> Tav
+
+    # 0e92d3ba-ce39-4897-8a6b-ff5415201460 Tav         -> Shadowheart
+
+    # 61331828-9730-4785-bf86-b52061dc3b96 Tav         -> Tav
+    # 2d658af1-e616-4c2f-ad06-490016d022a2 Tav         -> Tav
+
+    # e6a8d805-9f52-4be6-8456-ecbfb7547590 Laezel      -> Laezel
+    # 1b0fd75e-95af-46bf-a836-598b752b1dc1 Laezel      -> Laezel
+    # 4686528e-3383-463d-a87c-65d60e7b26cc Laezel      -> Laezel
+
+    # 898d01a8-c33d-4de4-9800-ce97c68314f4 Gale        -> Gale
+    # 92966b26-c467-4297-98f5-d3b743ec4e59 Gale        -> Gale
+
+    # cb0e6f06-2367-4cc4-9b18-e52bf37fb62c Wyll        -> Wyll
+
+    # f5a613dd-75c0-49de-ac1c-2163f30a23c2 Astarion    -> Astarion
 
     characters_and_cameras = frozenset(t.get_timeline_actors(('character', 'scenecam')).keys())
     for effect_comp in t.all_effect_components:
@@ -160,10 +184,16 @@ def patch_timeline(ab: bg3.dialog_asset_bundle) -> None:
         (),
     ))
 
+    # Fix the glitch in "You're here. Just like it told me. And with a gith - I should have figured."
+    t.use_existing_phase(1)
+    t.edit_tl_shot('8a76d5dc-44ce-41ab-876d-0b036de7f6da', end = '5.090001')
+    t.create_tl_shot('0e92d3ba-ce39-4897-8a6b-ff5415201460', '5.090001', '7.0')
+
     # Fix the glitch in "It took me so long to find you."
     # Dialog node ec6dead7-24f4-b79e-4540-d079512238a7
+    t.use_existing_phase(22)
     t.edit_tl_shot('7d7996a5-b4e0-4aa6-bf8f-c9429acaa1f0', end = '1.45')
-    t.edit_tl_shot('772c7f46-a80a-49b3-827c-bc5b8f4ccfef', start = '1.45') # 2.25
+    t.edit_tl_shot('772c7f46-a80a-49b3-827c-bc5b8f4ccfef', start = '1.45', camera_uuid = '61331828-9730-4785-bf86-b52061dc3b96')
 
     """
     unset ORI_ShadowHeart_HasMet_d06842a4-248e-7f83-da87-4eec7606178e
@@ -831,7 +861,30 @@ def patch_recruitment() -> None:
                 break
 
 
+def patch_campfire_trigger() -> None:
+    files = get_context().files
+    ultimatum_dialog_uuid = get_context().assets.get_modded_dialog_asset_bundle('CAMP_Shadowheart_CFM_Ultimatum').modded_dialog_uuid
+
+    gf = files.get_file('Gustav', 'Mods/Gustav/Levels/LT_CMP_CentralCampfire_B/Triggers/_merged.lsf', mod_specific = True)
+    triggers_parent = gf.xml.getroot().find('./region[@id="Templates"]/node[@id="Templates"]/children')
+    if triggers_parent is None:
+        raise RuntimeError('cannot patch S_CAMP_Shadowheart_CFM_Ultimatum_SceneTrigger')
+    triggers = triggers_parent.findall('./node[@id="GameObjects"]')
+    patched = False
+    for trigger in triggers:
+        if bg3.get_bg3_attribute(trigger, 'MapKey') == 'eea9d501-ef09-4929-89ac-a348849aeb50':
+            timeline = trigger.find('./children/node[@id="Timelines"]/children/node[@id="Timeline"]')
+            if timeline is None:
+                raise RuntimeError('cannot patch S_CAMP_Shadowheart_CFM_Ultimatum_SceneTrigger')
+            bg3.set_bg3_attribute(timeline, 'Object', ultimatum_dialog_uuid, attribute_type = 'guid')
+            patched = True
+        else:
+            triggers_parent.remove(trigger)
+    if not patched:
+        raise RuntimeError('cannot patch S_CAMP_Shadowheart_CFM_Ultimatum_SceneTrigger')
+
 
 bg3.add_build_procedure('restore_shadowheart_ultimatum', restore_shadowheart_ultimatum)
+bg3.add_build_procedure('patch_campfire_trigger', patch_campfire_trigger)
 bg3.add_build_procedure('patch_recruitment', patch_recruitment)
 

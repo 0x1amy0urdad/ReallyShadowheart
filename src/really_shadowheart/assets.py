@@ -31,7 +31,10 @@ ASSETS : dict[str, dict[str, str]] = {
     'CAMP_Shadowheart_CRD_SkinnyDippingRomance': {},
     'CAMP_Shadowheart_DaughterTears_SD': {},
     'CAMP_MizoraMorningAfter_CFM_ROM': {},
-    'CAMP_Shadowheart_CFM_Ultimatum': {},
+    'CAMP_Shadowheart_CFM_Ultimatum': {
+        'dialog_uuid': 'd3d0ed82-aae4-441c-ae0b-0a6905167d2d',
+        'timeline_uuid': '36080057-ad58-494e-8e3d-e052c7861cdd',
+    },
 
     # Shadowheart's parents
     'CAMP_ShadowheartFather': {},

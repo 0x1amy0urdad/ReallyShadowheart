@@ -2967,6 +2967,48 @@ def patch_endgame_dialog() -> None:
 
 #     d.add_child_dialog_node(SHADOWHEART_QUESTION_BANK_ROOT_NODE_UUID, say_it_node_uuid, 0)
 
+def test_greeting_womain_i_love() -> None:
+
+    game_assets = get_context().assets
+
+    ab = game_assets.get_modded_dialog_asset_bundle('ShadowHeart_InParty')
+    d = bg3.dialog_object(ab.dialog)
+    t = bg3.timeline_object(ab.timeline, d)
+
+    test_checking_in_on_me_node_uuid = 'f85a33f1-3776-47df-a0b0-5472566f0b4f'
+    checking_in_on_me_node_uuid = '16274f89-83df-48c0-9613-b8828256d29c'
+
+    d.create_standard_dialog_node(
+        test_checking_in_on_me_node_uuid,
+        bg3.SPEAKER_PLAYER,
+        [checking_in_on_me_node_uuid],
+        bg3.text_content('h8ce2f791g872eg4e96g9fc9g28bf3bf54a34', 1),
+        constructor = bg3.dialog_object.QUESTION
+    )
+
+    d.add_child_dialog_node(bg3.SHADOWHEART_QUESTION_BANK_ROOT_NODE_UUID, test_checking_in_on_me_node_uuid, 0)
+
+    d.create_standard_dialog_node(
+        checking_in_on_me_node_uuid,
+        bg3.SPEAKER_SHADOWHEART,
+        [],
+        bg3.text_content('h1f3bda87g7e54g4da4g8304g697a9499621a', 1)
+    )
+    t.create_simple_dialog_answer_phase(
+        bg3.SPEAKER_SHADOWHEART,
+        '5.759',
+        checking_in_on_me_node_uuid,
+        (('5.7', '8942c483-83c9-4974-9f47-87cd1dd10828'), (None, '95a53513-08ce-4d80-ae74-e306b51db565')),
+        phase_duration = '5.8',
+        emotions = {
+            bg3.SPEAKER_SHADOWHEART: ((0.0, 1024, 1), (2.29, 2, 1)),
+            bg3.SPEAKER_PLAYER: ((0.0, 2, None),)
+        },
+        attitudes = {
+            bg3.SPEAKER_SHADOWHEART: ((0.0, bg3.ATTITUDE_DIAG_Pose_Stand_R_Forward_01, bg3.ATTITUDE_DIAG_T_Pose, 3),),
+            bg3.SPEAKER_PLAYER: ((0.0, bg3.ATTITUDE_DIAG_Pose_Stand_L_Forward_01, bg3.ATTITUDE_DIAG_T_Pose, 3),)
+        }
+    )
 
 bg3.add_build_procedure('patch_conversations', patch_conversations)
 bg3.add_build_procedure('create_recurrent_conversations', create_recurrent_conversations)
@@ -2979,5 +3021,6 @@ bg3.add_build_procedure('patch_reactions_to_crusher', patch_reactions_to_crusher
 bg3.add_build_procedure('create_gauntlet_conversation', create_gauntlet_conversation)
 bg3.add_build_procedure('patch_shadowheart_wolf_memory_response', patch_shadowheart_wolf_memory_response)
 bg3.add_build_procedure('patch_endgame_dialog', patch_endgame_dialog)
+#bg3.add_build_procedure('test_greeting_womain_i_love', test_greeting_womain_i_love)
 #add_build_procedure('create_durge_voice_line', create_durge_voice_line)
 

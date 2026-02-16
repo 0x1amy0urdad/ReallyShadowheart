@@ -841,38 +841,38 @@ def create_greetings() -> None:
     )
 
     # Every day's an adventure when I'm at my love's side.
-    d.create_standard_dialog_node(
-        every_day_is_an_adventure_node_uuid,
-        bg3.SPEAKER_SHADOWHEART,
-        [did_you_want_something_node_uuid],
-        bg3.text_content('h93c12043g6cceg437cgb60eg8c0e6d55f466', 1),
-        constructor = bg3.dialog_object.GREETING,
-        root = True,
-        checkflags = (
-            bg3.flag_group('Global', (
-                bg3.flag(Shadowheart_Turned_Away_From_Shar.uuid, True, None),
-                bg3.flag(Shadowheart_FemTav_Greeting1.uuid, True, None)
-            )),
-            bg3.flag_group('Object', (
-                bg3.flag(Shadowheart_More_Sandcastles.uuid, True, slot_idx_shadowheart),
-                bg3.flag(bg3.FLAG_ORI_State_PartneredWithShadowheart, True, slot_idx_tav),
-                bg3.flag(bg3.FLAG_Approval_AtLeast_80_For_Sp2, True, slot_idx_shadowheart),
-                bg3.flag(Shadowheart_Has_Doubts_About_Tav.uuid, False, slot_idx_tav)
-            )),
-            bg3.flag_group('Tag', (
-                bg3.flag(bg3.TAG_FEMALE, True, slot_idx_tav),
-            ))
-        ))
-    t.create_simple_dialog_answer_phase(
-        bg3.SPEAKER_SHADOWHEART,
-        '3.216',
-        every_day_is_an_adventure_node_uuid,
-        (('2.2', 'd76eaab3-040b-4871-9c1d-4a8624f37cd2'), (None, 'fd96b957-6a74-4f97-a035-eb9641c48242')),
-        phase_duration = '3.6',
-        emotions = {
-            bg3.SPEAKER_SHADOWHEART: ((0.0, 2, 1), (1.0, 2, 23), (1.5, 2, 2)),
-            bg3.SPEAKER_PLAYER: ((2.5, 2, 1),)
-        })
+    # d.create_standard_dialog_node(
+    #     every_day_is_an_adventure_node_uuid,
+    #     bg3.SPEAKER_SHADOWHEART,
+    #     [did_you_want_something_node_uuid],
+    #     bg3.text_content('h93c12043g6cceg437cgb60eg8c0e6d55f466', 1),
+    #     constructor = bg3.dialog_object.GREETING,
+    #     root = True,
+    #     checkflags = (
+    #         bg3.flag_group('Global', (
+    #             bg3.flag(Shadowheart_Turned_Away_From_Shar.uuid, True, None),
+    #             bg3.flag(Shadowheart_FemTav_Greeting1.uuid, True, None)
+    #         )),
+    #         bg3.flag_group('Object', (
+    #             bg3.flag(Shadowheart_More_Sandcastles.uuid, True, slot_idx_shadowheart),
+    #             bg3.flag(bg3.FLAG_ORI_State_PartneredWithShadowheart, True, slot_idx_tav),
+    #             bg3.flag(bg3.FLAG_Approval_AtLeast_80_For_Sp2, True, slot_idx_shadowheart),
+    #             bg3.flag(Shadowheart_Has_Doubts_About_Tav.uuid, False, slot_idx_tav)
+    #         )),
+    #         bg3.flag_group('Tag', (
+    #             bg3.flag(bg3.TAG_FEMALE, True, slot_idx_tav),
+    #         ))
+    #     ))
+    # t.create_simple_dialog_answer_phase(
+    #     bg3.SPEAKER_SHADOWHEART,
+    #     '3.216',
+    #     every_day_is_an_adventure_node_uuid,
+    #     (('2.2', 'd76eaab3-040b-4871-9c1d-4a8624f37cd2'), (None, 'fd96b957-6a74-4f97-a035-eb9641c48242')),
+    #     phase_duration = '3.6',
+    #     emotions = {
+    #         bg3.SPEAKER_SHADOWHEART: ((0.0, 2, 1), (1.0, 2, 23), (1.5, 2, 2)),
+    #         bg3.SPEAKER_PLAYER: ((2.5, 2, 1),)
+    #     })
 
     # Did you want something?
     d.create_standard_dialog_node(
@@ -897,15 +897,15 @@ def create_greetings() -> None:
             bg3.SPEAKER_PLAYER: ((0.0, 2, None),)
         })
 
-    # You may be what's been missing from my life.
+    # Checking in on me? I'm right where I'm supposed to be - with the woman I love.
     d.create_standard_dialog_node(
         approval_80_greetings_female_node_uuid,
         bg3.SPEAKER_SHADOWHEART,
         [sleep_together_entry_point_node_uuid],
         [
-            bg3.text_content('h8d6dc67fg9d25g4231g9188g177f1c53b322', 2, '6d564eb5-06d4-485a-807d-41520b49a54f', custom_sequence_id = '6d564eb5-06d4-485a-807d-41520b49a54f'),
-            # bg3.text_content('h8d6dc67fg9d25g4231g9188g177f1c53b322', 2, '1216b29f-d790-4f92-aa27-335ef85b9090', custom_sequence_id = '1216b29f-d790-4f92-aa27-335ef85b9090'),
-            # bg3.text_content('h8d6dc67fg9d25g4231g9188g177f1c53b322', 2, 'd1cb10d5-b80c-47a0-a720-fa4e21e3328c', custom_sequence_id = 'd1cb10d5-b80c-47a0-a720-fa4e21e3328c'),
+            bg3.text_content('h1f3bda87g7e54g4da4g8304g697a9499621a', 2, '6d564eb5-06d4-485a-807d-41520b49a54f', custom_sequence_id = '6d564eb5-06d4-485a-807d-41520b49a54f'),
+            bg3.text_content('h1f3bda87g7e54g4da4g8304g697a9499621a', 2, '1216b29f-d790-4f92-aa27-335ef85b9090', custom_sequence_id = '1216b29f-d790-4f92-aa27-335ef85b9090'),
+            bg3.text_content('h1f3bda87g7e54g4da4g8304g697a9499621a', 2, 'd1cb10d5-b80c-47a0-a720-fa4e21e3328c', custom_sequence_id = 'd1cb10d5-b80c-47a0-a720-fa4e21e3328c'),
             # bg3.text_content('h8d6dc67fg9d25g4231g9188g177f1c53b322', 2, 'baa40e34-2d0c-4a9a-8e96-dc9eac53955f', custom_sequence_id = 'baa40e34-2d0c-4a9a-8e96-dc9eac53955f'),
             bg3.text_content('h58a61da8g7b5ag4f8agbac5g354f62512e77', 3, '8a7f1a61-c327-48ea-932b-90709cf7a9e8', custom_sequence_id = '8a7f1a61-c327-48ea-932b-90709cf7a9e8'),
             bg3.text_content('ha2c23788g2acdg4d58gabe0g0caffdc54064', 3, 'd2f5a568-b211-4e55-ab6e-ed8fc04c4761', custom_sequence_id = 'd2f5a568-b211-4e55-ab6e-ed8fc04c4761'),
@@ -929,39 +929,96 @@ def create_greetings() -> None:
             ))
         ))
 
-    # You may be what's been missing from my life.
+    # Checking in on me? I'm right where I'm supposed to be - with the woman I love.
     t.create_simple_dialog_answer_phase(
         bg3.SPEAKER_SHADOWHEART,
-        '2.604',
+        '5.759',
         approval_80_greetings_female_node_uuid,
-        (('2.604', '8942c483-83c9-4974-9f47-87cd1dd10828'), (None, '95a53513-08ce-4d80-ae74-e306b51db565')),
-        phase_duration = '2.7',
+        (('5.7', '8942c483-83c9-4974-9f47-87cd1dd10828'), (None, '95a53513-08ce-4d80-ae74-e306b51db565')),
+        phase_duration = '5.8',
         line_index = 0,
         emotions = {
-            bg3.SPEAKER_SHADOWHEART: ((0.0, 2, None),),
+            bg3.SPEAKER_SHADOWHEART: ((0.0, 1024, 1), (2.29, 2, 1)),
             bg3.SPEAKER_PLAYER: ((0.0, 2, None),)
         },
         attitudes = {
             bg3.SPEAKER_SHADOWHEART: ((0.0, bg3.ATTITUDE_DIAG_Pose_Stand_R_Forward_01, bg3.ATTITUDE_DIAG_T_Pose, 3),),
             bg3.SPEAKER_PLAYER: ((0.0, bg3.ATTITUDE_DIAG_Pose_Stand_L_Forward_01, bg3.ATTITUDE_DIAG_T_Pose, 3),)
-        }
+        },
+        fade_in = 0.0,
+        fade_out = 2.0,
+        performance_fade = 2.0,
     )
-    t.create_tl_actor_node(
-        bg3.timeline_object.LOOK_AT,
+    t.create_simple_dialog_answer_phase(
         bg3.SPEAKER_SHADOWHEART,
-        '0.0',
-        '2.7',
-        (t.create_look_at_key(0.0, target = bg3.SPEAKER_PLAYER, bone = 'Head_M', turn_mode = 2, reset = True),),
-        is_snapped_to_end = True
+        '5.759',
+        approval_80_greetings_female_node_uuid,
+        (('5.7', '8942c483-83c9-4974-9f47-87cd1dd10828'), (None, '95a53513-08ce-4d80-ae74-e306b51db565')),
+        phase_duration = '5.8',
+        line_index = 1,
+        emotions = {
+            bg3.SPEAKER_SHADOWHEART: ((0.0, 1024, 1), (2.29, 2, 1)),
+            bg3.SPEAKER_PLAYER: ((0.0, 2, None),)
+        },
+        attitudes = {
+            bg3.SPEAKER_SHADOWHEART: ((0.0, bg3.ATTITUDE_DIAG_Pose_Stand_R_Forward_01, bg3.ATTITUDE_DIAG_T_Pose, 3),),
+            bg3.SPEAKER_PLAYER: ((0.0, bg3.ATTITUDE_DIAG_Pose_Stand_L_Forward_01, bg3.ATTITUDE_DIAG_T_Pose, 3),)
+        },
+        fade_in = 0.0,
+        fade_out = 2.0,
+        performance_fade = 2.0,
     )
-    t.create_tl_actor_node(
-        bg3.timeline_object.LOOK_AT,
-        bg3.SPEAKER_PLAYER,
-        '0.0',
-        '2.7',
-        (t.create_look_at_key(0.0, target = bg3.SPEAKER_SHADOWHEART, bone = 'Head_M', turn_mode = 2, reset = True),),
-        is_snapped_to_end = True
+    t.create_simple_dialog_answer_phase(
+        bg3.SPEAKER_SHADOWHEART,
+        '5.759',
+        approval_80_greetings_female_node_uuid,
+        (('5.7', '8942c483-83c9-4974-9f47-87cd1dd10828'), (None, '95a53513-08ce-4d80-ae74-e306b51db565')),
+        phase_duration = '5.8',
+        line_index = 2,
+        emotions = {
+            bg3.SPEAKER_SHADOWHEART: ((0.0, 1024, 1), (2.29, 2, 1)),
+            bg3.SPEAKER_PLAYER: ((0.0, 2, None),)
+        },
+        attitudes = {
+            bg3.SPEAKER_SHADOWHEART: ((0.0, bg3.ATTITUDE_DIAG_Pose_Stand_R_Forward_01, bg3.ATTITUDE_DIAG_T_Pose, 3),),
+            bg3.SPEAKER_PLAYER: ((0.0, bg3.ATTITUDE_DIAG_Pose_Stand_L_Forward_01, bg3.ATTITUDE_DIAG_T_Pose, 3),)
+        },
+        fade_in = 0.0,
+        fade_out = 2.0,
+        performance_fade = 2.0,
     )
+    # t.create_simple_dialog_answer_phase(
+    #     bg3.SPEAKER_SHADOWHEART,
+    #     '2.604',
+    #     approval_80_greetings_female_node_uuid,
+    #     (('2.604', '8942c483-83c9-4974-9f47-87cd1dd10828'), (None, '95a53513-08ce-4d80-ae74-e306b51db565')),
+    #     phase_duration = '2.7',
+    #     line_index = 0,
+    #     emotions = {
+    #         bg3.SPEAKER_SHADOWHEART: ((0.0, 2, None),),
+    #         bg3.SPEAKER_PLAYER: ((0.0, 2, None),)
+    #     },
+    #     attitudes = {
+    #         bg3.SPEAKER_SHADOWHEART: ((0.0, bg3.ATTITUDE_DIAG_Pose_Stand_R_Forward_01, bg3.ATTITUDE_DIAG_T_Pose, 3),),
+    #         bg3.SPEAKER_PLAYER: ((0.0, bg3.ATTITUDE_DIAG_Pose_Stand_L_Forward_01, bg3.ATTITUDE_DIAG_T_Pose, 3),)
+    #     }
+    # )
+    # t.create_tl_actor_node(
+    #     bg3.timeline_object.LOOK_AT,
+    #     bg3.SPEAKER_SHADOWHEART,
+    #     '0.0',
+    #     '2.7',
+    #     (t.create_look_at_key(0.0, target = bg3.SPEAKER_PLAYER, bone = 'Head_M', turn_mode = 2, reset = True),),
+    #     is_snapped_to_end = True
+    # )
+    # t.create_tl_actor_node(
+    #     bg3.timeline_object.LOOK_AT,
+    #     bg3.SPEAKER_PLAYER,
+    #     '0.0',
+    #     '2.7',
+    #     (t.create_look_at_key(0.0, target = bg3.SPEAKER_SHADOWHEART, bone = 'Head_M', turn_mode = 2, reset = True),),
+    #     is_snapped_to_end = True
+    # )
 
     # # You may be what's been missing from my life.
     # t.create_simple_dialog_answer_phase(
@@ -1072,7 +1129,7 @@ def create_greetings() -> None:
         approval_80_greetings_female_node_uuid,
         (('2.23', '8942c483-83c9-4974-9f47-87cd1dd10828'), (None, '95a53513-08ce-4d80-ae74-e306b51db565')),
         phase_duration = '2.6',
-        line_index = 1,
+        line_index = 3,
         emotions = {
             bg3.SPEAKER_SHADOWHEART: ((0.0, 2, None),),
             bg3.SPEAKER_PLAYER: ((0.0, 2, None),)
@@ -1080,24 +1137,27 @@ def create_greetings() -> None:
         attitudes = {
             bg3.SPEAKER_SHADOWHEART: ((0.0, bg3.ATTITUDE_DIAG_Pose_Stand_R_Forward_01, bg3.ATTITUDE_DIAG_T_Pose, 3),),
             bg3.SPEAKER_PLAYER: ((0.0, bg3.ATTITUDE_DIAG_Pose_Stand_L_Forward_01, bg3.ATTITUDE_DIAG_T_Pose, 3),)
-        }
+        },
+        fade_in = 0.0,
+        fade_out = 2.0,
+        performance_fade = 2.0,
     )
-    t.create_tl_actor_node(
-        bg3.timeline_object.LOOK_AT,
-        bg3.SPEAKER_SHADOWHEART,
-        '0.0',
-        '2.6',
-        (t.create_look_at_key(0.0, target = bg3.SPEAKER_PLAYER, bone = 'Head_M', turn_mode = 2, reset = True),),
-        is_snapped_to_end = True
-    )
-    t.create_tl_actor_node(
-        bg3.timeline_object.LOOK_AT,
-        bg3.SPEAKER_PLAYER,
-        '0.0',
-        '2.6',
-        (t.create_look_at_key(0.0, target = bg3.SPEAKER_SHADOWHEART, bone = 'Head_M', turn_mode = 2, reset = True),),
-        is_snapped_to_end = True
-    )
+    # t.create_tl_actor_node(
+    #     bg3.timeline_object.LOOK_AT,
+    #     bg3.SPEAKER_SHADOWHEART,
+    #     '0.0',
+    #     '2.6',
+    #     (t.create_look_at_key(0.0, target = bg3.SPEAKER_PLAYER, bone = 'Head_M', turn_mode = 2, reset = True),),
+    #     is_snapped_to_end = True
+    # )
+    # t.create_tl_actor_node(
+    #     bg3.timeline_object.LOOK_AT,
+    #     bg3.SPEAKER_PLAYER,
+    #     '0.0',
+    #     '2.6',
+    #     (t.create_look_at_key(0.0, target = bg3.SPEAKER_SHADOWHEART, bone = 'Head_M', turn_mode = 2, reset = True),),
+    #     is_snapped_to_end = True
+    # )
 
     # Did you want something? If not, I'm perfectly happy to just gaze upon you a while.
     t.create_simple_dialog_answer_phase(
@@ -1106,7 +1166,7 @@ def create_greetings() -> None:
         approval_80_greetings_female_node_uuid,
         (('7.5', '8942c483-83c9-4974-9f47-87cd1dd10828'), (None, '95a53513-08ce-4d80-ae74-e306b51db565')),
         phase_duration = '8.0',
-        line_index = 2,
+        line_index = 4,
         emotions = {
             bg3.SPEAKER_SHADOWHEART: ((0.0, 64, None), (2.23, 4, None), (4.02, 1024, 1), (5.83, 2, None)),
             bg3.SPEAKER_PLAYER: ((0.0, 2, None),)
@@ -1114,24 +1174,27 @@ def create_greetings() -> None:
         attitudes = {
             bg3.SPEAKER_SHADOWHEART: ((0.0, bg3.ATTITUDE_DIAG_Pose_Stand_R_Forward_01, bg3.ATTITUDE_DIAG_T_Pose, 3),),
             bg3.SPEAKER_PLAYER: ((0.0, bg3.ATTITUDE_DIAG_Pose_Stand_L_Forward_01, bg3.ATTITUDE_DIAG_T_Pose, 3),)
-        }
+        },
+        fade_in = 0.0,
+        fade_out = 2.0,
+        performance_fade = 2.0,
     )
-    t.create_tl_actor_node(
-        bg3.timeline_object.LOOK_AT,
-        bg3.SPEAKER_SHADOWHEART,
-        '0.0',
-        '8.0',
-        (t.create_look_at_key(0.0, target = bg3.SPEAKER_PLAYER, bone = 'Head_M', turn_mode = 2, reset = True),),
-        is_snapped_to_end = True
-    )
-    t.create_tl_actor_node(
-        bg3.timeline_object.LOOK_AT,
-        bg3.SPEAKER_PLAYER,
-        '0.0',
-        '8.0',
-        (t.create_look_at_key(0.0, target = bg3.SPEAKER_SHADOWHEART, bone = 'Head_M', turn_mode = 2, reset = True),),
-        is_snapped_to_end = True
-    )
+    # t.create_tl_actor_node(
+    #     bg3.timeline_object.LOOK_AT,
+    #     bg3.SPEAKER_SHADOWHEART,
+    #     '0.0',
+    #     '8.0',
+    #     (t.create_look_at_key(0.0, target = bg3.SPEAKER_PLAYER, bone = 'Head_M', turn_mode = 2, reset = True),),
+    #     is_snapped_to_end = True
+    # )
+    # t.create_tl_actor_node(
+    #     bg3.timeline_object.LOOK_AT,
+    #     bg3.SPEAKER_PLAYER,
+    #     '0.0',
+    #     '8.0',
+    #     (t.create_look_at_key(0.0, target = bg3.SPEAKER_SHADOWHEART, bone = 'Head_M', turn_mode = 2, reset = True),),
+    #     is_snapped_to_end = True
+    # )
 
     # Why hello, lover... that sounded more debonaire in my head, I'll admit. Do you need something?<br>
     t.create_simple_dialog_answer_phase(
@@ -1140,7 +1203,7 @@ def create_greetings() -> None:
         approval_80_greetings_female_node_uuid,
         (('7.8', 'd76eaab3-040b-4871-9c1d-4a8624f37cd2'), (None, '95a53513-08ce-4d80-ae74-e306b51db565')),
         phase_duration = '8.1',
-        line_index = 3,
+        line_index = 5,
         emotions = {
             bg3.SPEAKER_SHADOWHEART: ((0.0, 64, None), (1.91, 2, 23), (2.79, 2, 1), (6.48, 1024, 2)),
             bg3.SPEAKER_PLAYER: ((0.0, 2, None),)
@@ -1148,24 +1211,27 @@ def create_greetings() -> None:
         attitudes = {
             bg3.SPEAKER_SHADOWHEART: ((0.0, bg3.ATTITUDE_DIAG_Pose_Stand_R_Forward_01, bg3.ATTITUDE_DIAG_T_Pose, 3),),
             bg3.SPEAKER_PLAYER: ((0.0, bg3.ATTITUDE_DIAG_Pose_Stand_L_Forward_01, bg3.ATTITUDE_DIAG_T_Pose, 3),)
-        }
+        },
+        fade_in = 0.0,
+        fade_out = 2.0,
+        performance_fade = 2.0,
     )
-    t.create_tl_actor_node(
-        bg3.timeline_object.LOOK_AT,
-        bg3.SPEAKER_SHADOWHEART,
-        '0.0',
-        '8.1',
-        (t.create_look_at_key(0.0, target = bg3.SPEAKER_PLAYER, bone = 'Head_M', turn_mode = 2, reset = True),),
-        is_snapped_to_end = True
-    )
-    t.create_tl_actor_node(
-        bg3.timeline_object.LOOK_AT,
-        bg3.SPEAKER_PLAYER,
-        '0.0',
-        '8.1',
-        (t.create_look_at_key(0.0, target = bg3.SPEAKER_SHADOWHEART, bone = 'Head_M', turn_mode = 2, reset = True),),
-        is_snapped_to_end = True
-    )
+    # t.create_tl_actor_node(
+    #     bg3.timeline_object.LOOK_AT,
+    #     bg3.SPEAKER_SHADOWHEART,
+    #     '0.0',
+    #     '8.1',
+    #     (t.create_look_at_key(0.0, target = bg3.SPEAKER_PLAYER, bone = 'Head_M', turn_mode = 2, reset = True),),
+    #     is_snapped_to_end = True
+    # )
+    # t.create_tl_actor_node(
+    #     bg3.timeline_object.LOOK_AT,
+    #     bg3.SPEAKER_PLAYER,
+    #     '0.0',
+    #     '8.1',
+    #     (t.create_look_at_key(0.0, target = bg3.SPEAKER_SHADOWHEART, bone = 'Head_M', turn_mode = 2, reset = True),),
+    #     is_snapped_to_end = True
+    # )
 
     # Good. I was just starting to miss the sound of your voice.
     t.create_simple_dialog_answer_phase(
@@ -1174,7 +1240,7 @@ def create_greetings() -> None:
         approval_80_greetings_female_node_uuid,
         (('5.0', 'd76eaab3-040b-4871-9c1d-4a8624f37cd2'), (None, '95a53513-08ce-4d80-ae74-e306b51db565')),
         phase_duration = '5.36',
-        line_index = 4,
+        line_index = 6,
         emotions = {
             bg3.SPEAKER_SHADOWHEART: ((0.0, 2, 1), (1.6, 64, 1),),
             bg3.SPEAKER_PLAYER: ((0.0, 2, None),)
@@ -1182,24 +1248,27 @@ def create_greetings() -> None:
         attitudes = {
             bg3.SPEAKER_SHADOWHEART: ((0.0, bg3.ATTITUDE_DIAG_Pose_Stand_R_Forward_01, bg3.ATTITUDE_DIAG_T_Pose, 3),),
             bg3.SPEAKER_PLAYER: ((0.0, bg3.ATTITUDE_DIAG_Pose_Stand_L_Forward_01, bg3.ATTITUDE_DIAG_T_Pose, 3),)
-        }
+        },
+        fade_in = 0.0,
+        fade_out = 2.0,
+        performance_fade = 2.0,
     )
-    t.create_tl_actor_node(
-        bg3.timeline_object.LOOK_AT,
-        bg3.SPEAKER_SHADOWHEART,
-        '0.0',
-        '5.36',
-        (t.create_look_at_key(0.0, target = bg3.SPEAKER_PLAYER, bone = 'Head_M', turn_mode = 2, reset = True),),
-        is_snapped_to_end = True
-    )
-    t.create_tl_actor_node(
-        bg3.timeline_object.LOOK_AT,
-        bg3.SPEAKER_PLAYER,
-        '0.0',
-        '5.36',
-        (t.create_look_at_key(0.0, target = bg3.SPEAKER_SHADOWHEART, bone = 'Head_M', turn_mode = 2, reset = True),),
-        is_snapped_to_end = True
-    )
+    # t.create_tl_actor_node(
+    #     bg3.timeline_object.LOOK_AT,
+    #     bg3.SPEAKER_SHADOWHEART,
+    #     '0.0',
+    #     '5.36',
+    #     (t.create_look_at_key(0.0, target = bg3.SPEAKER_PLAYER, bone = 'Head_M', turn_mode = 2, reset = True),),
+    #     is_snapped_to_end = True
+    # )
+    # t.create_tl_actor_node(
+    #     bg3.timeline_object.LOOK_AT,
+    #     bg3.SPEAKER_PLAYER,
+    #     '0.0',
+    #     '5.36',
+    #     (t.create_look_at_key(0.0, target = bg3.SPEAKER_SHADOWHEART, bone = 'Head_M', turn_mode = 2, reset = True),),
+    #     is_snapped_to_end = True
+    # )
 
 
     ###############################################################################
@@ -1454,7 +1523,7 @@ def create_greetings() -> None:
     node_index = d.get_root_node_index(existing_partnered_greetings_node_uuid)
     d.add_root_node(approval_80_greetings_male_node_uuid, index = node_index)
     d.add_root_node(approval_80_greetings_female_node_uuid, index = node_index)
-    d.add_root_node(every_day_is_an_adventure_node_uuid, index = node_index)
+    # d.add_root_node(every_day_is_an_adventure_node_uuid, index = node_index)
     d.add_root_node(in_need_of_attention_node_uuid, index = node_index)
     d.add_root_node(tav_cheated_greeting_node_uuid, index = node_index)
 
