@@ -37,10 +37,11 @@ def patch_scene(ab: bg3.dialog_asset_bundle) -> None:
         if bg3.get_bg3_attribute(inherited_scene, 'Object') == 'Public/Shared/Timeline/Scenes/Default/bnz_standing_Px1_EALaunch.lsx':
             bg3.set_bg3_attribute(inherited_scene, 'Object', 'Public/Shared/Timeline/Scenes/Default/bnz_standing_Px2_Shipping.lsx')
 
-    inherited_scenes = s.lsx_xml.findall('./region[@id="TLScene"]/node[@id="root"]/children/node[@id="TLInheritedScenes"]/children/node[@id="TLScene"]')
-    for inherited_scene in inherited_scenes:
-        if bg3.get_bg3_attribute(inherited_scene, 'Object') == 'Public/Shared/Timeline/Scenes/Default/bnz_standing_Px1_EALaunch.lsx':
-            bg3.set_bg3_attribute(inherited_scene, 'Object', 'Public/Shared/Timeline/Scenes/Default/bnz_standing_Px2_Shipping.lsx')
+    if s.lsx_xml:
+        inherited_scenes = s.lsx_xml.findall('./region[@id="TLScene"]/node[@id="root"]/children/node[@id="TLInheritedScenes"]/children/node[@id="TLScene"]')
+        for inherited_scene in inherited_scenes:
+            if bg3.get_bg3_attribute(inherited_scene, 'Object') == 'Public/Shared/Timeline/Scenes/Default/bnz_standing_Px1_EALaunch.lsx':
+                bg3.set_bg3_attribute(inherited_scene, 'Object', 'Public/Shared/Timeline/Scenes/Default/bnz_standing_Px2_Shipping.lsx')
 
     # Update positions of actors
     x, y, z = s.get_actor_position(1)

@@ -1258,6 +1258,21 @@ def patch_shadowheart_path_tags() -> None:
     ))
     
 
+def fix_narrator_line_act1_swamp() -> None:
+    #
+    # This fixes a missing narrator line when the party succeeds DC perception check in the swamp
+    #
+    game_assets = get_context().assets
+    ab = game_assets.get_modded_dialog_asset_bundle('HAG_ForestIllusion_Illusioncheck')
+    d = bg3.dialog_object(ab.dialog)
+
+    # node 502b5f98-b9d9-6a9c-2e7b-7ba9d9632517
+    # replace h61d3eb08gf35fg4c02gaf18g6efe88e5be06
+    # with he58ca03dge4efg4b2egb596g96691d2d5e17
+    d.set_tagged_text('502b5f98-b9d9-6a9c-2e7b-7ba9d9632517', bg3.text_content('h86b92166g9ec3g4b6eg9726g69578d7c1771', 1))
+    d.set_dialog_flags('d1958229-b92f-c0e0-377d-ad670de8d853', checkflags = (), setflags = ())
+    d.delete_child_dialog_node('0a4de471-a006-31a3-2e15-e154b618b345', '125195a4-6c80-0e9d-2377-4a258d6558e0')
+
 
 bg3.add_build_procedure('fix_nightsong_fate_dialog', fix_nightsong_fate_dialog)
 bg3.add_build_procedure('patch_nightsong_fate_dialog', patch_nightsong_fate_dialog)
@@ -1272,3 +1287,4 @@ bg3.add_build_procedure('fix_act3_romance_conversation', fix_act3_romance_conver
 bg3.add_build_procedure('fix_jaheira_greetings', fix_jaheira_greetings)
 bg3.add_build_procedure('patch_shadowheart_path_tags', patch_shadowheart_path_tags)
 bg3.add_build_procedure('fix_nightsong_meeting', fix_nightsong_meeting)
+#bg3.add_build_procedure('fix_narrator_line_act1_swamp', fix_narrator_line_act1_swamp)

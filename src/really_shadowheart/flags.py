@@ -705,12 +705,8 @@ Shadowheart_EndGame_LastHug = bg3.flag_factory(
     'Shadowheart_EndGame_LastHug', bg3.OBJECT_FLAG, flag_uuid='6f75111c-dec7-47c7-9b10-317d595b36d5', description='Tav told Shadowheart this might be the last chance to hug her')
 
 
-# Shadowheart wound flare event
-Shadowheart_Wound_Flare_Event_Mentioned_Tadpole = bg3.flag_factory(
-    'Shadowheart_Wound_Flare_Event_Mentioned_Tadpole', bg3.OBJECT_FLAG, flag_uuid='80629d74-d8d5-4108-a7f8-23c1f900fe8e', description='Shadowheart mentioned tadpole in the conversation')
-
-Shadowheart_Wound_Flare_Event_Tav_Asked_About_Tadpole = bg3.flag_factory(
-    'Shadowheart_Wound_Flare_Event_Tav_Asked_About_Tadpole', bg3.OBJECT_FLAG, flag_uuid='088cdeca-3442-4fa0-aaec-4d0bc51cdefa', description='Tav asked if it is connected to tadpole')
+Shadowheart_With_Box_CFM = bg3.flag_factory(
+    'Shadowheart_With_Box_CFM', bg3.GLOBAL_FLAG, flag_uuid='650da20e-a918-4a98-8ff4-a96af6616fe5', description='Pre-requisite for CAMP_Shadowheart_IVB_CFM_Box')
 
 
 # TODO: low HP conversation

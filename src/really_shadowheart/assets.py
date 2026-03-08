@@ -98,11 +98,12 @@ ASSETS : dict[str, dict[str, str]] = {
     'DEN_ShadowDruid_SnakesCourt': {},
 
     # World
+    'GOB_DrunkGoblin': {},
+    #'HAG_ForestIllusion_Illusioncheck': {},
     'LOW_HouseOfHope_ROM_Incubus': {},
     'WYR_Circus_LoveDryad': {},
     'WYR_DapperDrow_Intimacy': {},
     'WYR_DapperDrow_SiblingsThreeWay': {},
-    'GOB_DrunkGoblin': {},
 
     # Baldur's Gate
     'LOW_StormshoreTabernacle_GenericShrine': {},

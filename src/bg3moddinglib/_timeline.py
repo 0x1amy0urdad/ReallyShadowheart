@@ -52,7 +52,7 @@ class timeline_phase:
             dialog_node_uuid: str,
             start: str | dc.Decimal,
             end: str | dc.Decimal,
-            group_nodes_uuids: list[str] | None = None
+            group_nodes_uuids: Iterable[str] | None = None
     ) -> None:
         self.__index = index
         self.__dialog_node_uuid = dialog_node_uuid

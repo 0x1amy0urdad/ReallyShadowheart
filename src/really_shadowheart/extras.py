@@ -11,7 +11,6 @@ def create_obfuscate_text_content() -> None:
     files = get_context().files
 
     content = {
-        # Obfuscate region
         "hddc41f9ag5022g431ag831cgc37e5af1cc72": (1, "&lt;i&gt;Tell her about your Master Sophia who taught you everything. Recall the pain you felt when she died.&lt;/i&gt;"),
         "hef879f48gf239g4f67g934cg234e684f2571": (1, "&lt;i&gt;Share your memories about Jarell, about his best years as a faithful warrior of Selûne, and the darkness that swallowed him afterwards...&lt;/i&gt;"),
         "hbadfd58fg48e6g48f1g8cd6g540840681696": (1, "&lt;i&gt;Take a deep breath, and tell her about your deepest fear of failing your friends; tell her about the heavy burden of responsibility, and hard choices you had to make.&lt;/i&gt;"),
@@ -431,6 +430,50 @@ def add_obfuscate_lines_act_3() -> None:
     add_dialog_dependency(ab, kiss_nested_dialog_uuid)
 
 
+def create_ziggy_text_content() -> None:
+    files = get_context().files
+
+    content = {
+        "h7c3ee894g1d6eg4971g9235g09880c2b49cb": (1, "&lt;i&gt;Lower your guard and tell her of the darkness but beauty of The Evergloam, and the training you endured by your Sa’varsh.&lt;/i&gt;"),
+    }
+    loca = bg3.loca_object(files.add_new_file(files.get_loca_relative_path()))
+    loca.add_lines(content)
+
+
+def add_ziggy_lines_act_1() -> None:
+    game_assets = get_context().assets
+
+    ab = game_assets.get_modded_dialog_asset_bundle('CAMP_GoblinHuntCelebration_SD_ROM_NightWithShadowheart')
+    d = bg3.dialog_object(ab.dialog)
+
+    speaker_idx_tav = d.get_speaker_slot_index(bg3.SPEAKER_PLAYER)
+
+    beauty_of_evergloam_node_uuid = '9f04924f-786c-436a-aa5f-bdab9142827b'
+    merciless_but_beautiful_node_uuid = 'f767180b-e66e-99d4-4f62-ad94a9f0fd8d' # existing node
+    no_tadpoles_dragons_something_about_you_node_uuid = '101101c0-aa11-6f0e-9bed-5d1ca1de8cf5' # existing node
+    laezel_origin_node_uuid = 'b58e9616-b47a-893d-5676-2fc41dbf1914' # existing node
+
+    # Lower your guard and tell her of the darkness but beauty of The Evergloam, and the training you endured by your Sa’varsh.
+    d.create_standard_dialog_node(
+        beauty_of_evergloam_node_uuid,
+        bg3.SPEAKER_PLAYER,
+        [merciless_but_beautiful_node_uuid],
+        bg3.text_content('h7c3ee894g1d6eg4971g9235g09880c2b49cb', 1),
+        constructor = bg3.dialog_object.QUESTION,
+        checkflags = (
+            bg3.flag_group('Tag', (
+                bg3.flag(bg3.TAG_REALLY_GITHYANKI, True, speaker_idx_tav),
+                bg3.flag(bg3.TAG_REALLY_LAEZEL, False, speaker_idx_tav),
+            )),
+        ),
+        show_once = True)
+
+    d.add_child_dialog_node_before(no_tadpoles_dragons_something_about_you_node_uuid, beauty_of_evergloam_node_uuid, laezel_origin_node_uuid)
+
+
 bg3.add_build_procedure('add_obfuscate_lines_act_1', add_obfuscate_lines_act_1, 'obfuscate')
 bg3.add_build_procedure('add_obfuscate_lines_act_3', add_obfuscate_lines_act_3, 'obfuscate')
 bg3.add_build_procedure('create_obfuscate_text_content', create_obfuscate_text_content, 'obfuscate')
+
+bg3.add_build_procedure('create_ziggy_text_content', create_ziggy_text_content, 'ziggy')
+bg3.add_build_procedure('add_ziggy_lines_act_1', add_ziggy_lines_act_1, 'ziggy')

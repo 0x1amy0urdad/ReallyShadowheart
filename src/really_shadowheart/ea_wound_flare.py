@@ -321,12 +321,7 @@ def create_wound_ea_conversation() -> None:
         bg3.SPEAKER_SHADOWHEART,
         [whatever_minor_difference_node_uuid],
         bg3.text_content('h664f3719g4019g4fcfg9b0fg67576b6311b8', 1),
-        approval_rating_uuid = reaction_minus_2.uuid,
-        setflags = (
-            bg3.flag_group('Object', (
-                bg3.flag(Shadowheart_Wound_Flare_Event_Mentioned_Tadpole.uuid, True, speaker_idx_tav),
-            )),
-        ))
+        approval_rating_uuid = reaction_minus_2.uuid)
     t.create_simple_dialog_answer_phase(
         bg3.SPEAKER_SHADOWHEART,
         '4.530',

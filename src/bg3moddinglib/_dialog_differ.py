@@ -9,11 +9,15 @@ from ._dialog import dialog_object
 from ._types import XmlElement
 
 import os.path
+import enum
+
 
 class dialog_differ:
+    SAME = 'same'
     ADDED = 'added'
     DELETED = 'deleted'
     MODIFIED = 'modified'
+    MODIFIED_CHILDREN = 'modified_children'
 
     __assets: bg3_assets
     __index: dialog_index
@@ -50,8 +54,9 @@ class dialog_differ:
         for node_uuid in common_nodes_uuids:
             original_node = original_nodes[node_uuid]
             modded_node = modded_nodes[node_uuid]
-            if not dialog_differ.compare_dialog_nodes(original_node, modded_node):
-                result[node_uuid] = dialog_differ.MODIFIED
+            diff_result = dialog_differ.compare_dialog_nodes(original_node, modded_node)
+            if diff_result != dialog_differ.SAME:
+                result[node_uuid] = diff_result
         return result
 
 
@@ -153,10 +158,15 @@ class dialog_differ:
 
 
     @staticmethod
-    def compare_dialog_nodes(a: XmlElement, b: XmlElement) -> bool:
-        return attrs_to_str(a) == attrs_to_str(b) \
-            and dialog_differ.get_dialog_children(a) == dialog_differ.get_dialog_children(b) \
-            and dialog_differ.get_dialog_flags(a) == dialog_differ.get_dialog_flags(b) \
-            and dialog_differ.get_dialog_texts(a) == dialog_differ.get_dialog_texts(b)
-
-
+    def compare_dialog_nodes(a: XmlElement, b: XmlElement) -> str:
+        children_a = dialog_differ.get_dialog_children(a)
+        children_b = dialog_differ.get_dialog_children(b)
+        flags_a = dialog_differ.get_dialog_flags(a)
+        flags_b = dialog_differ.get_dialog_flags(b)
+        texts_a = dialog_differ.get_dialog_texts(a)
+        texts_b = dialog_differ.get_dialog_texts(b)
+        if texts_a != texts_b or flags_a != flags_b:
+            return dialog_differ.MODIFIED
+        if children_a != children_b:
+            return dialog_differ.MODIFIED_CHILDREN
+        return dialog_differ.SAME

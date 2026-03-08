@@ -2078,6 +2078,13 @@ def increase_approval_requirements() -> None:
     id_miss_our_little_conversations_node_uuid = '18fc6ff8-3db2-3382-90ae-85bfa6c75cde' # existing node
     alias_id_miss_our_little_conversations_node_uuid = '220e4948-055e-48c7-9189-4146fe25a063'
     i_hope_so_node_uuid = '9065095f-720b-0b41-8502-42b08547c35c' # existing node
+    but_youre_right_if_were_to_make_it_node_uuid = '25ccb094-8e83-0f49-9063-d496b6c4d4dc' # existing node
+
+    # +1 approval on this, similar to the other branch for less than 10 approval:
+    # Wise... though I hope you'd miss me after I'm gone. I think I would, if the positions were reversed.
+    # But you're right - if we're to make it through all this, there can be no room for hesitation. You're doing well. 
+    approval_plus_1 = bg3.reaction_object.create_new(get_context().files, {bg3.SPEAKER_SHADOWHEART: 1})
+    d.set_approval_rating(but_youre_right_if_were_to_make_it_node_uuid, approval_plus_1.uuid)
 
     # I hadn't thought of that. What do you have in mind?
     d.create_alias_dialog_node(

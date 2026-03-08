@@ -25,15 +25,13 @@ from .context import (
 DUMMY_SIZE = 64739418
 DUMMY_HASH = '15f1afd547fbd0ac70a98c2432c10868'
 
-def build_mod(mod_version: tuple[int, int, int, int] | None = None, params: dict[str, str] | None = None) -> str:
+def build_mod(params: dict[str, str] | None = None) -> str:
     ctx = get_context()
     game_assets = ctx.assets
     env = ctx.env
     files = ctx.files
     root_path = ctx.root_path
 
-    if mod_version is None:
-        mod_version = MOD_VERSION
     if params:
         set_parameters(params)
 

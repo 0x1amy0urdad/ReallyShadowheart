@@ -199,7 +199,7 @@ class game_file:
         self.__xml = new_content
 
     def convert_to_system_locale(self) -> None:
-        queue = deque(self.__xml.getroot())
+        queue = deque(self.xml.getroot())
         m = re.compile(r'[+-]?\d+\.\d+')
         while queue:
             elt = queue.popleft()

@@ -218,6 +218,7 @@ class dialog_index:
                     dialog_uuid = get_required_bg3_attribute(timeline, 'DialogResourceId')
                     timeline_index[timeline_uuid] = b64encode(et.tostring(timeline)).decode()
                     timeline_by_dialog_index[dialog_uuid] = timeline_uuid
+
         index['timeline_index'] = timeline_index
         index['timeline_by_dialog_index'] = timeline_by_dialog_index
 
@@ -237,8 +238,26 @@ class dialog_index:
                         continue
                     name_key = name.lower()
                     dialog_uuid = get_required_bg3_attribute(dialog, 'ID')
-                    timeline_uuid = timeline_by_dialog_index[dialog_uuid] if dialog_uuid in timeline_by_dialog_index else ''
                     lsf_path = lsj_path.replace('/Story/Dialogs/', '/Story/DialogsBinary/')[:-4] + '.lsf'
+
+                    # Read timeline uuid from the dialog
+                    timeline_uuid = None
+                    dialog_file_name = lsf_path.lower()
+                    if dialog_file_name in files_to_paks:
+                        dialog_pak = files_to_paks[dialog_file_name]
+                        try:
+                            dialog_file = game_file(t, lsf_path, pak_name = dialog_pak)
+                        except:
+                            dialog_file = None
+                        if dialog_file is not None:
+                            dialog_node = dialog_file.xml.find('./region[@id="dialog"]/node[@id="dialog"]')
+                            if dialog_node is not None:
+                                timeline_uuid = get_bg3_attribute(dialog_node, 'TimelineId')
+                                if timeline_uuid is not None:
+                                    timeline_by_dialog_index[dialog_uuid] = timeline_uuid
+                    if timeline_uuid is None:
+                        timeline_uuid = timeline_by_dialog_index[dialog_uuid] if dialog_uuid in timeline_by_dialog_index else ''
+
                     index_entry = {
                         'dialog_uuid': dialog_uuid,
                         'timeline_uuid': timeline_uuid,
@@ -536,7 +555,9 @@ class bg3_assets:
 
         if has_timeline:
             if original_timeline_uuid != get_required_bg3_attribute(dialog_node, 'TimelineId'):
-                raise RuntimeError(f'Corrupted dialog {original_dialog_uuid}, found references to 2 timelines')
+                raise RuntimeError(
+                    f'Corrupted dialog {original_dialog_uuid}, found references to 2 timelines: '
+                    f'{original_timeline_uuid} and {get_required_bg3_attribute(dialog_node, 'TimelineId')}')
             set_bg3_attribute(dialog_node, 'TimelineId', new_timeline_uuid, attribute_type = 'FixedString')
 
             scene_lsf_node = scene_lsf_file.root_node.find('./region[@id="TLScene"]/node[@id="TLScene"]')

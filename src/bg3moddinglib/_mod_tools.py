@@ -1082,6 +1082,51 @@ class mod_manager:
         return False
 
 
+    def merge_dialog_node_children(
+            self,
+            dialog_uuid: str,
+            node_uuid: str,
+            destination_dialog: dialog_object,
+            source_dialog: dialog_object
+    ) -> None:
+        """
+        This will add new children from source_dialog to destination_dialog
+        """
+        def get_children_nodes(dialog_node: XmlElement) -> list[str]:
+            result = list[str]()
+            children = dialog_node.findall('./children/node[@id="children"]/children/node[@id="child"]')
+            for child in children:
+                result.append(get_required_bg3_attribute(child, 'UUID'))
+            return result
+
+        try:
+            source_node = source_dialog.find_dialog_node(node_uuid)
+            destination_node = destination_dialog.find_dialog_node(node_uuid)
+            source_children = get_children_nodes(source_node)
+            destination_children = get_children_nodes(destination_node)
+            dc_set = set(destination_children)
+            for i in range(0, len(source_children)):
+                c = source_children[i]
+                if c in dc_set:
+                    continue
+                if i == 0:
+                    destination_children.insert(0, c)
+                else:
+                    n = i - 1
+                    while n >= 0:
+                        sc = source_children[n]
+                        if sc in dc_set:
+                            idx = destination_children.index(sc)
+                            destination_children.insert(idx, c)
+                            break
+                        n -= 1
+                    if n == -1:
+                        destination_children.insert(0, c)
+            self.add_to_report(f'merged children for dialog node {node_uuid} of dialog {dialog_uuid}')
+        except:
+            get_logger().error(f'merge_dialog_node_children failed', exc_info = True)
+
+
     def merge_dialog_nodes(
             self,
             dialog_uuid: str,
@@ -1094,15 +1139,20 @@ class mod_manager:
     ) -> None:
         try:
             self.add_to_report(f'merging dialog nodes for {dialog_uuid}')
+
+            # Merge changes in dialogs
             for node_uuid, node_state in source_diff.items():
                 self.add_to_report(f'dialog node {node_uuid}, diff {node_state}')
                 if node_uuid in destination_diff:
-                    self.add_to_report(f'dialog node {node_uuid} is already changed in higher priority mod, skipped')
+                    if node_state == dialog_differ.MODIFIED_CHILDREN:
+                        self.merge_dialog_node_children(dialog_uuid, node_uuid, destination_dialog, source_dialog)
+                    else:
+                        self.add_to_report(f'dialog node {node_uuid} is already changed in higher priority mod, skipped')
                     continue
                 if node_state == dialog_differ.DELETED:
                     self.add_to_report(f'dialog node {node_uuid} is deleted, no action')
                     continue
-                elif node_state == dialog_differ.MODIFIED or node_state == dialog_differ.ADDED:
+                elif node_state != dialog_differ.SAME:
                     if destination_dialog.has_dialog_node(node_uuid):
                         destination_dialog.delete_dialog_node(node_uuid)
                         self.add_to_report(f'dialog node {node_uuid}, found and removed existing node')
@@ -1112,6 +1162,8 @@ class mod_manager:
                     self.add_to_report(f'copied dialog node {node_uuid} into the result')
                 else:
                     raise RuntimeError(f'unexpected diff node state for node {node_uuid}: {node_state}')
+
+            # Merge changes in the order of root nodes
             destination_root_nodes = set(destination_dialog.get_root_nodes())
             for root_node_uuid, root_node_state in source_root_diff.items():
                 self.add_to_report(f'root dialog node {root_node_uuid}, diff {root_node_state}')

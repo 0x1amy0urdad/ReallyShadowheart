@@ -6,7 +6,7 @@ from bg3moddinglib import (
     game_files
 )
 
-MOD_VERSION = (2, 1, 0, 18)
+MOD_VERSION = (2, 1, 0, 19)
 
 MOD_NAME = 'ReallyShadowheart'
 MOD_UUID = 'e49a2415-9dda-48ad-84c9-0abd35686529'
@@ -23,4 +23,3 @@ def get_context(bg3_data_path: str | None = None) -> context:
     if ctx is None:
         ctx = context(MOD_NAME, MOD_UUID, 'really_shadowheart', bg3_data_path = bg3_data_path)
     return ctx
-

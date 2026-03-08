@@ -7,6 +7,7 @@ from . import assets
 from . import act1_romance
 from . import act2_romance
 from . import act3_romance
+from . import approvals
 from . import banters
 from . import betrayal_reactions
 from . import bhaal_temple

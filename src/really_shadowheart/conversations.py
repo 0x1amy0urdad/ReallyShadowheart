@@ -219,6 +219,9 @@ def create_recurrent_conversations() -> None:
         (('3.2', '8942c483-83c9-4974-9f47-87cd1dd10828'), (None, 'fd96b957-6a74-4f97-a035-eb9641c48242')),
         phase_duration = '3.3',
         line_index = 0,
+        fade_in = 1.0,
+        fade_out = 0.0,
+        performance_fade = 1.0,
         emotions = {
             bg3.SPEAKER_SHADOWHEART: ((0.0, 1, None), (1.1, 2048, None),)
         })
@@ -2691,55 +2694,60 @@ def patch_reactions_to_crusher() -> None:
 
     ab = game_assets.get_modded_dialog_asset_bundle('GOB_DrunkGoblin')
     d = bg3.dialog_object(ab.dialog)
+    t = bg3.timeline_object(ab.timeline, d)
 
     speaker_slot_idx = d.get_speaker_slot_index(bg3.SPEAKER_PLAYER)
 
-    astarion_inclusion_node_uuid = '3caaf486-9ba8-8a3e-28eb-4f8702b6727b'
+    top_node_uuid = 'dda264ed-a7ec-58c9-dec3-719b6659d55e'
+    inclusion_start_node_uuid = '3caaf486-9ba8-8a3e-28eb-4f8702b6727b'
+    laezel_reaction_node_uuid = 'c26da22b-5698-4986-b1de-91c63fe6ea30'
     astarion_reaction_node_uuid = '39728abd-1776-5dab-5337-b3e5ab2e46e5'
-    astarion_inclusion_end_node_uuid = '6c45dc3d-85d0-08c6-d692-1aaeecb7809b'
     gale_reaction_node_uuid = '7edccb67-3b8c-b9b4-8686-42bd02e23a42'
-    gale_inclusion_end_node_uuid = '826164c0-242f-a3ee-d000-9e81b521ad8d'
     shadowheart_reaction_node_uuid = 'e0f3d950-5810-de6d-cd93-3a39bafe5a60'
-    shadowheart_inclusion_end_node_uuid = 'e1534496-9517-e5c2-c735-ca338d55ff8e'
     wyll_reaction_node_uuid = '62a2a21b-ebb8-4295-0b3e-773f2ae57c59'
-    wyll_inclusion_end_node_uuid = 'c31d5296-3846-007b-63cb-fc06b2dce8a0'
     karlach_reaction_node_uuid = '5954a0d8-7802-5c34-77b5-b6706a337d21'
-    karlach_inclusion_end_node_uuid = '263c93c4-3a16-117c-4dbe-7d00eec65daf'
-
-    laezel_no_reaction_node_uuid = '83f089e0-d1d7-4149-91c4-130f241cc690'
-    d.create_standard_dialog_node(
-        laezel_no_reaction_node_uuid,
-        bg3.SPEAKER_LAEZEL,
-        [karlach_inclusion_end_node_uuid],
-        None)
+    inclusion_end_node_uuid = '263c93c4-3a16-117c-4dbe-7d00eec65daf'
+    player_questions_node_uuid = '32ba7788-510a-83fc-5032-ac40cf38059e'
 
     reaction_nodes = (
         shadowheart_reaction_node_uuid,
+        laezel_reaction_node_uuid,
         astarion_reaction_node_uuid,
         gale_reaction_node_uuid,
         wyll_reaction_node_uuid,
     )
+    
+    d.delete_all_children_dialog_nodes(inclusion_end_node_uuid)
+    d.add_child_dialog_node(inclusion_end_node_uuid, player_questions_node_uuid)
 
-    d.set_dialog_flags(astarion_inclusion_node_uuid, setflags = (
-        bg3.flag_group('Object', (
-            bg3.flag(bg3.FLAG_ORI_Inclusion_Random, True, speaker_slot_idx),
-        )),
-    ))
-    d.set_dialog_flags(karlach_inclusion_end_node_uuid, setflags = (
-        bg3.flag_group('Object', (
-            bg3.flag(bg3.FLAG_ORI_Inclusion_End_Random, True, speaker_slot_idx),
-        )),
-    ))
+    d.set_dialog_flags(top_node_uuid, setflags = ())
+    d.delete_all_children_dialog_nodes(top_node_uuid)
+    d.add_child_dialog_node(top_node_uuid, inclusion_start_node_uuid)
+    d.remove_dialog_attribute(top_node_uuid, 'transitionmode')
+    
+    d.set_dialog_flags(player_questions_node_uuid, setflags = ())
+    d.remove_dialog_attribute(player_questions_node_uuid, 'transitionmode')
 
-    d.delete_all_children_dialog_nodes(astarion_inclusion_node_uuid)
-    d.add_child_dialog_node(astarion_inclusion_node_uuid, laezel_no_reaction_node_uuid)
-    d.add_child_dialog_node(astarion_inclusion_node_uuid, karlach_reaction_node_uuid)
+    d.delete_all_children_dialog_nodes(inclusion_start_node_uuid)
+    d.add_child_dialog_node(inclusion_start_node_uuid, karlach_reaction_node_uuid)
     for reaction_node in reaction_nodes:
         d.remove_dialog_attribute(reaction_node, 'GroupID')
         d.remove_dialog_attribute(reaction_node, 'GroupIndex')
         d.delete_all_children_dialog_nodes(reaction_node)
-        d.add_child_dialog_node(reaction_node, karlach_inclusion_end_node_uuid)
-        d.add_child_dialog_node(astarion_inclusion_node_uuid, reaction_node)
+        d.add_child_dialog_node(reaction_node, inclusion_end_node_uuid)
+        d.add_child_dialog_node(inclusion_start_node_uuid, reaction_node)
+
+    d.add_child_dialog_node(inclusion_start_node_uuid, inclusion_end_node_uuid)
+    d.set_dialog_flags(inclusion_start_node_uuid, setflags = (
+        bg3.flag_group('Object', (
+            bg3.flag(bg3.FLAG_ORI_Inclusion_Random, True, speaker_slot_idx),
+        )),
+    ))
+    d.set_dialog_flags(inclusion_end_node_uuid, setflags = (
+        bg3.flag_group('Object', (
+            bg3.flag(bg3.FLAG_ORI_Inclusion_End_Random, True, speaker_slot_idx),
+        )),
+    ))
 
     d.set_dialog_flags(shadowheart_reaction_node_uuid, setflags = (), checkflags = (
         bg3.flag_group('Object', (
@@ -2766,6 +2774,32 @@ def patch_reactions_to_crusher() -> None:
             bg3.flag(bg3.FLAG_ORI_Inclusion_PickedAtRandom, True, d.get_speaker_slot_index(bg3.SPEAKER_KARLACH)),
         )),
     ))
+
+    # laezel_companion_camera_uuid = '1e36ccc4-59cc-46eb-9dd8-2532da6b6ff2'
+    # t.edit_tl_shot('8eb05232-b49e-46fb-8e14-d9a9eebb888e', camera_uuid = laezel_companion_camera_uuid)
+
+    # Fix for "hidden" companions
+    phases = {
+        102: bg3.SPEAKER_SHADOWHEART,
+        96: bg3.SPEAKER_ASTARION,
+        77: bg3.SPEAKER_LAEZEL,
+        18: bg3.SPEAKER_KARLACH,
+        9: bg3.SPEAKER_GALE,
+        97: bg3.SPEAKER_KARLACH,
+        78: bg3.SPEAKER_LAEZEL,
+        76: bg3.SPEAKER_LAEZEL,
+        24: bg3.SPEAKER_ASTARION,
+        105: bg3.SPEAKER_KARLACH,
+        27: bg3.SPEAKER_WYLL,
+        31: bg3.SPEAKER_LAEZEL,
+        95: bg3.SPEAKER_ASTARION,
+        93: bg3.SPEAKER_KARLACH,
+    }
+    for phase, speaker in phases.items():
+        tl_phase = t.use_existing_phase(phase)
+        t.create_tl_actor_node(bg3.timeline_object.SHOW_VISUAL, speaker, '0.0', tl_phase.duration, (
+            t.create_value_key(time = '0.0', interpolation_type = 3, value_name = 'ShowVisual', value = True),
+        ))
 
 
 def patch_shadowheart_wolf_memory_response() -> None:

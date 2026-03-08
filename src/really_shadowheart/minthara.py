@@ -230,5 +230,28 @@ def patch_minthara_creep_confrontation() -> None:
         })
 
 
+def fix_minthara_romance_dialog() -> None:
+    game_assets = get_context().assets
+
+    ########################################################################################
+    # Minthara_InParty.lsf
+    # Wyll and Shadowheart nodes are mixed up, this fixes that
+    ########################################################################################
+
+    ab = game_assets.get_modded_dialog_asset_bundle('Minthara_InParty')
+    d = bg3.dialog_object(ab.dialog)
+
+    chose_over_wyll_node = 'e925705e-e47f-eee8-21f9-95cf33fccac1' # existing node
+    young_wyll_planned_to_court_you_node_uuid = 'fc84b843-1fb0-6017-b22a-1ecbb89a8b19' # existing node
+    chose_over_shadowheart_node = 'e8fe6682-b038-324d-2bca-d7c2407b8052' # existing node
+    shadowheart_hoped_to_share_her_heart_with_you_node_uuid = 'd02aa851-bf5f-c87c-5a66-48b26cf10e25' # existing node
+
+    d.delete_all_children_dialog_nodes(chose_over_wyll_node)
+    d.add_child_dialog_node(chose_over_wyll_node, young_wyll_planned_to_court_you_node_uuid)
+    d.delete_all_children_dialog_nodes(chose_over_shadowheart_node)
+    d.add_child_dialog_node(chose_over_shadowheart_node, shadowheart_hoped_to_share_her_heart_with_you_node_uuid)
+
+
 bg3.add_build_procedure('patch_minthara_conversations', patch_minthara_conversations)
 bg3.add_build_procedure('patch_minthara_creep_confrontation', patch_minthara_creep_confrontation)
+bg3.add_build_procedure('fix_minthara_romance_dialog', fix_minthara_romance_dialog)
