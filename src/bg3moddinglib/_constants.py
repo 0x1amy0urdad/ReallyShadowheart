@@ -121,6 +121,7 @@ FLAG_GLO_InfernalBox_State_BoxBoundedTo = 'f4d2be66-0443-4069-8ca2-570143f17e27'
 
 FLAG_GLO_Camp_Event_SkipSleepCutscene = '1ee0a25e-4115-44ef-b87d-c2a5eee494b6' # Set this during a night dialogue to skip the succeeding sleepcutscene
 
+FLAG_GOB_PainPriest_State_CompanionReactedToPenanceOffer = 'ba97a28c-3b69-c459-36c2-75df267633fa' # Object flag, set on companion when they said their line about Loviatar's penance
 
 FLAG_GLO_Pixie_State_ShieldActive = '1225b030-2183-4033-8bcd-819be1bb9e61' # The party is shielded from the shadow curse
 FLAG_GLO_Pixie_Event_GivesImmunity = '4c29ab8b-9b56-49a8-838c-c83a257976e5' # Triggers the pixie blessing status

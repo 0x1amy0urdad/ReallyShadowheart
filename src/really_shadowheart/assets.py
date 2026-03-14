@@ -87,6 +87,7 @@ ASSETS : dict[str, dict[str, str]] = {
     'CAMP_Night1_CRD_Shadowheart': {},
     'CAMP_Night2_CRD_Shadowheart': {},
     'CAMP_Night3_CRD_Shadowheart': {},
+    'CAMP_Shadowheart_IVB_CFM_Box': {},
     'CAMP_Shadowheart_IVB_CFM_LaezelFight': {},
     'CAMP_Shadowheart_CRD_DefeatedParents': {},
 
@@ -96,6 +97,10 @@ ASSETS : dict[str, dict[str, str]] = {
     'DEN_CapturedGoblin_GuardsAvenge': {},
     'DEN_General_Squirrel': {},
     'DEN_ShadowDruid_SnakesCourt': {},
+
+    # Goblin camp
+    'GOB_PainPriest': {},
+    'GOB_PainPriest_Penance': {},
 
     # World
     'GOB_DrunkGoblin': {},

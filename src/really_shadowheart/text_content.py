@@ -380,7 +380,12 @@ def create_text_content() -> None:
         "h527425b6g1174g4464g8c4agee5e5c11dec8": (1, "Seeing our old friends reminds me of how we started. I'm so happy to be with you."),
         "h19109ca4g50aeg4fbfgb8c7gb3c5c346c4be": (1, "Whatever you say, I love hearing it. I bet you like it too."),
         "h1730cc90gbc9bg48a8ga048gb8ea1f2b7308": (1, "But then she released me - banished me more like. She said I was an outcast, that all of her children would know me and revile me."),
-        "h5619467cg3efdg46f9g8d0ag07b984beb997": (1, "I'm alone.")
+        "h5619467cg3efdg46f9g8d0ag07b984beb997": (1, "I'm alone."),
+        "h09fecd1cgcc6ag47afga4bag2540216f5e29": (1, "Alright... only because &lt;i&gt;you&lt;/i&gt; say so."),
+        "hae620edbg29eeg4a99gbed2g73ede112881b": (1, "You know, I can't really resist &lt;i&gt;your&lt;/i&gt; voice."),
+        "h24a6d234g0610g43fbg873egd2a45d22b7e0": (1, "&lt;i&gt;Take the priest's measure.&lt;/i&gt;"),
+        "he76ab1c9g477fg4cc3g8fd4gab18b086b8c4": (1, "&lt;i&gt;Look at the priest.&lt;/i&gt;"),
+        "h98228c94g355fg4fb0gb722g3d11e92c1ec5": (1, "Give me a while to put my imagination to work."),
     }
     loca = bg3.loca_object(files.add_new_file(files.get_loca_relative_path()))
     loca.add_lines(content)

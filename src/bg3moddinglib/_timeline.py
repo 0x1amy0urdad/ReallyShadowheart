@@ -1939,7 +1939,8 @@ class timeline_object:
             attitudes: dict[str, Iterable[tuple[float | str, str, str, int | None]]] | None = None,
             speaker_player: str = SPEAKER_PLAYER,
             look_at_player: str | None = None,
-            peanut_override: bool = False,
+            disable_look_at: bool = False,
+            peanut_override: bool | None = None,
             disable_mocap: bool = False,
             fade_in: float = 0.0,
             fade_out: float = 0.0,
@@ -1966,39 +1967,40 @@ class timeline_object:
             performance_fade = performance_fade,
             disable_mocap = disable_mocap)
 
-        if (speaker == SPEAKER_NARRATOR) or (speaker == speaker_player and look_at_player == speaker):
-            self.create_tl_actor_node(timeline_object.LOOK_AT, speaker, DECIMAL_ZERO, phase_duration, (), is_snapped_to_end = True)
-        else:
-            self.create_tl_actor_node(timeline_object.LOOK_AT, speaker_player, DECIMAL_ZERO, phase_duration, (
-                self.create_look_at_key(
-                    DECIMAL_ZERO,
-                    target = look_at_player,
-                    bone = 'Head_M',
-                    turn_mode = 3,
-                    turn_speed_multiplier = 0.3,
-                    head_turn_speed_multiplier = 0.3,
-                    weight = 0.3,
-                    reset = True,
-                    is_eye_look_at_enabled = True,
-                    eye_look_at_target_id = speaker,
-                    eye_look_at_bone = 'Head_M'
-                ),
-            ), is_snapped_to_end = True)
-            self.create_tl_actor_node(timeline_object.LOOK_AT, speaker, DECIMAL_ZERO, phase_duration, (
-                self.create_look_at_key(
-                    DECIMAL_ZERO,
-                    target = speaker_player,
-                    bone = 'Head_M',
-                    turn_mode = 3,
-                    turn_speed_multiplier = 0.3,
-                    head_turn_speed_multiplier = 0.3,
-                    weight = 0.3,
-                    reset = True,
-                    is_eye_look_at_enabled = True,
-                    eye_look_at_target_id = speaker_player,
-                    eye_look_at_bone = 'Head_M'
-                ),
-            ), is_snapped_to_end = True)
+        if not disable_look_at:
+            if (speaker == SPEAKER_NARRATOR) or (speaker == speaker_player and look_at_player == speaker):
+                self.create_tl_actor_node(timeline_object.LOOK_AT, speaker, DECIMAL_ZERO, phase_duration, (), is_snapped_to_end = True)
+            else:
+                self.create_tl_actor_node(timeline_object.LOOK_AT, speaker_player, DECIMAL_ZERO, phase_duration, (
+                    self.create_look_at_key(
+                        DECIMAL_ZERO,
+                        target = look_at_player,
+                        bone = 'Head_M',
+                        turn_mode = 3,
+                        turn_speed_multiplier = 0.3,
+                        head_turn_speed_multiplier = 0.3,
+                        weight = 0.3,
+                        reset = True,
+                        is_eye_look_at_enabled = True,
+                        eye_look_at_target_id = speaker,
+                        eye_look_at_bone = 'Head_M'
+                    ),
+                ), is_snapped_to_end = True)
+                self.create_tl_actor_node(timeline_object.LOOK_AT, speaker, DECIMAL_ZERO, phase_duration, (
+                    self.create_look_at_key(
+                        DECIMAL_ZERO,
+                        target = speaker_player,
+                        bone = 'Head_M',
+                        turn_mode = 3,
+                        turn_speed_multiplier = 0.3,
+                        head_turn_speed_multiplier = 0.3,
+                        weight = 0.3,
+                        reset = True,
+                        is_eye_look_at_enabled = True,
+                        eye_look_at_target_id = speaker_player,
+                        eye_look_at_bone = 'Head_M'
+                    ),
+                ), is_snapped_to_end = True)
 
         if emotions is not None:
             for target, emotion_records in emotions.items():

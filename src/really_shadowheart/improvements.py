@@ -2387,6 +2387,151 @@ def patch_noblestalk_line() -> None:
             )),
         ))
 
+def patch_camp_box_discussion() -> None:
+    game_assets = get_context().assets
+
+    #####################################################################
+    # CAMP_Shadowheart_IVB_CFM_Box
+    #
+    # This will allow to ask more questions and flirt with Shadowheart
+    #####################################################################
+
+    ab = game_assets.get_modded_dialog_asset_bundle('CAMP_Shadowheart_IVB_CFM_Box')
+    d = bg3.dialog_object(ab.dialog)
+
+    you_deserve_honesty_more_than_most_node_uuid = 'f5400c7e-1b2c-71de-b429-77ab88deae99' # existing node
+    dont_change_the_subject_node_uuid = '208d7594-1670-4274-45c5-4fa71bcfd6d3' # existing node
+
+    jump_to_dont_change_the_subject_node_uuid = '78b8d2a9-f46b-4f1c-a053-1c30cd478529'
+    d.create_jump_dialog_node(jump_to_dont_change_the_subject_node_uuid, dont_change_the_subject_node_uuid, 1)
+    d.add_child_dialog_node(you_deserve_honesty_more_than_most_node_uuid, jump_to_dont_change_the_subject_node_uuid, 0)
+
+
+def add_flirty_line_to_penance_scene() -> None:
+    game_assets = get_context().assets
+
+    ab = game_assets.get_modded_dialog_asset_bundle('GOB_PainPriest')
+    d = bg3.dialog_object(ab.dialog)
+    t = bg3.timeline_object(ab.timeline, d)
+
+    speaker_slot_idx_tav = d.get_speaker_slot_index(bg3.SPEAKER_PLAYER)
+
+    go_ahead_node_uuid = '67d8640d-f6fb-4185-a843-fccd94f93f91' # existing node
+    alias1_go_ahead_node_uuid = 'd6df7844-56f7-7035-c723-ec9a340f87cb' # existing node
+    alias2_go_ahead_node_uuid = '0a186d1b-2bd7-ad3d-b002-398a77d4448e' # existing node
+
+    # Narrator lines: *This man is of common stock. Only the poorest of men need settle for the spectacle of their own gore.*
+    d.add_dialog_flags('4e2a7b40-07ec-3d91-0cdd-0919ed44a1e8', checkflags = (
+        bg3.flag_group('Object', (
+            bg3.flag(Tav_Flirted_Penance.uuid, False, speaker_slot_idx_tav),
+        )),
+    ))
+    d.add_dialog_flags('62bb5e97-4d1a-93ae-b695-f42cd372fd81', checkflags = (
+        bg3.flag_group('Object', (
+            bg3.flag(Tav_Flirted_Penance.uuid, False, speaker_slot_idx_tav),
+        )),
+    ))
+
+    def create_flirty_line(go_ahead_node_uuid: str) -> None:
+        cant_resist_your_voice_node_uuid = bg3.new_random_uuid()
+        take_priests_measure_node_uuid = bg3.new_random_uuid()
+        look_at_priest_node_uuid = bg3.new_random_uuid()
+        hmm_well_see_node_uuid = bg3.new_random_uuid()
+        give_me_a_while_node_uuid = bg3.new_random_uuid()
+
+        # You know, I can't really resist your voice.
+        d.create_standard_dialog_node(
+            cant_resist_your_voice_node_uuid,
+            bg3.SPEAKER_PLAYER,
+            [hmm_well_see_node_uuid],
+            bg3.text_content('hae620edbg29eeg4a99gbed2g73ede112881b', 1),
+            setflags = (
+                bg3.flag_group('Object', (
+                    bg3.flag(Tav_Flirted_Penance.uuid, True, speaker_slot_idx_tav),
+                )),                
+            ),
+            constructor = bg3.dialog_object.QUESTION)
+
+        # Take the priest's measure.
+        d.create_standard_dialog_node(
+            take_priests_measure_node_uuid,
+            bg3.SPEAKER_PLAYER,
+            d.get_children_nodes_uuids(go_ahead_node_uuid),
+            bg3.text_content('h24a6d234g0610g43fbg873egd2a45d22b7e0', 1),
+            checkflags = (
+                bg3.flag_group('Tag', (
+                    bg3.flag(bg3.TAG_REALLY_DARK_URGE, True, speaker_slot_idx_tav),
+                )),
+            ),
+            setflags = (
+                bg3.flag_group('Object', (
+                    bg3.flag(Tav_Flirted_Penance.uuid, False, speaker_slot_idx_tav),
+                )),                
+            ),
+            constructor = bg3.dialog_object.QUESTION)
+
+        # Look at the priest.
+        d.create_standard_dialog_node(
+            look_at_priest_node_uuid,
+            bg3.SPEAKER_PLAYER,
+            d.get_children_nodes_uuids(go_ahead_node_uuid),
+            bg3.text_content('he76ab1c9g477fg4cc3g8fd4gab18b086b8c4', 1),
+            checkflags = (
+                bg3.flag_group('Tag', (
+                    bg3.flag(bg3.TAG_REALLY_DARK_URGE, False, speaker_slot_idx_tav),
+                )),
+            ),
+            setflags = (
+                bg3.flag_group('Object', (
+                    bg3.flag(Tav_Flirted_Penance.uuid, False, speaker_slot_idx_tav),
+                )),                
+            ),
+            constructor = bg3.dialog_object.QUESTION)
+        
+
+        # Hmm. We'll see.
+        d.create_standard_dialog_node(
+            hmm_well_see_node_uuid,
+            bg3.SPEAKER_SHADOWHEART,
+            [give_me_a_while_node_uuid],
+            bg3.text_content('ha125bc14g67e0g4347gbfa7g1ecfdc5a6bab', 2),
+        )
+        t.create_simple_dialog_answer_phase(
+            bg3.SPEAKER_SHADOWHEART,
+            '2.216',
+            hmm_well_see_node_uuid,
+            ((None, '1225ae60-f60d-42d4-acac-64559372fb10'),),
+            disable_look_at = True,
+            emotions = {
+                bg3.SPEAKER_SHADOWHEART: (('0.0', 1024, 1), ('1.16', 1024, 2)),
+            })
+
+        # Give me a while to put my imagination to work.
+        d.create_standard_dialog_node(
+            give_me_a_while_node_uuid,
+            bg3.SPEAKER_SHADOWHEART,
+            d.get_children_nodes_uuids(go_ahead_node_uuid),
+            bg3.text_content('h98228c94g355fg4fb0gb722g3d11e92c1ec5', 1),
+        )
+        t.create_simple_dialog_answer_phase(
+            bg3.SPEAKER_SHADOWHEART,
+            '4.308',
+            give_me_a_while_node_uuid,
+            (('1.2', '18a61b2d-2ff1-4083-b365-67d8b8e6c0c9'), ('4.2', '1225ae60-f60d-42d4-acac-64559372fb10'), (None, 'e786c30a-9b6f-46ba-8062-33864ffc533f')),
+            disable_look_at = True,
+            emotions = {
+                bg3.SPEAKER_SHADOWHEART: (('0.0', 1024, 1), ('2.5', 1024, 2)),
+                bg3.SPEAKER_PLAYER: (('0.5', 64, 1),)
+            })
+        d.delete_all_children_dialog_nodes(go_ahead_node_uuid)
+        d.add_child_dialog_node(go_ahead_node_uuid, cant_resist_your_voice_node_uuid)
+        d.add_child_dialog_node(go_ahead_node_uuid, take_priests_measure_node_uuid)
+        d.add_child_dialog_node(go_ahead_node_uuid, look_at_priest_node_uuid)
+
+    create_flirty_line(go_ahead_node_uuid)
+    create_flirty_line(alias1_go_ahead_node_uuid)
+    create_flirty_line(alias2_go_ahead_node_uuid)
+
 
 bg3.add_build_procedure('grove_squirell_encounter_wound_flare', grove_squirell_encounter_wound_flare)
 bg3.add_build_procedure('mean_greetings', mean_greetings)
@@ -2403,4 +2548,5 @@ bg3.add_build_procedure('enable_impostor_tg_for_durge', enable_impostor_tg_for_d
 bg3.add_build_procedure('enable_selunite_answer_to_how_are_you', enable_selunite_answer_to_how_are_you)
 bg3.add_build_procedure('romanced_reaction_join_me', romanced_reaction_join_me)
 bg3.add_build_procedure('patch_noblestalk_line', patch_noblestalk_line)
-
+bg3.add_build_procedure('patch_camp_box_discussion', patch_camp_box_discussion)
+bg3.add_build_procedure('add_flirty_line_to_penance_scene', add_flirty_line_to_penance_scene)

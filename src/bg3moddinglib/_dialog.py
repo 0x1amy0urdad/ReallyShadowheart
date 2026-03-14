@@ -555,7 +555,7 @@ class dialog_object:
             self,
             node_uuid: str,
             speaker: str,
-            children: Iterable[str],
+            children: list[str] | tuple[str],
             text: text_content | Iterable[text_content] | None,
             /,
             constructor: str = ANSWER,
@@ -594,11 +594,13 @@ class dialog_object:
         result.append('<children>')
         if not children:
             result.append('<node id="children" />')
-        else:
+        elif isinstance(children, list) or isinstance(children, tuple):
             result.append('<node id="children"><children>')
             for child in children:
                 result.append(f'<node id="child"><attribute id="UUID" type="FixedString" value="{child}" /></node>')
             result.append('</children></node>')
+        else:
+            raise TypeError(f'children should be a tuple or a list, got {type(children)}')
         result.append('<node id="GameData"><children><node id="AiPersonalities" key="AiPersonality" /><node id="MusicInstrumentSounds" /><node id="OriginSound" /></children></node>')
         if get_len(tags) == 0:
             result.append('<node id="Tags" />')

@@ -51,6 +51,7 @@ def create_shadowheart_voice_metadata() -> None:
     soundbank.add_voice_metadata('h1730cc90gbc9bg48a8ga048gb8ea1f2b7308', 13.480)
     soundbank.add_voice_metadata('h5619467cg3efdg46f9g8d0ag07b984beb997', 05.000)
     soundbank.add_voice_metadata('h1f3bda87g7e54g4da4g8304g697a9499621a', 05.759)
+    soundbank.add_voice_metadata('h98228c94g355fg4fb0gb722g3d11e92c1ec5', 04.308)
 
 def create_creep_voice_metadata() -> None:
     soundbank = bg3.soundbank_object.create_new(get_context().files, bg3.SPEAKER_HALSIN)

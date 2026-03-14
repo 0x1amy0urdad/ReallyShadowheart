@@ -2696,7 +2696,9 @@ def patch_reactions_to_crusher() -> None:
     d = bg3.dialog_object(ab.dialog)
     t = bg3.timeline_object(ab.timeline, d)
 
-    speaker_slot_idx = d.get_speaker_slot_index(bg3.SPEAKER_PLAYER)
+    speaker_slot_idx_tav = d.get_speaker_slot_index(bg3.SPEAKER_PLAYER)
+
+    kiss_the_damn_foot_node_uuid = 'e0f3d950-5810-de6d-cd93-3a39bafe5a60'
 
     top_node_uuid = 'dda264ed-a7ec-58c9-dec3-719b6659d55e'
     inclusion_start_node_uuid = '3caaf486-9ba8-8a3e-28eb-4f8702b6727b'
@@ -2740,12 +2742,12 @@ def patch_reactions_to_crusher() -> None:
     d.add_child_dialog_node(inclusion_start_node_uuid, inclusion_end_node_uuid)
     d.set_dialog_flags(inclusion_start_node_uuid, setflags = (
         bg3.flag_group('Object', (
-            bg3.flag(bg3.FLAG_ORI_Inclusion_Random, True, speaker_slot_idx),
+            bg3.flag(bg3.FLAG_ORI_Inclusion_Random, True, speaker_slot_idx_tav),
         )),
     ))
     d.set_dialog_flags(inclusion_end_node_uuid, setflags = (
         bg3.flag_group('Object', (
-            bg3.flag(bg3.FLAG_ORI_Inclusion_End_Random, True, speaker_slot_idx),
+            bg3.flag(bg3.FLAG_ORI_Inclusion_End_Random, True, speaker_slot_idx_tav),
         )),
     ))
 
@@ -2800,6 +2802,57 @@ def patch_reactions_to_crusher() -> None:
         t.create_tl_actor_node(bg3.timeline_object.SHOW_VISUAL, speaker, '0.0', tl_phase.duration, (
             t.create_value_key(time = '0.0', interpolation_type = 3, value_name = 'ShowVisual', value = True),
         ))
+
+    #
+    # Flirty response to "Kiss the damn foot. Worse things have been shoved in your face lately."
+    #
+
+    thats_more_like_it_node_uuid = 'e5fab677-9db7-c6c3-dc3a-c01868980246' # existing node
+    jump_to_thats_more_like_it_node_uuid = 'f3c3092c-957b-47cd-9874-8905869b261b'
+
+
+    alright_if_you_say_so_honey_node_uuid = '1da43319-e4fd-42a7-931f-f4ac7ba65de1'
+    youre_funny_node_uuid = 'b0e50dd0-9cfe-48c7-ab25-f701c47c7dfd'
+
+    d.add_dialog_flags(kiss_the_damn_foot_node_uuid, setflags = (
+        bg3.flag_group('Object', (
+            bg3.flag(Shadowheart_Said_Kiss_the_Damn_Foot.uuid, True, speaker_slot_idx_tav),
+        )),
+    ))
+
+    # Alright... only because you say so.
+    d.create_standard_dialog_node(
+        alright_if_you_say_so_honey_node_uuid,
+        bg3.SPEAKER_PLAYER,
+        [youre_funny_node_uuid],
+        bg3.text_content('h09fecd1cgcc6ag47afga4bag2540216f5e29', 1),
+        checkflags = (
+            bg3.flag_group('Object', (
+                bg3.flag(Shadowheart_Said_Kiss_the_Damn_Foot.uuid, True, speaker_slot_idx_tav),
+            )),
+        ),
+        constructor = bg3.dialog_object.QUESTION)
+
+    # You're funny.
+    d.create_standard_dialog_node(
+        youre_funny_node_uuid,
+        bg3.SPEAKER_PLAYER,
+        [jump_to_thats_more_like_it_node_uuid],
+        bg3.text_content('h98228c94g355fg4fb0gb722g3d11e92c1ec5', 1),
+    )
+    t.create_simple_dialog_answer_phase(
+        bg3.SPEAKER_SHADOWHEART,
+        '1.28',
+        youre_funny_node_uuid,
+        ((None, 'c064dacd-7978-49a9-9543-1a0267d7fe57'),),
+        emotions = {
+            bg3.SPEAKER_SHADOWHEART: (('0.0', 1024, 2), ('0.8', 1024, 1)),
+        })
+
+
+    d.create_jump_dialog_node(jump_to_thats_more_like_it_node_uuid, thats_more_like_it_node_uuid, 1)
+
+    d.add_child_dialog_node(player_questions_node_uuid, alright_if_you_say_so_honey_node_uuid, 0)
 
 
 def patch_shadowheart_wolf_memory_response() -> None:

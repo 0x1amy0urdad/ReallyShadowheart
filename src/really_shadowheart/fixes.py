@@ -1256,23 +1256,119 @@ def patch_shadowheart_path_tags() -> None:
             bg3.flag('acb60269-f7af-1673-2490-c805f5d4359e', True, None),
         )),
     ))
-    
 
-def fix_narrator_line_act1_swamp() -> None:
-    #
-    # This fixes a missing narrator line when the party succeeds DC perception check in the swamp
-    #
+def fix_abdirak_penance_scene() -> None:
     game_assets = get_context().assets
-    ab = game_assets.get_modded_dialog_asset_bundle('HAG_ForestIllusion_Illusioncheck')
+
+    ab = game_assets.get_modded_dialog_asset_bundle('GOB_PainPriest_Penance')
     d = bg3.dialog_object(ab.dialog)
+    t = bg3.timeline_object(ab.timeline, d)
 
-    # node 502b5f98-b9d9-6a9c-2e7b-7ba9d9632517
-    # replace h61d3eb08gf35fg4c02gaf18g6efe88e5be06
-    # with he58ca03dge4efg4b2egb596g96691d2d5e17
-    d.set_tagged_text('502b5f98-b9d9-6a9c-2e7b-7ba9d9632517', bg3.text_content('h86b92166g9ec3g4b6eg9726g69578d7c1771', 1))
-    d.set_dialog_flags('d1958229-b92f-c0e0-377d-ad670de8d853', checkflags = (), setflags = ())
-    d.delete_child_dialog_node('0a4de471-a006-31a3-2e15-e154b618b345', '125195a4-6c80-0e9d-2377-4a258d6558e0')
+    # 29f237bd-a387-bcb1-bf60-d3fc38d18d0f Shadowheart
+    # 55683caf-92a5-72c4-82ce-18cb19b6acb0 Astarion
+    # 2bfe81d5-9751-ef6f-a1e3-88812479b03f Abdirak
+    # 0c8729af-986e-29e7-4684-dad0a640d6b7 Player
 
+    # TL Shots:
+    # ac474120-9cfb-4ac1-9977-761833fcefd2 c7a5aa33-74a1-495a-b2cc-baf5feca10c5 Shadowheart -> Shadowheart
+    # 8ca96db8-b3ac-4c99-9fc4-ac6b75f025f6 1be102ca-29a6-4700-9a20-813deecefaf9 Astarion    -> Astarion
+    # fa9a7768-76ee-43c9-a136-2dcc3e0da8ce 1be102ca-29a6-4700-9a20-813deecefaf9
+
+    tl_phase = t.use_existing_phase(31)
+    t.remove_effect_component('8ca96db8-b3ac-4c99-9fc4-ac6b75f025f6') # TLShot
+    t.remove_effect_component('7b1c655e-6129-4bd4-8534-409915d79fa8') # TLLookAtEvent
+    t.edit_tl_node('ac474120-9cfb-4ac1-9977-761833fcefd2', end = '4.99001')
+    t.edit_tl_shot('fa9a7768-76ee-43c9-a136-2dcc3e0da8ce', end = '7.4')
+    t.create_tl_actor_node(bg3.timeline_object.LOOK_AT, bg3.SPEAKER_SHADOWHEART, '0.0', tl_phase.duration, (
+        t.create_look_at_key(
+            '0.0',
+            target = bg3.SPEAKER_PLAYER,
+            bone = 'Head_M',
+            turn_mode = 3,
+            turn_speed_multiplier = 0.3,
+            head_turn_speed_multiplier = 0.3,
+            weight = 0.0,
+            eye_look_at_bone = 'Head_M'
+        ),
+        t.create_look_at_key(
+            '1.28',
+            target = bg3.SPEAKER_PLAYER,
+            bone = 'Head_M',
+            turn_mode = 3,
+            head_turn_speed_multiplier = 0.2,
+            weight = 0.0,
+            head_safe_zone_angle = 80.0,
+            is_eye_look_at_enabled = True,
+            eye_look_at_target_id = bg3.SPEAKER_ASTARION,
+            eye_look_at_bone = 'Head_M'
+        ),
+        t.create_look_at_key(
+            '4.99001',
+            target = bg3.SPEAKER_PLAYER,
+            bone = 'Head_M',
+            turn_mode = 3,
+            head_turn_speed_multiplier = 0.2,
+            weight = 0.0,
+            head_safe_zone_angle = 80.0,
+            is_eye_look_at_enabled = True,
+            eye_look_at_target_id = bg3.SPEAKER_ASTARION,
+            eye_look_at_bone = 'Head_M'
+        ),
+        t.create_look_at_key(
+            '5.77001',
+            target = bg3.SPEAKER_PLAYER,
+            bone = 'Head_M',
+            turn_mode = 3,
+            head_turn_speed_multiplier = 0.2,
+            weight = 0.0,
+            head_safe_zone_angle = 80.0,
+            is_eye_look_at_enabled = True,
+            eye_look_at_target_id = bg3.SPEAKER_PLAYER,
+            eye_look_at_bone = 'Head_M'
+        ),
+        t.create_look_at_key(
+            '7.33',
+            target = bg3.SPEAKER_PLAYER,
+            bone = 'Head_M',
+            turn_mode = 3,
+            head_turn_speed_multiplier = 0.2,
+            weight = 0.0,
+            head_safe_zone_angle = 80.0,
+            is_eye_look_at_enabled = True,
+            eye_look_at_target_id = bg3.SPEAKER_ASTARION,
+            eye_look_at_bone = 'Head_M'
+        ),
+    ))
+    t.create_tl_shot('c7a5aa33-74a1-495a-b2cc-baf5feca10c5', '7.4', tl_phase.duration, is_snapped_to_end = True)
+
+    tl_phase = t.use_existing_phase(40)
+    t.remove_effect_component('59c0c4f4-7516-40f9-8888-207a91188428') # TLLookAtEvent
+    t.create_tl_actor_node(bg3.timeline_object.LOOK_AT, bg3.SPEAKER_SHADOWHEART, '0.0', tl_phase.duration, (
+        t.create_look_at_key(
+            '0.0',
+            target = bg3.SPEAKER_PLAYER,
+            bone = 'Head_M',
+            turn_mode = 3,
+            turn_speed_multiplier = 0.3,
+            head_turn_speed_multiplier = 0.3,
+            weight = 0.0,
+            eye_look_at_bone = 'Head_M'
+        ),
+        t.create_look_at_key(
+            '1.1',
+            target = bg3.SPEAKER_PLAYER,
+            bone = 'Head_M',
+            turn_mode = 3,
+            head_turn_speed_multiplier = 0.2,
+            weight = 0.0,
+            head_safe_zone_angle = 80.0,
+            is_eye_look_at_enabled = True,
+            eye_look_at_target_id = bg3.SPEAKER_ASTARION,
+            eye_look_at_bone = 'Head_M'
+        ),
+    ))
+    t.edit_tl_shot('9993db5e-5e5a-4296-b593-7c459845139f', camera_uuid = 'c7a5aa33-74a1-495a-b2cc-baf5feca10c5')
+    
 
 bg3.add_build_procedure('fix_nightsong_fate_dialog', fix_nightsong_fate_dialog)
 bg3.add_build_procedure('patch_nightsong_fate_dialog', patch_nightsong_fate_dialog)
@@ -1287,4 +1383,4 @@ bg3.add_build_procedure('fix_act3_romance_conversation', fix_act3_romance_conver
 bg3.add_build_procedure('fix_jaheira_greetings', fix_jaheira_greetings)
 bg3.add_build_procedure('patch_shadowheart_path_tags', patch_shadowheart_path_tags)
 bg3.add_build_procedure('fix_nightsong_meeting', fix_nightsong_meeting)
-#bg3.add_build_procedure('fix_narrator_line_act1_swamp', fix_narrator_line_act1_swamp)
+bg3.add_build_procedure('fix_abdirak_penance_scene', fix_abdirak_penance_scene)

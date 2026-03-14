@@ -708,6 +708,11 @@ Shadowheart_EndGame_LastHug = bg3.flag_factory(
 Shadowheart_With_Box_CFM = bg3.flag_factory(
     'Shadowheart_With_Box_CFM', bg3.GLOBAL_FLAG, flag_uuid='650da20e-a918-4a98-8ff4-a96af6616fe5', description='Pre-requisite for CAMP_Shadowheart_IVB_CFM_Box')
 
+Shadowheart_Said_Kiss_the_Damn_Foot = bg3.flag_factory(
+    'Shadowheart_Said_Kiss_the_Damn_Foot', bg3.OBJECT_FLAG, flag_uuid='ffacb661-a7a5-44f8-8b7e-fcb18dcdf0dc', description='Shadowheart said Kiss the damn foot. Worse things have been shoved in your face lately.')
+Tav_Flirted_Penance = bg3.flag_factory(
+    'Tav_Flirted_Penance', bg3.OBJECT_FLAG, flag_uuid='31c1518c-3210-4ae5-ae43-dbe8371ea71a', description='Tav flirted with Shadowheart when she teased them about the penance')
+
 
 # TODO: low HP conversation
 Tav_Low_HP_Convo_Available = bg3.flag_factory(
