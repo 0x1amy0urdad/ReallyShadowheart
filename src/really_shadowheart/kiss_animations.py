@@ -1258,10 +1258,28 @@ def patch_kiss_animations() -> None:
 
 
     #
-    # Selunite kiss
+    # Shar Idol kisses
     #
     kiss_me_like_you_hate_me_node_uuid = '8203a694-02be-4f2a-8059-e9b1cbc55b2f'
-    d.set_dialog_flags(kiss_me_like_you_hate_me_node_uuid, setflags = (shadowheart_random_kiss_start_true,))
+    d.set_dialog_flags(kiss_me_like_you_hate_me_node_uuid, setflags = (
+        bg3.flag_group('Object', (
+            bg3.flag(bg3.FLAG_ORI_Kiss_StartRandom, True, slot_idx_shadowheart),
+        )),
+    ))
+
+    and_a_kiss_of_course_node_uuid = '24c10a92-b14e-4610-8786-b8756cfdecba'
+    d.set_dialog_flags(and_a_kiss_of_course_node_uuid, setflags = (
+        bg3.flag_group('Object', (
+            bg3.flag(bg3.FLAG_ORI_Kiss_StartRandom, True, slot_idx_shadowheart),
+        )),
+    ))
+
+    i_suppose_we_can_manage_that_node_uuid = '1f06b486-f426-44bc-8b1d-a049be8b5ad0'
+    d.set_dialog_flags(i_suppose_we_can_manage_that_node_uuid, setflags = (
+        bg3.flag_group('Object', (
+            bg3.flag(bg3.FLAG_ORI_Kiss_StartRandom, True, slot_idx_shadowheart),
+        )),
+    ))
 
     #
     # Kiss when Tav/Durge are not Selunite, but dating her
