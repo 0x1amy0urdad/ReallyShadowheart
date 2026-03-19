@@ -1,9 +1,23 @@
 Version 1
 SubGoalCombiner SGC_AND
 INITSECTION
-NOT DB_ReallyShadowheart_ShadowheartKisses((FLAG)NULL_00000000-0000-0000-0000-000000000000);
-NOT DB_ReallyShadowheart_KarlachKisses((FLAG)NULL_00000000-0000-0000-0000-000000000000);
-NOT DB_ReallyShadowheart_MintharaKisses((FLAG)NULL_00000000-0000-0000-0000-000000000000);
+
+DB_ReallyShadowheart_ShadowheartKisses((FLAG)ORI_ShadowheartKiss_VersionA_f2781286-e51c-443f-b1a3-cea4ba95ccf9);
+DB_ReallyShadowheart_ShadowheartKisses((FLAG)ORI_ShadowheartKiss_VersionB_815a0406-7c85-4107-b704-439320fb7f0b);
+DB_ReallyShadowheart_ShadowheartKisses((FLAG)ORI_ShadowheartKiss_VersionC_c07bfea6-3d37-48f3-aefc-6eb1749b117f);
+DB_ReallyShadowheart_ShadowheartKisses((FLAG)ORI_ShadowheartKiss_VersionD_db362653-5649-4f1d-bc43-32b85fd42c0e);
+DB_ReallyShadowheart_ShadowheartKisses((FLAG)ORI_ShadowheartKiss_VersionE_ec79178f-2c18-4a71-b147-7b254439e5b2);
+DB_ReallyShadowheart_ShadowheartKisses((FLAG)ORI_ShadowheartKiss_VersionF_321d447c-5298-4a5c-82de-f884ba4757d4);
+
+DB_ReallyShadowheart_KarlachKisses((FLAG)Karlach_Kiss_A_a148e761-726c-4d5b-a471-b86d9103aeed);
+DB_ReallyShadowheart_KarlachKisses((FLAG)Karlach_Kiss_B_f2a6ae7f-c7bd-45de-92c2-7a09c6dc0171);
+DB_ReallyShadowheart_KarlachKisses((FLAG)Karlach_Kiss_C_1e3e1616-24a1-4cb7-b276-b67c9b8d9e2b);
+DB_ReallyShadowheart_KarlachKisses((FLAG)Karlach_Kiss_D_9cea3dd4-abe5-4a94-a480-e6131dfa6c8c);
+
+DB_ReallyShadowheart_MintharaKisses((FLAG)Minthara_Kiss_A_cb3eb938-59aa-49b1-afe4-4f852e085ee2);
+DB_ReallyShadowheart_MintharaKisses((FLAG)Minthara_Kiss_B_33bb5abe-bd6d-41f1-a66c-b5a3642cc795);
+DB_ReallyShadowheart_MintharaKisses((FLAG)Minthara_Kiss_C_bc58af48-0baf-4859-b57a-4cc1201f1ca5);
+DB_ReallyShadowheart_MintharaKisses((FLAG)Minthara_Kiss_D_79ca2d1d-2f56-4790-bc61-8d93764a25c2);
 
 NOT DB_ReallyShadowheart_PossibleKisses((FLAG)NULL_00000000-0000-0000-0000-000000000000);
 
@@ -71,8 +85,6 @@ DB_NOOP(1);
 // Initialize DB_ReallyShadowheart_Kisses
 PROC
 PROC_ReallyShadowheart_InitDBKisses()
-AND
-NOT DB_ReallyShadowheart_ShadowheartKisses((FLAG)ORI_ShadowheartKiss_VersionF_321d447c-5298-4a5c-82de-f884ba4757d4)
 THEN
 DB_ReallyShadowheart_ShadowheartKisses((FLAG)ORI_ShadowheartKiss_VersionA_f2781286-e51c-443f-b1a3-cea4ba95ccf9);
 DB_ReallyShadowheart_ShadowheartKisses((FLAG)ORI_ShadowheartKiss_VersionB_815a0406-7c85-4107-b704-439320fb7f0b);
@@ -83,8 +95,6 @@ DB_ReallyShadowheart_ShadowheartKisses((FLAG)ORI_ShadowheartKiss_VersionF_321d44
 
 PROC
 PROC_ReallyShadowheart_InitDBKisses()
-AND
-NOT DB_ReallyShadowheart_KarlachKisses((FLAG)Karlach_Kiss_D_9cea3dd4-abe5-4a94-a480-e6131dfa6c8c)
 THEN
 DB_ReallyShadowheart_KarlachKisses((FLAG)Karlach_Kiss_A_a148e761-726c-4d5b-a471-b86d9103aeed);
 DB_ReallyShadowheart_KarlachKisses((FLAG)Karlach_Kiss_B_f2a6ae7f-c7bd-45de-92c2-7a09c6dc0171);
@@ -93,8 +103,6 @@ DB_ReallyShadowheart_KarlachKisses((FLAG)Karlach_Kiss_D_9cea3dd4-abe5-4a94-a480-
 
 PROC
 PROC_ReallyShadowheart_InitDBKisses()
-AND
-NOT DB_ReallyShadowheart_MintharaKisses((FLAG)Minthara_Kiss_D_79ca2d1d-2f56-4790-bc61-8d93764a25c2)
 THEN
 DB_ReallyShadowheart_MintharaKisses((FLAG)Minthara_Kiss_A_cb3eb938-59aa-49b1-afe4-4f852e085ee2);
 DB_ReallyShadowheart_MintharaKisses((FLAG)Minthara_Kiss_B_33bb5abe-bd6d-41f1-a66c-b5a3642cc795);
@@ -133,6 +141,56 @@ NOT DB_ReallyShadowheart_RecentKisses(_RecentKiss2, 2);
 DB_ReallyShadowheart_RecentKisses(_KissFlag, 1);
 DB_ReallyShadowheart_RecentKisses(_RecentKiss1, 2);
 
+//
+// Only Shadowheart kisses
+//
+
+PROC
+PROC_ReallyShadowheart_GatherPossibleShadowheartKisses()
+AND
+DB_ReallyShadowheart_PossibleKisses(_KissFlag)
+THEN
+NOT DB_ReallyShadowheart_PossibleKisses(_KissFlag);
+
+PROC
+PROC_ReallyShadowheart_GatherPossibleShadowheartKisses()
+AND
+DB_ReallyShadowheart_ShadowheartKisses(_KissFlag)
+AND
+NOT DB_ReallyShadowheart_RecentKisses(_KissFlag, _)
+THEN
+DB_ReallyShadowheart_PossibleKisses(_KissFlag);
+
+PROC
+PROC_ReallyShadowheart_PickRandomShadowheartKiss()
+AND
+DB_ReallyShadowheart_ShadowheartKisses(_KissFlag)
+THEN
+ClearFlag(_KissFlag, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+
+PROC
+PROC_ReallyShadowheart_PickRandomShadowheartKiss()
+THEN
+PROC_ReallyShadowheart_GatherPossibleShadowheartKisses();
+
+PROC
+PROC_ReallyShadowheart_PickRandomShadowheartKiss()
+AND
+QRY_GetRandom("DB_ReallyShadowheart_PossibleKisses", 1, "DB_ReallyShadowheart_Kiss")
+AND
+DB_ReallyShadowheart_Kiss((FLAG)_KissFlag)
+AND
+DB_ReallyShadowheart_PossibleKisses((FLAG)_KissFlag)
+THEN
+NOT DB_ReallyShadowheart_Kiss(_KissFlag);
+SetFlag(_KissFlag, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+ClearFlag(ORI_ShadowheartKiss_StartRandom_7495e78c-9e70-4ea9-95eb-17fde7f94b7c, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+PROC_ReallyShadowheart_RememberRecentKiss(_KissFlag);
+
+
+//
+// All kisses: Shadowheart, Karlach, Minthara
+//
 
 // Put possible kisses in the DB
 PROC
@@ -217,7 +275,7 @@ DB_ReallyShadowheart_PossibleKisses((FLAG)_KissFlag)
 THEN
 NOT DB_ReallyShadowheart_Kiss(_KissFlag);
 SetFlag(_KissFlag, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
-ClearFlag(ORI_ShadowheartKiss_StartRandom_7495e78c-9e70-4ea9-95eb-17fde7f94b7c, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
+ClearFlag(ORI_ShadowheartKiss_StartRandomAnyKiss_a7b70675-1f89-4666-9707-92c9cb44a452, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, 0, 1);
 PROC_ReallyShadowheart_RememberRecentKiss(_KissFlag);
 EXITSECTION
 

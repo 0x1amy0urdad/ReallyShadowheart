@@ -7,6 +7,7 @@ DB_ReallyShadowheart_NightfallPoints((FLAG)Nightfall_Point_Selune_Blasphemy_Kiss
 DB_ReallyShadowheart_NightfallPoints((FLAG)Nightfall_Point_Ability_Check_Kiss_a3f5c13a-f27a-45d4-9bee-d1830927f29e);
 DB_ReallyShadowheart_NightfallPoints((FLAG)Nightfall_Point_Love_You_a3268966-ed0d-43ed-8243-82cf72cdf5ad);
 
+NOT DB_ReallyShadowheart_WoundCoolDown(0);
 KBSECTION
 // This procedure sets the requirements for the Nightfall romance
 PROC
@@ -414,6 +415,140 @@ AND
 GetFlag((FLAG)Shadowheart_Post_DJ_Romance_bda7f5e9-6ea6-49ba-848a-d2f6aebdeb3e, _Tav, 1)
 THEN
 PROC_ReallyShadowheart_HideExclamation("Shadowheart_PostDJRomance");
+
+//
+// The following changes how the incurable wound behaves
+//
+
+// This query override will prevent vanilla logic from running
+QRY
+QRY_ORI_Shadowheart_PartyUnavailable()
+THEN
+DB_ReallyShadowheart_NOOP(1);
+
+// Query: wound flares up for Selunite Shadowheart if parents are alive
+// Note: in the Epilogue, wound flares are controlled by anubis
+QRY
+QRY_ReallyShadowheart_WoundActive()
+AND
+IsTagged(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, (TAG)SHADOWHEART_ENEMYOFSHARPATH_8eca8027-996c-4c61-bec6-77f853de295b, 1)
+AND
+NOT DB_GlobalFlag((FLAG)ORI_Shadowheart_State_RejectShar_KilledParents_e9060caf-66b0-4701-8dfd-5ae1125f5afd)
+AND
+NOT DB_CurrentLevel("EPI_Main_A")
+THEN
+DB_ReallyShadowheart_NOOP(1);
+
+// Query: wound flares up for late redeemed Shadowheart
+QRY
+QRY_ReallyShadowheart_WoundActive()
+AND
+DB_GlobalFlag((FLAG)ORI_Shadowheart_State_Shar_SavedParents_8a0fad17-1615-4a0d-a045-21661d9a2aa0)
+AND
+NOT DB_CurrentLevel("EPI_Main_A")
+THEN
+DB_ReallyShadowheart_NOOP(1);
+
+// Query: the wound is healed on selunite path
+QRY
+QRY_ReallyShadowheart_IncurableWoundHealed()
+AND
+DB_GlobalFlag((FLAG)ORI_Shadowheart_State_RejectShar_KilledParents_e9060caf-66b0-4701-8dfd-5ae1125f5afd)
+THEN
+DB_ReallyShadowheart_NOOP(1);
+
+// Query: the wound is healed on sharran path
+// Note: there's an extra state between QRY_ReallyShadowheart_WoundActive() and QRY_ReallyShadowheart_IncurableWoundHealed()
+// when Shadowheart is on sharran path but haven't sacrificed parents yet; the wound is dormant but is not healed
+QRY
+QRY_ReallyShadowheart_IncurableWoundHealed()
+AND
+DB_GlobalFlag((FLAG)ORI_Shadowheart_State_Shar_KilledParents_3a3b0ecf-a1ed-4733-8548-0348befc6bac)
+THEN
+DB_ReallyShadowheart_NOOP(1);
+
+// Starts the wound flare cool down period
+PROC
+PROC_ReallyShadowheart_WoundFlareCoolDown((INTEGER)_Min, (INTEGER)_Max)
+AND
+TimerExists("ReallyShadowheart_WoundCoolDown", 0)
+AND
+IntegerSubtract(_Max, _Min, _Delta)
+AND
+Random(_Delta, _RandomDelay)
+AND
+IntegerSum(_RandomDelay, _Min, _CoolDown)
+AND
+IntegerProduct(_CoolDown, 1000, _CoolDownMillis)
+THEN
+DB_ReallyShadowheart_WoundCoolDown(1);
+TimerLaunch("ReallyShadowheart_WoundCoolDown", _CoolDownMillis);
+
+IF
+TimerFinished("ReallyShadowheart_WoundCoolDown")
+THEN
+PROC_ReallyShadowheart_Trace("Wound flare cool down finished");
+NOT DB_ReallyShadowheart_WoundCoolDown(1);
+
+// At the start of a game session, start a cool down of 30 to 60 mins
+PROC
+PROC_ReallyShadowheart_GameStarted()
+AND
+QRY_ReallyShadowheart_WoundActive()
+THEN
+PROC_ReallyShadowheart_WoundFlareCoolDown(1800, 3600);
+PROC_ReallyShadowheart_InitiateWoundFlareUp();
+
+// When Shadowheart rejects Shar, Shar starts using the wound to hurt her
+PROC
+PROC_Shadowheart_TurnedAwayFromShar()
+THEN
+PROC_ReallyShadowheart_InitiateWoundFlareUp();
+
+// Wound flare up
+// After each flare up, start a cool down period of 45 to 75 minutes 
+PROC
+PROC_ReallyShadowheart_WoundFlareUp()
+AND
+NOT DB_Is_InCombat(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _)
+AND
+QRY_SpeakerIsAvailable(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679)
+AND
+HasActiveStatus(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, "ORI_WOUND_FLARE", 0)
+THEN
+ApplyStatus(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, "ORI_WOUND_FLARE", 1.0, 1, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679);
+PROC_TryStartAD((DIALOGRESOURCE)ORI_Shadowheart_PAD_WoundFlareUp_9b2084a6-1307-0612-486f-a4fd4fbf2d9c, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679);
+PROC_ReallyShadowheart_WoundFlareCoolDown(2700, 4500);
+
+PROC
+PROC_ReallyShadowheart_TryWoundFlareUp()
+AND
+NOT DB_ReallyShadowheart_DisableWoundFlares(1)
+AND
+NOT DB_ReallyShadowheart_WoundCoolDown(1)
+AND
+QRY_ReallyShadowheart_WoundActive()
+THEN
+PROC_ReallyShadowheart_WoundFlareUp();
+
+PROC
+PROC_ReallyShadowheart_InitiateWoundFlareUp()
+AND
+NOT QRY_ReallyShadowheart_IncurableWoundHealed()
+AND
+Random(20, _RandomDelay)
+AND
+IntegerSum(_RandomDelay, 40, _Delay)
+AND
+IntegerProduct(_Delay, 1000, _DelayMillis)
+THEN
+TimerLaunch("ReallyShadowheart_InitiateWoundFlareUp", _DelayMillis);
+
+IF
+TimerFinished("ReallyShadowheart_InitiateWoundFlareUp")
+THEN
+PROC_ReallyShadowheart_TryWoundFlareUp();
+PROC_ReallyShadowheart_InitiateWoundFlareUp();
 EXITSECTION
 
 ENDEXITSECTION

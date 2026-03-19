@@ -60,6 +60,7 @@ def patch_kiss_animations() -> None:
             bg3.flag_group('Object', (
                 bg3.flag(Shadowheart_Kiss_Event.uuid, True, slot_idx_shadowheart),
                 bg3.flag(ORI_ShadowheartKiss_StartRandom.uuid, False, slot_idx_shadowheart),
+                bg3.flag(ORI_ShadowheartKiss_StartRandomAnyKiss.uuid, False, slot_idx_shadowheart),
                 bg3.flag(ORI_ShadowheartKiss_VersionA.uuid, False, slot_idx_shadowheart),
                 bg3.flag(ORI_ShadowheartKiss_VersionB.uuid, False, slot_idx_shadowheart),
                 bg3.flag(ORI_ShadowheartKiss_VersionC.uuid, False, slot_idx_shadowheart),
@@ -1227,19 +1228,31 @@ def patch_kiss_animations() -> None:
     d = bg3.dialog_object(ab.dialog)
 
     slot_idx_shadowheart = d.get_speaker_slot_index(bg3.SPEAKER_SHADOWHEART)
-    shadowheart_random_kiss_start_true = bg3.flag_group('Object', (bg3.flag(ORI_ShadowheartKiss_StartRandom.uuid, True, slot_idx_shadowheart),))
 
     # Reset the kiss flag, just in case
     greeting_node_uuid = '23749c85-4289-4965-a7db-1909f5cb63a2'
     d.set_dialog_flags(greeting_node_uuid, setflags = (
         bg3.flag_group('Object', (
             bg3.flag(ORI_ShadowheartKiss_StartRandom.uuid, False, slot_idx_shadowheart),
+            bg3.flag(ORI_ShadowheartKiss_StartRandomAnyKiss.uuid, False, slot_idx_shadowheart),
+            # Shadowheart_InParty_Event_PartneredStart_22c04792-d5fc-4285-b45d-95c7df986e47
             bg3.flag('22c04792-d5fc-4285-b45d-95c7df986e47', False, slot_idx_shadowheart),
         )),
     ))
 
     may_i_have_a_kiss_node_uuid = '5752078a-349c-4ba7-b8de-3e9341cb0c9c'
-    d.set_dialog_flags(may_i_have_a_kiss_node_uuid, setflags = (shadowheart_random_kiss_start_true,))
+    d.set_dialog_flags(may_i_have_a_kiss_node_uuid, setflags = (
+        bg3.flag_group('Object', (
+            bg3.flag(ORI_ShadowheartKiss_StartRandomAnyKiss.uuid, True, slot_idx_shadowheart),
+        )),
+    ))
+
+    may_i_have_a_kiss_karlach_node_uuid = '1a4e47d3-7dbc-468c-a8c9-3b858912a680'
+    d.set_dialog_flags(may_i_have_a_kiss_karlach_node_uuid, setflags = (
+        bg3.flag_group('Object', (
+            bg3.flag(ORI_ShadowheartKiss_StartRandomAnyKiss.uuid, True, slot_idx_shadowheart),
+        )),
+    ))
 
     ##############################################################
     # Dialog: ShadowHeart_InParty2_Nested_BackgroundChapter.lsf
@@ -1254,8 +1267,6 @@ def patch_kiss_animations() -> None:
 
     slot_idx_tav = d.get_speaker_slot_index(bg3.SPEAKER_PLAYER)
     slot_idx_shadowheart = d.get_speaker_slot_index(bg3.SPEAKER_SHADOWHEART)
-    shadowheart_random_kiss_start_true = bg3.flag_group('Object', (bg3.flag(ORI_ShadowheartKiss_StartRandom.uuid, True, slot_idx_shadowheart),))
-
 
     #
     # Shar Idol kisses
@@ -1263,21 +1274,24 @@ def patch_kiss_animations() -> None:
     kiss_me_like_you_hate_me_node_uuid = '8203a694-02be-4f2a-8059-e9b1cbc55b2f'
     d.set_dialog_flags(kiss_me_like_you_hate_me_node_uuid, setflags = (
         bg3.flag_group('Object', (
-            bg3.flag(bg3.FLAG_ORI_Kiss_StartRandom, True, slot_idx_shadowheart),
+            #bg3.flag(bg3.FLAG_ORI_Kiss_StartRandom, True, slot_idx_shadowheart),
+            bg3.flag(ORI_ShadowheartKiss_StartRandom.uuid, True, slot_idx_shadowheart),
         )),
     ))
 
     and_a_kiss_of_course_node_uuid = '24c10a92-b14e-4610-8786-b8756cfdecba'
     d.set_dialog_flags(and_a_kiss_of_course_node_uuid, setflags = (
         bg3.flag_group('Object', (
-            bg3.flag(bg3.FLAG_ORI_Kiss_StartRandom, True, slot_idx_shadowheart),
+            #bg3.flag(bg3.FLAG_ORI_Kiss_StartRandom, True, slot_idx_shadowheart),
+            bg3.flag(ORI_ShadowheartKiss_StartRandom.uuid, True, slot_idx_shadowheart),
         )),
     ))
 
     i_suppose_we_can_manage_that_node_uuid = '1f06b486-f426-44bc-8b1d-a049be8b5ad0'
     d.set_dialog_flags(i_suppose_we_can_manage_that_node_uuid, setflags = (
         bg3.flag_group('Object', (
-            bg3.flag(bg3.FLAG_ORI_Kiss_StartRandom, True, slot_idx_shadowheart),
+            #bg3.flag(bg3.FLAG_ORI_Kiss_StartRandom, True, slot_idx_shadowheart),
+            bg3.flag(ORI_ShadowheartKiss_StartRandom.uuid, True, slot_idx_shadowheart),
         )),
     ))
 
@@ -1292,7 +1306,9 @@ def patch_kiss_animations() -> None:
         bg3.text_content('hc9d545e9g2d2dg4e58g8ba5gf605bea98e1e', 1),
         constructor=bg3.dialog_object.QUESTION,
         setflags=(
-            shadowheart_random_kiss_start_true,
+            bg3.flag_group('Object', (
+                bg3.flag(ORI_ShadowheartKiss_StartRandom.uuid, True, slot_idx_shadowheart),
+            )),
         ),
         checkflags=(
             bg3.flag_group('Object', (

@@ -6,7 +6,7 @@ from bg3moddinglib import (
     game_files
 )
 
-MOD_VERSION = (2, 1, 0, 21)
+MOD_VERSION = (2, 1, 0, 22)
 
 MOD_NAME = 'ReallyShadowheart'
 MOD_UUID = 'e49a2415-9dda-48ad-84c9-0abd35686529'

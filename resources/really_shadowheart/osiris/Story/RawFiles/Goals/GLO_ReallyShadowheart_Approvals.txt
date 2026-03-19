@@ -1,0 +1,59 @@
+Version 1
+SubGoalCombiner SGC_AND
+INITSECTION
+NOT DB_ReallyShadowheart_ApprovalRatings((CHARACTER)NULL_00000000-0000-0000-0000-000000000000, (CHARACTER)NULL_00000000-0000-0000-0000-000000000000, 0, 0);
+KBSECTION
+PROC
+PROC_ReallyShadowheart_SaveRatings((INTEGER)_Instance)
+AND
+DB_Players(_RatingOwner)
+AND
+DB_Avatars(_RatedCharacter)
+AND
+_RatingOwner != _RatedCharacter
+AND
+GetApprovalRating(_RatingOwner, _RatedCharacter, _Rating)
+THEN
+DB_ReallyShadowheart_ApprovalRatings(_RatingOwner, _RatedCharacter, _Rating, _Instance);
+
+PROC
+PROC_ReallyShadowheart_ResetRatings()
+AND
+DB_Players(_RatingOwner)
+AND
+DB_Avatars(_RatedCharacter)
+AND
+RemoveApprovalRating(_RatingOwner, _RatedCharacter, _)
+THEN
+DB_ReallyShadowheart_NOOP(1);
+
+PROC
+PROC_ReallyShadowheart_RestoreRatings((INTEGER)_Instance)
+AND
+DB_Players(_RatingOwner)
+AND
+DB_Avatars(_RatedCharacter)
+AND
+_RatingOwner != _RatedCharacter
+AND
+DB_ReallyShadowheart_ApprovalRatings(_RatingOwner, _RatedCharacter, _InitialRating, _Instance)
+AND
+ChangeApprovalRating(_RatingOwner, _RatedCharacter, 0, _InitialRating, _)
+THEN
+NOT DB_ReallyShadowheart_ApprovalRatings(_RatingOwner, _RatedCharacter, _InitialRating, _Instance);
+
+
+//IF
+//DialogStarted(_Dialog, _Instance)
+//THEN
+//PROC_ReallyShadowheart_SaveRatings(_Instance);
+//PROC_ReallyShadowheart_ResetRatings();
+
+//IF
+//DialogEnded(_Dialog, _Instance)
+//THEN
+//PROC_ReallyShadowheart_RestoreRatings(_Instance);
+
+EXITSECTION
+
+ENDEXITSECTION

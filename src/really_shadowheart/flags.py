@@ -30,7 +30,10 @@ Emmeline_Blessed_Tav = bg3.flag_factory(
 
 # Kisses
 ORI_ShadowheartKiss_StartRandom = bg3.flag_factory(
-    'ORI_ShadowheartKiss_StartRandom', bg3.OBJECT_FLAG, flag_uuid='7495e78c-9e70-4ea9-95eb-17fde7f94b7c', description='Shadowheart random kiss start')
+    'ORI_ShadowheartKiss_StartRandom', bg3.OBJECT_FLAG, flag_uuid='7495e78c-9e70-4ea9-95eb-17fde7f94b7c', description='Shadowheart random kiss start, Shadowheart kisses only')
+
+ORI_ShadowheartKiss_StartRandomAnyKiss = bg3.flag_factory(
+    'ORI_ShadowheartKiss_StartRandomAnyKiss', bg3.OBJECT_FLAG, flag_uuid='a7b70675-1f89-4666-9707-92c9cb44a452', description='Shadowheart random kiss start, selection from all kisses')
 
 # Simple kiss
 ORI_ShadowheartKiss_VersionA = bg3.flag_factory(

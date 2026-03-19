@@ -43,6 +43,12 @@ THEN
 NOT DB_ORI_OriginCampData((CHARACTER)S_LOW_ShadowheartMother_d085272a-f1d0-4ff8-a498-80728030f83e, "ELFSONG", (TRIGGER)S_CAMP_ELFSONG_ShadowheartMom_b37aa9ab-ba16-4e12-a016-65b1d49a416e);
 DB_ORI_OriginCampData((CHARACTER)S_LOW_ShadowheartMother_d085272a-f1d0-4ff8-a498-80728030f83e, "ELFSONG", (TRIGGER)S_CAMP_ELFSONG_ReallyShadowheartMom_f826b7e7-51ac-41b6-bd1f-69fe2c43320d);
 
+PROC
+PROC_ReallyShadowheart_UpdateParentsInCamp()
+THEN
+SetTag((CHARACTER)S_LOW_ShadowheartFather_c12d561f-beae-4ef6-917e-0bec2f829449, (TAG)SELUNE_4533d292-5b1f-43c7-ad44-6bc7db1000ca);
+SetTag((CHARACTER)S_LOW_ShadowheartMother_d085272a-f1d0-4ff8-a498-80728030f83e, (TAG)SELUNE_4533d292-5b1f-43c7-ad44-6bc7db1000ca);
+
 
 PROC
 PROC_ReallyShadowheart_InitializeParentsDB()
@@ -181,6 +187,29 @@ PROC_RemoveDialog(S_LOW_ShadowheartMother_d085272a-f1d0-4ff8-a498-80728030f83e);
 DB_Dialogs(S_LOW_ShadowheartMother_d085272a-f1d0-4ff8-a498-80728030f83e, (DIALOGRESOURCE)CAMP_ShadowheartMother_88c80e2e-a203-0627-6c2a-12695a769c7e);
 
 
+// This sets the attitude of an NPC towards the player
+PROC
+PROC_ReallyShadowheart_SetNPCAttitude((CHARACTER)_NPC, (CHARACTER)_Player, (INTEGER)_NewAttitute)
+AND
+GetAttitudeTowardsPlayer(_NPC, _Player, _Attitude)
+AND
+IntegerSubtract(_NewAttitute, _Attitude, _Delta)
+THEN
+AddAttitudeTowardsPlayer(_NPC, _Player, _Delta);
+
+
+// Set parents attitude to all players
+PROC
+PROC_ReallyShadowheart_SetParentsAttitude()
+AND
+DB_Avatars(_Tav)
+AND
+GetApprovalRating(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _Tav, _Approval)
+THEN
+PROC_ReallyShadowheart_SetNPCAttitude((CHARACTER)S_LOW_ShadowheartFather_c12d561f-beae-4ef6-917e-0bec2f829449, _Tav, _Approval);
+PROC_ReallyShadowheart_SetNPCAttitude((CHARACTER)S_LOW_ShadowheartMother_d085272a-f1d0-4ff8-a498-80728030f83e, _Tav, _Approval);
+
+
 IF
 TeleportedToCamp(_Character)
 AND
@@ -199,6 +228,7 @@ EntityEvent(_, "LOW_SharGrotto_ParentLeft")
 AND
 NOT DB_ReallyShadowheart_SetupParentsInCamp(1)
 THEN
+PROC_ReallyShadowheart_SetParentsAttitude();
 PROC_ORI_SetupCamp((CHARACTER)S_LOW_ShadowheartFather_c12d561f-beae-4ef6-917e-0bec2f829449, 1);
 PROC_ORI_SetupCamp((CHARACTER)S_LOW_ShadowheartMother_d085272a-f1d0-4ff8-a498-80728030f83e, 1);
 DB_ReallyShadowheart_SetupParentsInCamp(1);
@@ -342,8 +372,11 @@ DialogStarted((DIALOGRESOURCE)CAMP_Shadowheart_DaughterTears_SD_c0f0d040-7590-fb
 THEN
 MusicPlayGeneral("Explo_Theme_WMPA_Myst");
 
-
-
+IF
+ApprovalRatingChanged(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _Tav, _NewApproval)
+THEN
+PROC_ReallyShadowheart_SetNPCAttitude((CHARACTER)S_LOW_ShadowheartFather_c12d561f-beae-4ef6-917e-0bec2f829449, _Tav, _NewApproval);
+PROC_ReallyShadowheart_SetNPCAttitude((CHARACTER)S_LOW_ShadowheartMother_d085272a-f1d0-4ff8-a498-80728030f83e, _Tav, _NewApproval);
 EXITSECTION
 
 ENDEXITSECTION

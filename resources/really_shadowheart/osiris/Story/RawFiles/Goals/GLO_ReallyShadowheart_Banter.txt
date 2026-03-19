@@ -71,58 +71,6 @@ AND
 DB_ReallyShadowheart_DisableWoundFlares(1)
 THEN
 NOT DB_ReallyShadowheart_DisableWoundFlares(1);
-
-// Replica of vanilla wound flare logic
-QRY
-QRY_ReallyShadowheart_PartyUnavailable()
-AND
-DB_Players(_Player)
-AND
-DB_Is_InCombat(_Player, _)
-AND
-QRY_SpeakerIsInDialogRange(_Player, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679)
-THEN
-DB_NOOP(1);
-
-QRY
-QRY_ReallyShadowheart_PartyUnavailable()
-AND
-DB_Players(_Player)
-AND
-NOT QRY_SpeakerIsAvailable(_Player)
-AND
-QRY_SpeakerIsInDialogRange(_Player, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679)
-THEN
-DB_NOOP(1);
-
-IF
-DB_InRegion(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _WorldGossipTrigger)
-AND
-NOT DB_ReallyShadowheart_DisableWoundFlares(1)
-AND
-DB_WorldGossipTrigger(_WorldGossipTrigger, 0, _)
-AND
-IsTagged(S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, (TAG)SHADOWHEART_ENEMYOFSHARPATH_8eca8027-996c-4c61-bec6-77f853de295b, 1)
-AND
-NOT DB_GlobalFlag((FLAG)ORI_Shadowheart_State_RejectShar_KilledParents_e9060caf-66b0-4701-8dfd-5ae1125f5afd)
-AND
-NOT DB_ORI_Shadowheart_IncurableWound_RandomFlareQueued(_)
-AND
-NOT QRY_ReallyShadowheart_PartyUnavailable()
-AND
-Random(10, _Random)
-AND
-_Random >= 8
-THEN
-PROC_IncreaseCounter("ORI_Shadowheart_IncurableWoundFlares");
-DB_ORI_Shadowheart_IncurableWound_RandomFlareQueued(1);
-TimerLaunch("ORI_Shadowheart_IncurableWound_RandomFlareUp", 5000);
-
-// This disables the vanilla logic of random wound flares
-QRY
-QRY_ORI_Shadowheart_PartyUnavailable()
-THEN
-DB_NOOP(1);
 EXITSECTION
 
 ENDEXITSECTION

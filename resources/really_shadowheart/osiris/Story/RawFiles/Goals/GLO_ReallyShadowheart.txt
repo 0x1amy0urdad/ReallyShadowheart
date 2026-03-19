@@ -36,6 +36,8 @@ NOT DB_ReallyShadowheart_ApprovalRating((CHARACTER)NULL_00000000-0000-0000-0000-
 NOT DB_ReallyShadowheart_ApprovalRatingsCopied(0);
 
 NOT DB_ReallyShadowheart_ApprovalRatingsRestored(0);
+
+NOT DB_ReallyShadowheart_DialogInstance((DIALOGRESOURCE)NULL_00000000-0000-0000-0000-000000000000, 0);
 KBSECTION
 //////////////////////////////////////////////////////////////////////////
 //
@@ -1182,6 +1184,11 @@ PROC_GlobalSetFlagAndCache((FLAG)Shadowheart_FemTav_Greeting1_47eff024-f577-495a
 IF
 FlagSet((FLAG)ORI_ShadowheartKiss_StartRandom_7495e78c-9e70-4ea9-95eb-17fde7f94b7c, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _)
 THEN
+PROC_ReallyShadowheart_PickRandomShadowheartKiss();
+
+IF
+FlagSet((FLAG)ORI_ShadowheartKiss_StartRandomAnyKiss_a7b70675-1f89-4666-9707-92c9cb44a452, S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679, _)
+THEN
 PROC_ReallyShadowheart_PickRandomKiss();
 
 
@@ -1630,6 +1637,37 @@ RemoveStatus(_Tav, "WYR_CIRCUS_LOVEDRYAD_BLESSING_AURA", S_WYR_Circus_LoveDryad_
 RemoveStatus(_Companion, "WYR_CIRCUS_LOVEDRYAD_BLESSING_AURA", S_WYR_Circus_LoveDryad_a8bce35d-17ee-46e3-8d56-1d0d29c4a01e);
 NOT DB_ReallyShadowheart_LoveProtects(_Tav, _Companion);
 
+
+//
+// Dialog resource to Dialog instance tracking
+//
+PROC
+PROC_ReallyShadowheart_UpdateDialogInstance((DIALOGRESOURCE)_Dialog, (INTEGER)_)
+AND
+DB_ReallyShadowheart_DialogInstance(_Dialog, _Instance)
+THEN
+NOT DB_ReallyShadowheart_DialogInstance(_Dialog, _Instance);
+
+PROC
+PROC_ReallyShadowheart_UpdateDialogInstance((DIALOGRESOURCE)_Dialog, (INTEGER)_Instance)
+AND
+NOT DB_ReallyShadowheart_DialogInstance(_Dialog, _Instance)
+THEN
+DB_ReallyShadowheart_DialogInstance(_Dialog, _Instance);
+
+IF
+DialogStarted((DIALOGRESOURCE)_Dialog, _Instance)
+THEN
+PROC_ReallyShadowheart_UpdateDialogInstance(_Dialog, _Instance);
+
+IF
+DialogEnded((DIALOGRESOURCE)_Dialog, _)
+AND
+DB_ReallyShadowheart_DialogInstance(_Dialog, _Instance)
+THEN
+NOT DB_ReallyShadowheart_DialogInstance(_Dialog, _Instance);
+
+
 //
 // If Tav chooses someone else for the love test, their partner will disapprove that (a lot!)
 //
@@ -1660,7 +1698,11 @@ DB_NOOP(1);
 IF
 FlagSet(WYR_Circus_LoveDryad_Event_PickedCompanion_bb8086a2-b96d-3722-72c6-2bbab502fe53, _Companion, _)
 AND
-DB_Avatars(_Tav)
+DB_ReallyShadowheart_DialogInstance((DIALOGRESOURCE)WYR_Circus_LoveDryad_d0c00951-4d09-d1a6-2ab3-6c6ba1932a25, _Instance)
+AND
+DialogGetInvolvedPlayer(_Instance, 1, _Tav)
+AND
+DB_Avatars((CHARACTER)_Tav)
 AND
 DB_CompanionCanPartner((CHARACTER)_Partner, _, _PartnerFlag, _, _, _, _)
 AND
@@ -1726,6 +1768,49 @@ IF
 TimerFinished("ReallyShadowheart_RestoreApprovalRatings")
 THEN
 PROC_ReallyShadowheart_RestoreApprovalRatings();
+
+//
+// Improvement: the CAMP_Shadowheart_IVB_CFM_Box scene plays only if the fallback wound flare happened in camp.
+// With this change, I will use a different flag that will be set either when the fallback wound flare happens,
+// or when wound flare happens in the world (this prevents the fallback wound flare scene).
+//
+PROC
+PROC_ReallyShadowheart_IVB_CFM_Box()
+AND
+DB_CampNight_Requirement((FLAG)NIGHT_ShadowHeart_Box_2de162ec-4272-4750-945f-9d306c5ba0da, _Flag1, _Flag2)
+THEN
+NOT DB_CampNight_Requirement((FLAG)NIGHT_ShadowHeart_Box_2de162ec-4272-4750-945f-9d306c5ba0da, _Flag1, _Flag2);
+
+PROC
+PROC_ReallyShadowheart_IVB_CFM_Box()
+THEN
+DB_CampNight_Requirement((FLAG)NIGHT_ShadowHeart_Box_2de162ec-4272-4750-945f-9d306c5ba0da, (FLAG)Shadowheart_With_Box_CFM_650da20e-a918-4a98-8ff4-a96af6616fe5, (FLAG)SHADOWHEARTCOMPANION_09baaab1-c743-44d5-84e4-1915165b9935);
+
+PROC
+PROC_ReallyShadowheart_GameStarted()
+AND
+NOT DB_CampNight_Requirement((FLAG)NIGHT_ShadowHeart_Box_2de162ec-4272-4750-945f-9d306c5ba0da, (FLAG)Shadowheart_With_Box_CFM_650da20e-a918-4a98-8ff4-a96af6616fe5, (FLAG)SHADOWHEARTCOMPANION_09baaab1-c743-44d5-84e4-1915165b9935)
+THEN
+PROC_ReallyShadowheart_IVB_CFM_Box();
+
+PROC
+PROC_CounterIncreased("ORI_Shadowheart_IncurableWoundFlares", _Count)
+AND
+NOT DB_GlobalFlag((FLAG)Shadowheart_With_Box_CFM_650da20e-a918-4a98-8ff4-a96af6616fe5)
+THEN
+PROC_GlobalSetFlagAndCache((FLAG)Shadowheart_With_Box_CFM_650da20e-a918-4a98-8ff4-a96af6616fe5);
+
+PROC
+PROC_ReallyShadowheart_GameStarted()
+AND
+NOT DB_GlobalFlag((FLAG)Shadowheart_With_Box_CFM_650da20e-a918-4a98-8ff4-a96af6616fe5)
+AND 
+DB_GlobalCounter("ORI_Shadowheart_IncurableWoundFlares", _Count)
+AND
+_Count > 0
+THEN
+PROC_GlobalSetFlagAndCache((FLAG)Shadowheart_With_Box_CFM_650da20e-a918-4a98-8ff4-a96af6616fe5);
 EXITSECTION
+
 
 ENDEXITSECTION
