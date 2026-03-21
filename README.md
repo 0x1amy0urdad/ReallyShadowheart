@@ -1,3 +1,27 @@
+# License violation notice
+
+It has come to my attention that this mod has been modified and redistributed on an external site without my knowledge or consent. **This is a direct violation of the license under which this project is published.**
+
+I formally denounce this action and demand the immediate removal of the unauthorized upload.
+
+---
+
+### License Terms
+
+This project is published under the **[Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)](https://creativecommons.org/licenses/by-nc-nd/4.0/)** license.
+
+Under these terms, you are **not permitted** to:
+
+- **Modify** this work in any way — including porting, rebalancing, translating, or altering any files
+- **Redistribute modified versions** of this work under any circumstances
+- **Use this work for commercial purposes**
+
+The "NoDerivatives" clause means that if you remix, transform, or build upon this material in any way, **you may not distribute the resulting work** — even if you credit the original author.
+
+If you wish to use, include, or build upon this mod in any capacity, you must **contact me directly** and obtain explicit written permission beforehand.
+
+### I also want to make it explicitly clear that I denounce any community or platform built around hatred, white supremacy, or bigotry, and I do not consent to my work being used by, hosted on, or associated with such spaces in any form.
+
 # Really Shadowheart
 
 This is a Baldur's Gate 3 mod that expands Shadowheart's romance, allowing you to propose marriage at the game's finale. It adds new conversations and enhances several cutscenes. It also makes her more invested in an exclusive relationship after she turns from Shar.
