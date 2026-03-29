@@ -1845,8 +1845,8 @@ def create_romance_events() -> None:
     #
 
     approval_80_greetings_male_node_uuid = '80fc8153-9363-4c6f-a3bc-ec5e81cbc08a'
-    #approval_80_greetings_female_node_uuid = '8d8076e7-1bf1-4a91-95f2-469986a6a5bb'
-    every_day_is_an_adventure_node_uuid = '0bc3d936-8a92-4f4e-bc51-26658a78c35b'
+    approval_80_greetings_female_node_uuid = '8d8076e7-1bf1-4a91-95f2-469986a6a5bb'
+    # every_day_is_an_adventure_node_uuid = '0bc3d936-8a92-4f4e-bc51-26658a78c35b'
     existing_partnered_greetings_node_uuid = '4c2f28c3-4a1b-370a-73f8-d2bfcea53e9d'
 
     index = d.get_root_node_index(existing_partnered_greetings_node_uuid)
@@ -1855,7 +1855,7 @@ def create_romance_events() -> None:
     except:
         index_male = 999999
     try:
-        index_female = d.get_root_node_index(every_day_is_an_adventure_node_uuid)
+        index_female = d.get_root_node_index(approval_80_greetings_female_node_uuid)
     except:
         index_female = 999999
 

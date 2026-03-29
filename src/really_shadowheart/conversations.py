@@ -2838,7 +2838,7 @@ def patch_reactions_to_crusher() -> None:
         youre_funny_node_uuid,
         bg3.SPEAKER_PLAYER,
         [jump_to_thats_more_like_it_node_uuid],
-        bg3.text_content('h98228c94g355fg4fb0gb722g3d11e92c1ec5', 1),
+        bg3.text_content('hcd0bbb51g0798g4c82g8de9g670193af7fd3', 1),
     )
     t.create_simple_dialog_answer_phase(
         bg3.SPEAKER_SHADOWHEART,
@@ -3023,38 +3023,7 @@ def patch_endgame_dialog() -> None:
         ))
 
 
-# def create_durge_voice_line() -> None:
-#     d = bg3.dialog_object(files.get_file('Gustav', 'Mods/GustavDev/Story/DialogsBinary/Companions/ShadowHeart_InParty2.lsf'))
-#     t = bg3.timeline_object(files.get_file('Gustav', 'Public/GustavDev/Timeline/Generated/ShadowHeart_InParty2.lsf'), d)
-
-#     say_it_node_uuid = '16e52991-8a30-4ed6-9944-c1029a35a0a1'
-#     in_bhaals_name_node_uuid = '34bb6fec-4b7b-444a-8c78-25e3d66609b6'
-
-#     d.create_standard_dialog_node(
-#         say_it_node_uuid,
-#         bg3.SPEAKER_PLAYER,
-#         [in_bhaals_name_node_uuid],
-#         bg3.text_content('hd4281763g753cg4231g8db6g2281315827c4', 1),
-#         constructor = bg3.dialog_object.QUESTION)
-
-#     d.create_standard_dialog_node(
-#         in_bhaals_name_node_uuid,
-#         bg3.SPEAKER_SHADOWHEART,
-#         [jump_back_node_uuid],
-#         bg3.text_content('he57c219eg9f36g4b0cgac13ge3d932af52f0', 1))
-#     t.create_simple_dialog_answer_phase(
-#         bg3.SPEAKER_SHADOWHEART,
-#         4.34,
-#         in_bhaals_name_node_uuid,
-#         ((None, '8942c483-83c9-4974-9f47-87cd1dd10828'),),
-#         phase_duration = 4.5,
-#         emotions = {
-#             bg3.SPEAKER_SHADOWHEART: ((0.0, 2, 3),),
-#         })
-
-#     d.add_child_dialog_node(SHADOWHEART_QUESTION_BANK_ROOT_NODE_UUID, say_it_node_uuid, 0)
-
-def test_greeting_womain_i_love() -> None:
+def test_greeting_woman_i_love() -> None:
 
     game_assets = get_context().assets
 
@@ -3097,6 +3066,7 @@ def test_greeting_womain_i_love() -> None:
         }
     )
 
+
 bg3.add_build_procedure('patch_conversations', patch_conversations)
 bg3.add_build_procedure('create_recurrent_conversations', create_recurrent_conversations)
 bg3.add_build_procedure('create_more_recurring_conversations', create_more_recurring_conversations)
@@ -3108,6 +3078,3 @@ bg3.add_build_procedure('patch_reactions_to_crusher', patch_reactions_to_crusher
 bg3.add_build_procedure('create_gauntlet_conversation', create_gauntlet_conversation)
 bg3.add_build_procedure('patch_shadowheart_wolf_memory_response', patch_shadowheart_wolf_memory_response)
 bg3.add_build_procedure('patch_endgame_dialog', patch_endgame_dialog)
-#bg3.add_build_procedure('test_greeting_womain_i_love', test_greeting_womain_i_love)
-#add_build_procedure('create_durge_voice_line', create_durge_voice_line)
-

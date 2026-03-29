@@ -219,6 +219,32 @@ class dialog_index:
                     timeline_index[timeline_uuid] = b64encode(et.tostring(timeline)).decode()
                     timeline_by_dialog_index[dialog_uuid] = timeline_uuid
 
+        voice_index = dict[str, list[tuple[str, str]]]()
+        voice_meta_files = self.__files.tool.list('Localization/VoiceMeta')
+        for file_path in voice_meta_files:
+            if not file_path.startswith('Mods/Gustav/Localization/English/Soundbanks/'):
+                continue
+            if len(file_path) <= 76:
+                continue
+            soundbank = game_file(self.__files.tool, file_path, pak_name = 'Localization/VoiceMeta')
+            metadata = soundbank.xml.find('./region[@id="VoiceMetaData"]/node[@id="VoiceMetaData"]/children/node[@id="VoiceSpeakerMetaData"]')
+            if metadata is None:
+                continue
+            speaker_uuid = get_bg3_attribute(metadata, 'MapKey')
+            if speaker_uuid:
+                nodes = metadata.findall('./children/node[@id="MapValue"]/children/node[@id="VoiceTextMetaData"]')
+                for node in nodes:
+                    text_handle = get_bg3_attribute(node, 'MapKey')
+                    if text_handle:
+                        node_value = node.find('./children/node[@id="MapValue"]')
+                        if node_value:
+                            encoded_value = b64encode(to_compact_string(node_value).encode()).decode()
+                            if text_handle in voice_index:
+                                voice_index[text_handle].append((speaker_uuid, encoded_value))
+                            else:
+                                voice_index[text_handle] = [(speaker_uuid, encoded_value)]
+
+        index['voice_index'] = voice_index
         index['timeline_index'] = timeline_index
         index['timeline_by_dialog_index'] = timeline_by_dialog_index
 
@@ -308,8 +334,9 @@ class dialog_index:
                     else:
                         name_key = get_required_bg3_attribute(speaker_group, 'Name')
                     character_idx[key] = name_key
-            for k,v in SPEAKER_NAME.items():
-                character_idx[k] = v
+
+        for k,v in SPEAKER_NAME.items():
+            character_idx[k] = v
 
         index['dialog_index'] = dialog_idx
         index['dialog_name_index'] = dialog_name_idx

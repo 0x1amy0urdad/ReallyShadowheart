@@ -2,7 +2,7 @@
 
 It has come to my attention that this mod has been modified and redistributed on an external site without my knowledge or consent. **This is a direct violation of the license under which this project is published.**
 
-I formally denounce this action and demand the immediate removal of the unauthorized upload.
+I denounce this action and demand the immediate removal of the unauthorized upload.
 
 ---
 
@@ -48,6 +48,16 @@ If you want to get some of Shadowheart's Early Access voice lines that didn't ma
 ## Installation
 
 Download links are available on the [Releases page](https://github.com/0x1amy0urdad/ReallyShadowheart/releases).
+
+The latest release contains three zipped files:
+
+*ReallyShadowheart_e49a2415-9dda-48ad-84c9-0abd35686529.zip* - this is the main mod file. You always need this one, the other two are optional.
+
+*ReallyShadowheartEAContent_bca42409-927d-2a30-aec3-2d73762da363.zip* - this is an optional pak with EA cut content. All the actual logic is in the main pak, however this optional one is necessary if you want to get restored EA voice lines. This pak is compatible with HyperspaceTowel's EA Scenes Restored mod, you can install both.
+
+*ReallyShadowheart_Lite_dd633151-1595-9797-0153-58390006ef8b.zip* - this is another optional pak. This one disables certain changes that I made in the main pak. The biggest one is, with this "Lite" pak installed, you will acquire Shadowheart's approval the same way as in vanilla game. The main mod makes it a bit harder to get her approval.
+
+Past releases contain only the main mod pak. The optional paks are universal and work with any version of the main mod.
 
 If you never installed mods manually, make sure to watch this video:
 

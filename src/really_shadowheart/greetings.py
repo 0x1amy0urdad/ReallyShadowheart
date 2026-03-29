@@ -34,8 +34,9 @@ def create_greetings() -> None:
     i_digress_node_uuid = 'c95f06c1-3b2d-4f3a-89a0-47e90c1761db'
     approval_80_greetings_male_node_uuid = '80fc8153-9363-4c6f-a3bc-ec5e81cbc08a'
     approval_80_greetings_female_node_uuid = '8d8076e7-1bf1-4a91-95f2-469986a6a5bb'
-    every_day_is_an_adventure_node_uuid = '0bc3d936-8a92-4f4e-bc51-26658a78c35b'
-    did_you_want_something_node_uuid = 'f7e507b8-80f0-4f29-ba83-94f872db1329'
+
+    # every_day_is_an_adventure_node_uuid = '0bc3d936-8a92-4f4e-bc51-26658a78c35b'
+    # did_you_want_something_node_uuid = 'f7e507b8-80f0-4f29-ba83-94f872db1329'
 
     shadowheart_hesitates_to_ask_node_uuid = 'e0fbf080-1b83-4de8-9ddd-717b4c56b011'
     dialog_flow_node_uuid = '313eed6b-ac15-4ebe-894d-4844163fb36c'
@@ -875,27 +876,27 @@ def create_greetings() -> None:
     #     })
 
     # Did you want something?
-    d.create_standard_dialog_node(
-        did_you_want_something_node_uuid,
-        bg3.SPEAKER_SHADOWHEART,
-        [sleep_together_entry_point_node_uuid],
-        bg3.text_content('h17d75cacg075bg4c4ag93eegb085da3f124e', 1),
-        setflags = (
-            bg3.flag_group('Global', (
-                bg3.flag(Shadowheart_FemTav_Greeting1.uuid, False, None),
-            )),
-        ))
-    t.create_simple_dialog_answer_phase(
-        bg3.SPEAKER_SHADOWHEART,
-        '1.5',
-        did_you_want_something_node_uuid,
-        (('0.3', 'fd96b957-6a74-4f97-a035-eb9641c48242'), ('1.8', '0e8837db-4344-48d0-9175-12262c73806b'), (None, 'cde43894-62c3-4f23-8ea7-b772f9357697')),
-        phase_duration = '2.0',
-        voice_delay = '0.3',
-        emotions = {
-            bg3.SPEAKER_SHADOWHEART: ((0.3, 1024, None), (1.2, 2, None)),
-            bg3.SPEAKER_PLAYER: ((0.0, 2, None),)
-        })
+    # d.create_standard_dialog_node(
+    #     did_you_want_something_node_uuid,
+    #     bg3.SPEAKER_SHADOWHEART,
+    #     [sleep_together_entry_point_node_uuid],
+    #     bg3.text_content('h17d75cacg075bg4c4ag93eegb085da3f124e', 1),
+    #     setflags = (
+    #         bg3.flag_group('Global', (
+    #             bg3.flag(Shadowheart_FemTav_Greeting1.uuid, False, None),
+    #         )),
+    #     ))
+    # t.create_simple_dialog_answer_phase(
+    #     bg3.SPEAKER_SHADOWHEART,
+    #     '1.5',
+    #     did_you_want_something_node_uuid,
+    #     (('0.3', 'fd96b957-6a74-4f97-a035-eb9641c48242'), ('1.8', '0e8837db-4344-48d0-9175-12262c73806b'), (None, 'cde43894-62c3-4f23-8ea7-b772f9357697')),
+    #     phase_duration = '2.0',
+    #     voice_delay = '0.3',
+    #     emotions = {
+    #         bg3.SPEAKER_SHADOWHEART: ((0.3, 1024, None), (1.2, 2, None)),
+    #         bg3.SPEAKER_PLAYER: ((0.0, 2, None),)
+    #     })
 
     # Checking in on me? I'm right where I'm supposed to be - with the woman I love.
     d.create_standard_dialog_node(

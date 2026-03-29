@@ -27,6 +27,8 @@ ASSETS : dict[str, dict[str, str]] = {
 
     # Shadowheart's CRDs, CFMs, and SDs
     'CAMP_Shadowheart_IVB_CFM_WildMagic': {},
+    'FOR_Village_OM_ShadowHeart_AOM_OOM_PostEA': {},
+    'FOR_Village_OM_ShadowHeart_COM_PostEA': {},
     'CAMP_NightsongShadowheartVisit_CFM': {},
     'CAMP_Shadowheart_CRD_SkinnyDippingRomance': {},
     'CAMP_Shadowheart_DaughterTears_SD': {},

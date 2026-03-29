@@ -13,6 +13,8 @@ AND
 _RatingOwner != _RatedCharacter
 AND
 GetApprovalRating(_RatingOwner, _RatedCharacter, _Rating)
+AND
+_Rating > 90
 THEN
 DB_ReallyShadowheart_ApprovalRatings(_RatingOwner, _RatedCharacter, _Rating, _Instance);
 
@@ -22,6 +24,8 @@ AND
 DB_Players(_RatingOwner)
 AND
 DB_Avatars(_RatedCharacter)
+AND
+_RatedCharacter != _RatingOwner
 AND
 RemoveApprovalRating(_RatingOwner, _RatedCharacter, _)
 THEN

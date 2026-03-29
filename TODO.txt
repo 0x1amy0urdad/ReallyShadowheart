@@ -3,7 +3,6 @@ TODO list
 This is an un-ordered TODO list. I will be adding all good ideas suggested by the community to keep track of them.
 
 * Tav/Durge could invite Shadowheart to roam the streets of Bladur's Gate. It could be a set of short cutscenes on streets of BG where they walk holding hands, kiss, maybe dance; consider re-using some animations from Aylin/Isobel (there are a few great ones)
-* If Shadowheart eats the Noblestalk, she should be able to hug Nocturne
 * Add a new question where Tav/Durge could ask her how she feels and if she needs help if her HP is below 50%.
 * Add more night sleep cutscenes; for example, if they sleep in Shadowheart's bedroll near the window, the moon is visible at certain camera angle.
 * Lakrissa has a few lines where she's borderline flirting with Tav. Perhaps, Shadowheart could react to that.
@@ -16,10 +15,7 @@ This is an un-ordered TODO list. I will be adding all good ideas suggested by th
 * Tav/Durge could invite Shadowheart to drink wine at night when camping in the wilderness more than once. This means, a variant of act 1 romance cutscene could be re-played multiple times as long as the party is camping in the wilderness, Tav is dating Shadowheart and her approval is > 20 (40?).
 * Slow down approval gains, slow down progression of her warming up to Tav/Durge, make her answers less polite and more pointy (perhaps with some EA content)
 * When Shadowheart meets a wolf for the first time, she should get scared without a passive skill check. All subsequent encounters should use the skill check as usual. This would help players to avoid fishing for wolf scare to unlock the conversation about the woods and "wolf fear".
-* Add/extend romance cutscenes. I can re-use Minthara's and Lae'zel's animations to add more content to skinny dipping and possibly create a new cutscene in the High Hall after the final fight.
-* Implement an extension to her story: if she spared the Nightsong and saved her parents, Selune would offer Shadowheart her blessing. She will overcome the fear of wolves, and gain an ability to shapeshift into a potent wolf form once per short rest.
 * Durge: add a scene similar to Astarion's https://www.youtube.com/watch?v=ROOPbmMXHJY
-* Do something about the githiyanki egg. For example, if Tav is a Gith or Lae'zel origin, and the egg is in their inventory, there could be a dialog about their child.
 
 PARTIALLY DONE list
 
@@ -27,6 +23,7 @@ PARTIALLY DONE list
 
 DONE list
 
+* If Shadowheart eats the Noblestalk, she should be able to hug Nocturne
 * Implement the late redemption path, when Shadowheart kills the Nightsong, but reclaims herself at the last moment by saving her parents and rejecting Shar; basically, this means to enable Selunite dialogs on that path, and carefully merge them into the story
 * Tav/Durge could give certain books to Shadowheart: DJ's plea, the unclaimed, Selunite prayer book. Reading these books will trigger wound flare events or sassy reactions.
 * Shadowheart loves flowers. After gifting her the night orchid, Tav should be able to gift her more flowers.

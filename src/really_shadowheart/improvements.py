@@ -2533,6 +2533,121 @@ def add_flirty_line_to_penance_scene() -> None:
     create_flirty_line(alias2_go_ahead_node_uuid)
 
 
+def patch_moonhaven_scenes_com() -> None:
+    game_assets = get_context().assets
+
+    ##############################################
+    # FOR_Village_OM_ShadowHeart_COM_PostEA
+    # Companion dialog
+    ##############################################
+
+    ab = game_assets.get_modded_dialog_asset_bundle('FOR_Village_OM_ShadowHeart_COM_PostEA')
+    d = bg3.dialog_object(ab.dialog)
+
+    new_root_old_schoolbook_node_uuid = 'df6af01b-c5e3-463e-b3e9-0c757800bd36'
+    new_root_statue_node_uuid = 'c53b43b9-fc6c-4f7c-b89d-8e4523de13c7'
+
+    narrator_old_schoolbook_node_uuid = 'a2418dd6-9146-4314-87a3-0b23ee9feb98'
+    narrator_old_statue_node_uuid = 'c79e3ebf-9137-4e16-b406-cbbab2b32c30'
+
+    alias_narrator_old_schoolbook_node_uuid = '95005961-7797-466c-aaa7-b70fe77bf4a9'
+    alias_narrator_old_statue_node_uuid = 'e368d826-cfe0-46b6-8039-a429fe4f2853'
+
+    d.create_standard_dialog_node(
+        new_root_old_schoolbook_node_uuid,
+        bg3.SPEAKER_SHADOWHEART,
+        [alias_narrator_old_schoolbook_node_uuid],
+        None,
+        checkflags = (
+            bg3.flag_group('Global', (
+                bg3.flag(Shadowheart_Moonhaven_Schoolbook.uuid, True, None),
+                bg3.flag(Shadowheart_Moonhaven_Statue.uuid, False, None),
+            )),
+        ))
+
+    d.create_standard_dialog_node(
+        new_root_statue_node_uuid,
+        bg3.SPEAKER_SHADOWHEART,
+        [alias_narrator_old_statue_node_uuid],
+        None,
+        checkflags = (
+            bg3.flag_group('Global', (
+                bg3.flag(Shadowheart_Moonhaven_Schoolbook.uuid, False, None),
+                bg3.flag(Shadowheart_Moonhaven_Statue.uuid, True, None),
+            )),
+        ))
+
+    d.create_alias_dialog_node(
+        alias_narrator_old_schoolbook_node_uuid,
+        narrator_old_schoolbook_node_uuid,
+        d.get_children_nodes_uuids(narrator_old_schoolbook_node_uuid))
+
+    d.create_alias_dialog_node(
+        alias_narrator_old_statue_node_uuid,
+        narrator_old_statue_node_uuid,
+        d.get_children_nodes_uuids(narrator_old_statue_node_uuid))
+
+    d.add_root_node(new_root_old_schoolbook_node_uuid, index = 0)
+    d.add_root_node(new_root_statue_node_uuid, index = 0)
+
+def patch_moonhaven_scenes_aom_oom() -> None:
+    game_assets = get_context().assets
+
+    ##############################################
+    # FOR_Village_OM_ShadowHeart_AOM_OOM_PostEA
+    # Avatar/Origin dialog
+    ##############################################
+
+    ab = game_assets.get_modded_dialog_asset_bundle('FOR_Village_OM_ShadowHeart_AOM_OOM_PostEA')
+    d = bg3.dialog_object(ab.dialog)
+
+    new_root_old_schoolbook_node_uuid = '6d8d40fb-6701-435e-8491-8653934d06d2'
+    new_root_statue_node_uuid = '3bf39778-bd03-4d93-a179-dd536aa490ca'
+
+    narrator_old_schoolbook_node_uuid = 'd8dffee7-254c-4826-ab34-0e10d38e22f5'
+    narrator_old_statue_node_uuid = '562bfbf5-54c8-49bd-9239-f5eecb5bfbcd'
+
+    alias_narrator_old_schoolbook_node_uuid = 'b2f692c5-f8fc-44b6-9681-44d516158b84'
+    alias_narrator_old_statue_node_uuid = 'b42bdc20-77a9-4718-afab-d70cc6be48af'
+
+    d.create_standard_dialog_node(
+        new_root_old_schoolbook_node_uuid,
+        bg3.SPEAKER_SHADOWHEART,
+        [alias_narrator_old_schoolbook_node_uuid],
+        None,
+        checkflags = (
+            bg3.flag_group('Global', (
+                bg3.flag(Shadowheart_Moonhaven_Schoolbook.uuid, True, None),
+                bg3.flag(Shadowheart_Moonhaven_Statue.uuid, False, None),
+            )),
+        ))
+
+    d.create_standard_dialog_node(
+        new_root_statue_node_uuid,
+        bg3.SPEAKER_SHADOWHEART,
+        [alias_narrator_old_statue_node_uuid],
+        None,
+        checkflags = (
+            bg3.flag_group('Global', (
+                bg3.flag(Shadowheart_Moonhaven_Schoolbook.uuid, False, None),
+                bg3.flag(Shadowheart_Moonhaven_Statue.uuid, True, None),
+            )),
+        ))
+
+    d.create_alias_dialog_node(
+        alias_narrator_old_schoolbook_node_uuid,
+        narrator_old_schoolbook_node_uuid,
+        d.get_children_nodes_uuids(narrator_old_schoolbook_node_uuid))
+
+    d.create_alias_dialog_node(
+        alias_narrator_old_statue_node_uuid,
+        narrator_old_statue_node_uuid,
+        d.get_children_nodes_uuids(narrator_old_statue_node_uuid))
+
+    d.add_root_node(new_root_old_schoolbook_node_uuid, index = 0)
+    d.add_root_node(new_root_statue_node_uuid, index = 0)
+
+
 bg3.add_build_procedure('grove_squirell_encounter_wound_flare', grove_squirell_encounter_wound_flare)
 bg3.add_build_procedure('mean_greetings', mean_greetings)
 bg3.add_build_procedure('shadowheart_laezel_fight', shadowheart_laezel_fight)
@@ -2550,3 +2665,5 @@ bg3.add_build_procedure('romanced_reaction_join_me', romanced_reaction_join_me)
 bg3.add_build_procedure('patch_noblestalk_line', patch_noblestalk_line)
 bg3.add_build_procedure('patch_camp_box_discussion', patch_camp_box_discussion)
 bg3.add_build_procedure('add_flirty_line_to_penance_scene', add_flirty_line_to_penance_scene)
+bg3.add_build_procedure('patch_moonhaven_scenes_com', patch_moonhaven_scenes_com)
+bg3.add_build_procedure('patch_moonhaven_scenes_aom_oom', patch_moonhaven_scenes_aom_oom)
